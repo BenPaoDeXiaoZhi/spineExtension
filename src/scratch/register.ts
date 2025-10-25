@@ -14,7 +14,11 @@ export function registerExt(ext: extInstance) {
         } else {
         }
         for (let arg of block.text.match(/(?<=\[).+?(?=\])/g)) {
-            if (!block.arguments?.[arg]) {
+            if (!block.arguments){
+                error(`块${block.opcode}未设置arguments`)
+                break;
+            }
+            if (!block.arguments[arg]) {
                 error(`块${block.opcode}未设置参数${arg}`)
             }
         }
