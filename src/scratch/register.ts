@@ -1,4 +1,7 @@
 export function registerExt(ext: extInstance) {
+    if(!ext || !ext.getInfo){
+        throw new Error("ext.getInfo is not defined")
+    }
     const info = ext.getInfo()
     console.group(`register extension ${info.id}`)
     function error(dat: string) {
