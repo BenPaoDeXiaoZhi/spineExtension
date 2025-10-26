@@ -8,7 +8,8 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsup"
+    "build": "tsup",
+    "dev": "tsup --watch"
   },
   "dependencies": {
     "tsup": "^8.5.0",
