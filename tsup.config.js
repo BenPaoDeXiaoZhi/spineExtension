@@ -8,7 +8,7 @@ export default defineConfig({
   splitting: false,
   sourcemap: false,
   clean: true,
-  format:'cjs',
+  format:'iife',
   esbuildOptions: (options) => {
     options.charset = 'utf8'
   }
