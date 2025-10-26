@@ -377,7 +377,7 @@ declare namespace spine{
 		setMixWith(from: Animation, to: Animation, duration: number): void;
 		getMix(from: Animation, to: Animation): number;
 	}
-	class AssetManager implements Disposable {
+	class AssetManager_ implements Disposable {
 		private pathPrefix;
 		private textureLoader;
 		private assets;
@@ -1248,8 +1248,9 @@ declare namespace spine{
 		end(): void;
 	}
 }
-declare namespace spine.webgl {
-	class AssetManager extends spine.AssetManager {
+// declare namespace spine.webgl {
+declare namespace spine {
+	class AssetManager extends spine.AssetManager_ {
 		constructor(context: ManagedWebGLRenderingContext | WebGLRenderingContext, pathPrefix?: string);
 	}
 	class OrthoCamera {
@@ -1457,8 +1458,8 @@ declare namespace spine.webgl {
 		private shapes;
 		private shapesShader;
 		private activeRenderer;
-		skeletonRenderer: spine.webgl.SkeletonRenderer;
-		skeletonDebugRenderer: spine.webgl.SkeletonDebugRenderer;
+		skeletonRenderer: spine.SkeletonRenderer;
+		skeletonDebugRenderer: spine.SkeletonDebugRenderer;
 		private QUAD;
 		private QUAD_TRIANGLES;
 		private WHITE;

@@ -4123,7 +4123,7 @@ var spine;
 		};
 		return Skeleton;
 	}());
-	Skeleton = Skeleton;
+	spine.Skeleton = Skeleton;
 })(spine || (spine = {}));
 var spine;
 (function (spine) {
@@ -4140,8 +4140,8 @@ var spine;
 			var input = new BinaryInput(binary);
 			skeletonData.hash = input.readString();
 			skeletonData.version = input.readString();
-			if ("3.8.75" == SkeletonData.version)
-				throw new Error("Unsupported Skeleton data, please export with a newer version of Spine.");
+			// if ("3.8.75" == SkeletonData.version)
+			// 	throw new Error("Unsupported Skeleton data, please export with a newer version of Spine.");
 			skeletonData.x = input.readFloat();
 			skeletonData.y = input.readFloat();
 			skeletonData.width = input.readFloat();
@@ -4833,7 +4833,7 @@ var spine;
 		SkeletonBinary.CURVE_BEZIER = 2;
 		return SkeletonBinary;
 	}());
-	SkeletonBinary = SkeletonBinary;
+	spine.SkeletonBinary = SkeletonBinary;
 	var BinaryInput = (function () {
 		function BinaryInput(data, strings, index, buffer) {
 			if (strings === void 0) { strings = new Array(); }
@@ -5107,7 +5107,7 @@ var spine;
 		};
 		return SkeletonBounds;
 	}());
-	SkeletonBounds = SkeletonBounds;
+	spine.SkeletonBounds = SkeletonBounds;
 })(spine || (spine = {}));
 var spine;
 (function (spine) {
@@ -5401,7 +5401,7 @@ var spine;
 		};
 		return SkeletonClipping;
 	}());
-	SkeletonClipping = SkeletonClipping;
+	spine.SkeletonClipping = SkeletonClipping
 })(spine || (spine = {}));
 var spine;
 (function (spine) {
@@ -5534,7 +5534,7 @@ var spine;
 		};
 		return SkeletonData;
 	}());
-	SkeletonData = SkeletonData;
+	spine.SkeletonData = SkeletonData;
 })(spine || (spine = {}));
 var spine;
 (function (spine) {
@@ -5546,14 +5546,14 @@ var spine;
 		}
 		SkeletonJson.prototype.readSkeletonData = function (json) {
 			var scale = this.scale;
-			var SkeletonData = new SkeletonData();
+			var skeletonData = new spine.SkeletonData();
 			var root = typeof (json) === "string" ? JSON.parse(json) : json;
 			var SkeletonMap = root.skeleton;
-			if (skeletonMap != null) {
+			if (SkeletonMap != null) {
 				skeletonData.hash = SkeletonMap.hash;
 				skeletonData.version = SkeletonMap.spine;
-				if ("3.8.75" == SkeletonData.version)
-					throw new Error("Unsupported Skeleton data, please export with a newer version of Spine.");
+				// if ("3.8.75" == SkeletonData.version)
+				// 	throw new Error("Unsupported Skeleton data, please export with a newer version of Spine.");
 				skeletonData.x = SkeletonMap.x;
 				skeletonData.y = SkeletonMap.y;
 				skeletonData.width = SkeletonMap.width;
@@ -5567,7 +5567,7 @@ var spine;
 					var parent_5 = null;
 					var parentName = this.getValue(boneMap, "parent", null);
 					if (parentName != null) {
-						parent_5 = SkeletonData.findBone(parentName);
+						parent_5 = skeletonData.findBone(parentName);
 						if (parent_5 == null)
 							throw new Error("Parent bone not found: " + parentName);
 					}
@@ -5590,7 +5590,7 @@ var spine;
 					var slotMap = root.slots[i];
 					var slotName = slotMap.name;
 					var boneName = slotMap.bone;
-					var boneData = SkeletonData.findBone(boneName);
+					var boneData = skeletonData.findBone(boneName);
 					if (boneData == null)
 						throw new Error("Slot bone not found: " + boneName);
 					var data = new spine.SlotData(skeletonData.slots.length, slotName, boneData);
@@ -6299,7 +6299,7 @@ var spine;
 		};
 		return SkeletonJson;
 	}());
-	SkeletonJson = SkeletonJson;
+	spine.SkeletonJson = SkeletonJson;
 	var LinkedMesh = (function () {
 		function LinkedMesh(mesh, skin, slotIndex, parent, inheritDeform) {
 			this.mesh = mesh;
@@ -10221,7 +10221,7 @@ var spine;
 				this.premultipliedAlpha = false;
 				this.scale = 1;
 				this.boneWidth = 2;
-				this.bounds = new SkeletonBounds();
+				this.bounds = new spine.SkeletonBounds();
 				this.temp = new Array();
 				this.vertices = spine.Utils.newFloatArray(2 * 1024);
 				this.context = context instanceof webgl.ManagedWebGLRenderingContext ? context : new webgl.ManagedWebGLRenderingContext(context);
@@ -10418,7 +10418,7 @@ var spine;
 				this.vertexSize = 2 + 2 + 4;
 				this.twoColorTint = false;
 				this.renderable = new Renderable(null, 0, 0);
-				this.clipper = new SkeletonClipping();
+				this.clipper = new spine.SkeletonClipping();
 				this.temp = new spine.Vector2();
 				this.temp2 = new spine.Vector2();
 				this.temp3 = new spine.Color();
@@ -10836,6 +10836,7 @@ var spine;
 		webgl.WebGLBlendModeConverter = WebGLBlendModeConverter;
 	})(webgl = spine.webgl || (spine.webgl = {}));
 })(spine || (spine = {}));
-export const spine38webgl = spine
-export default spine
+const spine38 = Object.assign(spine,spine.webgl)
+export const spine38webgl = spine38
+export default spine38
 //# sourceMappingURL=spine-webgl.js.map

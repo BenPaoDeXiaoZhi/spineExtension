@@ -12,6 +12,9 @@
     "dev": "tsup --watch"
   },
   "dependencies": {
+    "40webgl": "npm:@esotericsoftware/spine-webgl@4.0",
+    "42webgl": "npm:@esotericsoftware/spine-webgl@4.2",
+    "4webgl": "npm:@esotericsoftware/spine-webgl@4.2",
     "tsup": "^8.5.0",
     "typescript": "^5.9.3"
   }
