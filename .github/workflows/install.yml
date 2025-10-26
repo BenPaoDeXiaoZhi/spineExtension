@@ -39,6 +39,8 @@ jobs:
     - name: install
       run: | 
         npm install ${{ inputs.name }}
+        git config user.name "GitHub install Actions Bot"
+        git config user.email "<>"
         git add .
-        git commit -m a
-        git push
+        git commit -m "install ${{ inputs.name }}"
+        git push origin main
