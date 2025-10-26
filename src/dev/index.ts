@@ -21,7 +21,6 @@ assetMgr.loadTextureAtlas(atlasUrl);
 let animationStateData:Spine.AnimationStateData;
 let animationState:Spine.AnimationState;
 let skeleton:Spine.Skeleton;
-window.skeleton=skeleton
 (async function (assetMgr) {
     await (new Promise((resolve, reject) => {
         function waitLoad() {
