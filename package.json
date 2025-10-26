@@ -15,6 +15,7 @@
     "40webgl": "npm:@esotericsoftware/spine-webgl@4.0",
     "42webgl": "npm:@esotericsoftware/spine-webgl@4.2",
     "4webgl": "npm:@esotericsoftware/spine-webgl@4.2",
+    "pixi.js": "^8.14.0",
     "tsup": "^8.5.0",
     "typescript": "^5.9.3"
   }
