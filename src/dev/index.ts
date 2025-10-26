@@ -8,7 +8,7 @@ const root = document.createElement('div')
 const canvas = document.createElement('canvas')
 canvas.width = 1000
 canvas.height = 1000
-const ctx = new spine.ManagedWebGLRenderingContext(canvas, { alpha: true })
+const ctx = canvas.getContext("webgl")
 root.appendChild(canvas)
 document.body.appendChild(root)
 const tk = new spine.TimeKeeper()
