@@ -1,6 +1,8 @@
 # This is a basic workflow that is manually triggered
 
 name: npm install workflow
+permissions:
+  contents: "write"
 
 # Controls when the action will run. Workflow runs when manually triggered using the UI
 # or API.
@@ -35,4 +37,8 @@ jobs:
         # Version Spec of the version to use. Examples: 12.x, 10.15.1, >=10.15.0.
         node-version: 22.x
     - name: install
-      run: npm install ${{ inputs.name }}
+      run: | 
+        npm install ${{ inputs.name }}
+        git add .
+        git commit -m a
+        git push
