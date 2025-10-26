@@ -42,12 +42,13 @@ let skeleton:Spine.Skeleton;
     skeleton = new spine.Skeleton(skeletonData);
     animationStateData = new spine.AnimationStateData(skeleton.data);
 	animationState = new spine.AnimationState(animationStateData);
-    animationState.setAnimation(0,'Idle_01',true)
     skeleton.setToSetupPos()
     skeleton.scaleX = 0.3
     skeleton.scaleY = 0.3
+    console.log(skeleton.getBoundsRect())
     canvas.width=skeleton.getBoundsRect().width
     canvas.height=skeleton.getBoundsRect().height
+    animationState.setAnimation(0,'Idle_01',true)
     window.skeleton = skeleton
     window.animationState = animationState
     console.log(atlasLoader, skeletonLoader,skeleton)
