@@ -1,5 +1,6 @@
 import type Spine from "../spine/4.2/spine-webgl";
 import spineVersions from "../spine/spineVersions";
+
 const spine = spineVersions['4.2webgl']
 console.log(spine)
 const root = document.createElement('div')
@@ -7,9 +8,10 @@ const canvas = document.createElement('canvas')
 canvas.width = 1000
 canvas.height = 1000
 const ctx = new spine.ManagedWebGLRenderingContext(canvas, { alpha: true })
-const tk = new spine.TimeKeeper()
 root.appendChild(canvas)
 document.body.appendChild(root)
+const tk = new spine.TimeKeeper()
+
 const spineRenderer = new spine.SceneRenderer(canvas, ctx, false)
 const assetMgr = new spine.AssetManager(ctx);
 const atlasUrl = 'https://l2d-pro.schale.qzz.io/azusa_home/Azusa_home.atlas', skelUrl = 'https://l2d-pro.schale.qzz.io/azusa_home/Azusa_home.skel'
@@ -18,6 +20,7 @@ assetMgr.loadTextureAtlas(atlasUrl);
 let animationStateData:Spine.AnimationStateData;
 let animationState:Spine.AnimationState;
 let skeleton:Spine.Skeleton;
+window.skeleton=skeleton
 (async function (assetMgr) {
     await (new Promise((resolve, reject) => {
         function waitLoad() {
