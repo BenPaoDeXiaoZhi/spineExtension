@@ -28,13 +28,13 @@ jobs:
       run: |
         npm ci
         npm run build
-        cp ./public/index.html ./dist
-        ls ./dist
+        cp -r ./dist ./public
+        ls ./public
   
     - name: Deploy to branch
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./dist  # 构建产物
+        publish_dir: ./public  # 构建产物
         publish_branch: build-branch  # 目标分支
         force_orphan: true  # 保持分支干净
