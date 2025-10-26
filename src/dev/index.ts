@@ -43,6 +43,7 @@ let skeleton:Spine.Skeleton;
     animationStateData = new spine.AnimationStateData(skeleton.data);
 	animationState = new spine.AnimationState(animationStateData);
     skeleton.setToSetupPose()
+    skeleton.updateWorldTransform(spine.Physics.update);
     skeleton.scaleX = 0.3
     skeleton.scaleY = 0.3
     console.log(skeleton.getBoundsRect())
