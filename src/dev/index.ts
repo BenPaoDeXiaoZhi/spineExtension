@@ -42,10 +42,10 @@ let skeleton:Spine.Skeleton;
     skeleton = new spine.Skeleton(skeletonData);
     animationStateData = new spine.AnimationStateData(skeleton.data);
 	animationState = new spine.AnimationState(animationStateData);
-    skeleton.setToSetupPose()
-    skeleton.updateWorldTransform(spine.Physics.update);
     skeleton.scaleX = 0.3
     skeleton.scaleY = 0.3
+    skeleton.setToSetupPose()
+    skeleton.updateWorldTransform(spine.Physics.update);
     console.log(skeleton.getBoundsRect())
     canvas.width=skeleton.getBoundsRect().width
     canvas.height=skeleton.getBoundsRect().height
