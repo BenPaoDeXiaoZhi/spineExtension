@@ -3,6 +3,7 @@ import spineVersions from "../spine/spineVersions";
 
 const spine = spineVersions['4.2webgl']
 console.log(spine)
+alert("spine loaded")
 const root = document.createElement('div')
 const canvas = document.createElement('canvas')
 canvas.width = 1000
