@@ -49,6 +49,7 @@ let skeleton:Spine.Skeleton;
     console.log(skeleton.getBoundsRect())
     canvas.width=skeleton.getBoundsRect().width
     canvas.height=skeleton.getBoundsRect().height
+    skeleton.y=-skeleton.getBoundsRect().height/2
     animationState.setAnimation(0,'Idle_01',true)
     window.skeleton = skeleton
     window.animationState = animationState
