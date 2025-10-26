@@ -45,6 +45,8 @@ let skeleton:Spine.Skeleton;
     animationState.setAnimation(0,'Idle_01',true)
     skeleton.scaleX = 0.3
     skeleton.scaleY = 0.3
+    window.skeleton = skeleton
+    window.animationState = animationState
     console.log(atlasLoader, skeletonLoader,skeleton)
     requestAnimationFrame(render)
 })(assetMgr)
