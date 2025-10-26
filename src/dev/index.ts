@@ -43,6 +43,7 @@ let skeleton:Spine.Skeleton;
     animationStateData = new spine.AnimationStateData(skeleton.data);
 	animationState = new spine.AnimationState(animationStateData);
     animationState.setAnimation(0,'Idle_01',true)
+    skeleton.setToSetupPos()
     skeleton.scaleX = 0.3
     skeleton.scaleY = 0.3
     canvas.width=skeleton.getBoundsRect().width
