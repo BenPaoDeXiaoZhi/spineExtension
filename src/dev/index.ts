@@ -16,7 +16,7 @@ const tk = new spine.TimeKeeper()
 
 const spineRenderer = new spine.SceneRenderer(canvas, ctx, false)
 const assetMgr = new spine.AssetManager(ctx);
-const atlasUrl = `https://l2d-pro.schale.qzz.io/${i.toLowerCase()}_home/${i}.atlas`, skelUrl = `https://l2d-pro.schale.qzz.io/${i.toLowerCase()}_home/${i}.skel`
+const atlasUrl = `https://l2d-pro.schale.qzz.io/${i.toLowerCase()}_home/${i}_home.atlas`, skelUrl = `https://l2d-pro.schale.qzz.io/${i.toLowerCase()}_home/${i}_home.skel`
 assetMgr.loadBinary(skelUrl)
 assetMgr.loadTextureAtlas(atlasUrl);
 let animationStateData:Spine.AnimationStateData;
