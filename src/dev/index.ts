@@ -4,6 +4,7 @@ import spineVersions from "../spine/spineVersions";
 const spine = spineVersions['4.2webgl']
 console.log(spine)
 alert("spine loaded")
+for(let i=0;i<10;i++){
 const root = document.createElement('div')
 const canvas = document.createElement('canvas')
 canvas.width = 1000
@@ -65,4 +66,5 @@ function render(){
     spineRenderer.drawSkeleton(skeleton)
     spineRenderer.end()
     requestAnimationFrame(render)
+}
 }
