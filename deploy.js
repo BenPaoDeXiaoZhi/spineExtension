@@ -19,9 +19,10 @@ try{
     // Create pages, interact with UI elements, assert values
     const context = await browser.newContext();
     let fdat=fs.readFileSync("public/dist/extension.global.js","utf8")
-    fdat = `
-/*
+    fdat = `/* Deploy by github ci/cd
  - Deploy time: ${formattedDate}
+ - Commit id: ${process.env.GITHUB_SHA}
+ - Repository: &{process.env.REPO}
 */
 `+fdat
     console.log(fdat)
