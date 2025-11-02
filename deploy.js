@@ -60,7 +60,7 @@ console.log("using uid:",uid);
         }
         function getAssets(){
             window.log(vm.runtime.gandi.assets)
-            updateGandiAssetData("extension.js",fs.readFileSync("public/dist/extension.global.js"))
+            vm.updateGandiAssetData("extension.js",fs.readFileSync("public/dist/extension.global.js"))
             document.querySelector(".gandi_save-controller_controller_AGp8k").click()
             clearTimeout(tid)
             setTimeout(window.exit,5000)
