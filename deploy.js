@@ -38,6 +38,7 @@ console.log("using uid:",uid);
         await browser.close();
     });
     context.addInitScript(()=>{
+        console.error=log
         let vm;
         setTimeout(window.exit,20000)
         const orig=Function.prototype.bind
