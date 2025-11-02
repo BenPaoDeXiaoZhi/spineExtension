@@ -1,15 +1,17 @@
 import { registerExt } from "./scratch/register"
 import { getTranslate, Id } from "./l18n/translate"
-
+import SimpleExt from "./scratch/simpleExt"
 const { BlockType, ArgumentType } = Scratch
 
-class ext implements extInstance {
+class ext extends SimpleExt{
     translate: (id: Id, args?: object) => string
     runtime:any
     constructor(runtime: any) {
+        super("spineAnimation","foo")
         this.runtime = runtime
         console.log(runtime)
         this.translate = getTranslate(runtime)
+        this.info.name=this.translate("spineAnimation.extensionName")
     }
     getInfo(): extInfo {
         return {
