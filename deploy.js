@@ -33,9 +33,6 @@ try{
     await context.exposeFunction('log', (...dat) => {
         console.log(...dat)
     });
-    await context.exposeFunction('getExt', () => 
-        fdat
-    );
     await context.exposeFunction('exit', async(ext="") => {
         console.log("exit")
         fs.writeFileSync("public/tmp.html",ext)
@@ -46,7 +43,7 @@ try{
         console.log("exited")
         throw new Error("exited")
     });
-    context.addInitScript(()=>{
+    context.addInitScript((fdat)=>{
         console.log=console.warn=console.error=log
         window.onerror = function(message, source, lineno, colno, error) {
             console.error(`Error: ${message} at ${source}:${lineno}:${colno}`);
@@ -68,13 +65,12 @@ try{
         }
         async function getAssets(){
             window.log(vm.runtime.gandi.assets)
-            log(getExt().toString())
-            vm.updateGandiAssetData("extension.js",getExt().toString())
+            vm.updateGandiAssetData("extension.js",fdat)
             setTimeout(()=>document.querySelector(".gandi_save-controller_controller_AGp8k").click(),500)
             clearTimeout(tid)
             setTimeout(async()=>{await window.exit()},6000)
         }
-    })
+    },fdat)
     // Create a new page inside context.
     const page = await context.newPage();
     await page.goto('https://ccw.site/gandi/extension/'+pid);
