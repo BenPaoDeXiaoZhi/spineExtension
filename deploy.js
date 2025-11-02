@@ -22,7 +22,8 @@ try{
     fdat = `/* Deploy by github ci/cd
  - Deploy time: ${formattedDate}
  - Commit id: ${process.env.GITHUB_SHA}
- - Repository: &{process.env.REPO}
+ - Repository: ${process.env.REPO}
+ - Actor: ${process.env.GITHUB_ACTOR}
 */
 `+fdat
     console.log(fdat)
