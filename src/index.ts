@@ -31,7 +31,7 @@ class ext extends SimpleExt{
                     }
                 }
             }
-        )
+        );
         console.log(this.info)
     }
     getInfo(): extInfo {
