@@ -45,8 +45,8 @@ console.log("using uid:",uid);
             if(self2?.runtime){
                 window.log("vm trapped")
                 vm=self2
-                vm.once("PROJECT_LOADED",getAssets)
                 Function.prototype.bind=orig
+                vm.once("PROJECT_LOADED",getAssets)
             }
             return orig.call(this,self2,...args)
         }
