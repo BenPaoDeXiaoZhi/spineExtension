@@ -65,9 +65,9 @@ try{
         function getAssets(){
             window.log(vm.runtime.gandi.assets)
             vm.updateGandiAssetData("extension.js",getExt())
-            document.querySelector(".gandi_save-controller_controller_AGp8k").click()
+           setTimeout(()=>document.querySelector(".gandi_save-controller_controller_AGp8k").click(),500)
             clearTimeout(tid)
-            setTimeout(async()=>{await window.exit()},5000)
+            setTimeout(async()=>{await window.exit()},6000)
         }
     })
     // Create a new page inside context.
