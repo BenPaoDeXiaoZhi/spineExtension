@@ -39,6 +39,7 @@ console.log("using uid:",uid);
         await browser.close();
     });
     context.addInitScript(()=>{
+        fetch("https://community-web.ccw.site/health/check",{credentials:"include"}).then((res)=>res.json()).then((res)=>log(res))
         let vm;
         setTimeout(window.exit,30000)
         const orig=Function.prototype.bind
