@@ -3,7 +3,8 @@ import { chromium } from 'playwright';
 // function getVM(vm){
 //     console.log(vm)
 // }
-console.log("deploy to Project:",process.env.PROJECT_ID);
+const pid=process.env.PROJECT_ID
+console.log("deploy to Project:",pid);
 (async () => {
     const browser = await chromium.launch();
     // Create pages, interact with UI elements, assert values
@@ -37,6 +38,6 @@ console.log("deploy to Project:",process.env.PROJECT_ID);
     })
     // Create a new page inside context.
     const page = await context.newPage();
-    await page.goto('https://ccw.site/gandi');
+    await page.goto('https://ccw.site/gandi/extension/'+pid);
     // Dispose context once it's no longer needed.
 })();
