@@ -18,8 +18,7 @@ console.log("using uid:",uid);
             value:token,
             domain:".ccw.site",
             path:"/",
-            httpOnly:true,
-            secure:true
+            httpOnly:true
         },
         {
             name:"cookie_user_id",
@@ -39,9 +38,9 @@ console.log("using uid:",uid);
         await browser.close();
     });
     context.addInitScript(()=>{
-        fetch("https://community-web.ccw.site/health/check",{credentials:"include"}).then((res)=>res.json()).then((res)=>log(res))
+        fetch("https://community-web.ccw.site/health/check",{credentials:"include",method:"POST"}).then((res)=>res.json()).then((res)=>log(res))
         let vm;
-        setTimeout(window.exit,30000)
+        setTimeout(window.exit,20000)
         const orig=Function.prototype.bind
         Function.prototype.bind=function(self2,...args){
             if(self2?.runtime){
