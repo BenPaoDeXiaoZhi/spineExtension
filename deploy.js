@@ -21,7 +21,7 @@ import { chromium } from 'playwright';
         const orig=Function.prototype.bind
         Function.prototype.bind=function(self2,...args){
             if(self2?.runtime){
-                window.log(self2.runtime)
+                window.log("vm trapped")
                 vm=self2
                 setTimeout(getAssets,5000)
                 Function.prototype.bind=orig
