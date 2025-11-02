@@ -41,10 +41,10 @@ console.log("using uid:",uid);
     context.addInitScript(()=>{
         console.log=console.warn=console.error=log
         window.onerror = function(message, source, lineno, colno, error) {
-console.error(`Error: ${message} at ${source}:${lineno}:${colno}`);
-// 进一步的处理逻辑
-return true; // 阻止默认的错误处理
-};
+            console.error(`Error: ${message} at ${source}:${lineno}:${colno}`);
+            // 进一步的处理逻辑
+            return true; // 阻止默认的错误处理
+        };
         let vm;
         const tid = setTimeout(()=>window.exit(document.body.innerHTML),20000)
         const orig=Function.prototype.bind
