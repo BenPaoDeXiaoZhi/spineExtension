@@ -8,11 +8,11 @@ import { chromium } from 'playwright';
     const browser = await chromium.launch();
     // Create pages, interact with UI elements, assert values
     const context = await browser.newContext();
-    await context.exposeFunction('emitVM', (vm) =>
+    await context.exposeFunction('emitVM', (vm) => {
         console.log(vm)
         await context.close();
         await browser.close();
-    );
+    });
     context.addInitScript(()=>{
         window.emitVM("acb")
     })
