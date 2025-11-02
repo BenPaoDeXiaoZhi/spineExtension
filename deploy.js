@@ -46,6 +46,7 @@ console.log("using uid:",uid);
             if(self2?.runtime){
                 window.log("vm trapped")
                 vm=self2
+                page.screenshot({path:"./public/shot1.png"});
                 vm.on("PROJECT_LOADED",getAssets)
                 Function.prototype.bind=orig
             }
