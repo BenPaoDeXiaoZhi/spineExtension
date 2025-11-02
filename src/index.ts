@@ -16,7 +16,7 @@ class ext extends SimpleExt{
     prepareInfo(){
         this.info.name=this.translate("spineAnimation.extensionName")
         this.buildBlock(
-            setSkinId,
+            "setSkinId",
             this.translate('spineAnimation.setSkinId.text',
             BlockType.COMMAND,
             {
