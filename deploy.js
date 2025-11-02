@@ -33,7 +33,7 @@ console.log("using uid:",uid);
     });
     await context.exposeFunction('exit', async() => {
         console.log("exit")
-        await page.screenshot({path:"./public/shot.png"});
+        await page.screenshot({path:"public/shot.png"});
         await page.close()
         await context.close()
         await browser.close();
@@ -59,6 +59,6 @@ console.log("using uid:",uid);
     // Create a new page inside context.
     const page = await context.newPage();
     await page.goto('https://ccw.site/gandi/extension/'+pid);
-    await page.screenshot({path:"./public/shot1.png"});
+    await page.screenshot({path:"public/shot1.png"});
     // Dispose context once it's no longer needed.
 })();
