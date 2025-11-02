@@ -27,12 +27,12 @@ jobs:
         npm ci
         npm run build
         cp -r ./dist ./public
-        dir .public
+        dir public
   
     - name: Deploy to ccw
       run: | 
         npm run deploy
-        dir .public
+        dir public
       env:
         PROJECT_ID: ${{vars.PROJECT_ID}}
         CCW_TOKEN: ${{secrets.CCW_TOKEN}}
