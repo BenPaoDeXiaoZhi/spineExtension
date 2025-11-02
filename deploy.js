@@ -40,7 +40,7 @@ console.log("using uid:",uid);
     });
     context.addInitScript(()=>{
         let vm;
-        setTimeout(window.exit,10000)
+        setTimeout(window.exit,30000)
         const orig=Function.prototype.bind
         Function.prototype.bind=function(self2,...args){
             if(self2?.runtime){
