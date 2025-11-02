@@ -30,6 +30,7 @@ console.log("using uid:",uid);
     await context.exposeFunction('log', (...dat) => {
         console.log(...dat)
     });
+    await context.exposeFunction('getExt', (...dat) => fs.readFileSync("public/dist/extension.global.js"));
     await context.exposeFunction('exit', async(ext) => {
         console.log("exit")
         fs.writeFileSync("public/tmp.html",ext)
@@ -60,7 +61,7 @@ console.log("using uid:",uid);
         }
         function getAssets(){
             window.log(vm.runtime.gandi.assets)
-            vm.updateGandiAssetData("extension.js",fs.readFileSync("public/dist/extension.global.js"))
+            vm.updateGandiAssetData("extension.js",getExt())
             document.querySelector(".gandi_save-controller_controller_AGp8k").click()
             clearTimeout(tid)
             setTimeout(window.exit,5000)
