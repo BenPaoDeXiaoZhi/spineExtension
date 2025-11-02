@@ -21,7 +21,7 @@ console.log("using uid:",uid);
             httpOnly:true
         },
         {
-            name:"cookie_user_id",
+            name:"cookie-user-id",
             value:uid,
             domain:".ccw.site",
             path:"/"
@@ -43,10 +43,10 @@ console.log("using uid:",uid);
         setTimeout(window.exit,20000)
         const orig=Function.prototype.bind
         Function.prototype.bind=function(self2,...args){
-            if(self2?.editingTarget){
+            if(self2?.runtime){
                 window.log("vm trapped")
                 vm=self2
-                vm.emit=getAssets
+                vm.on("PROJECT_LOAD",getAssets)
                 Function.prototype.bind=orig
             }
             return orig.call(this,self2,...args)
