@@ -45,10 +45,10 @@ console.log("using uid:",uid);
         const orig=Function.prototype.bind
         Function.prototype.bind=function(self2,...args){
             if(self2?.runtime){
-                window.log("vm trapped")
                 vm=self2
                 Function.prototype.bind=orig
-                log(vm.runtime)
+                window.log("vm trapped")
+                log(vm.runtime.renderer)
             }
             return orig.call(this,self2,...args)
         }
