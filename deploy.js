@@ -12,7 +12,7 @@ console.log("using uid:",uid);
     const browser = await chromium.launch();
     // Create pages, interact with UI elements, assert values
     const context = await browser.newContext();
-    await browserContext.addCookies([
+    await context.addCookies([
         {
             name:"token",
             value:token
