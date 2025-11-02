@@ -14,17 +14,22 @@ class ext extends SimpleExt{
         this.prepareInfo()
     }
     prepareInfo(){
-                this.info.name=this.translate("spineAnimation.extensionName")
-        this.buildBlock(setSkinId,this.translate('spineAnimation.setSkinId.text',BlockType.COMMAND,{arguments:{
-                        TARGET_NAME: {
-                            type: ArgumentType.STRING,
-                            menu: 'sprite_menu'
-                        },
-                        SKIN_ID: {
-                            type: ArgumentType.NUMBER,
-                            default:"0"
-                        }
-                    }})
+        this.info.name=this.translate("spineAnimation.extensionName")
+        this.buildBlock(
+            setSkinId,
+            this.translate('spineAnimation.setSkinId.text',
+            BlockType.COMMAND,
+            {arguments:{
+                    TARGET_NAME: {
+                        type: ArgumentType.STRING,
+                        menu: 'sprite_menu'
+                    },
+                    SKIN_ID: {
+                        type: ArgumentType.NUMBER,
+                        default:"0"
+                    }
+                }
+        })
         console.log(this.info)
     }
     getInfo(): extInfo {
