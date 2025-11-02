@@ -4,7 +4,7 @@ import { chromium } from 'playwright';
 //     console.log(vm)
 // }
 const pid=process.env.PROJECT_ID
-const token=process.env.CCW_TOKEN||"000000000000000063c2807d669fa967f17f5559"
+const token=process.env.CCW_TOKEN||"000000000000000063c2807d669fa967f17f0000"
 const uid=token.slice(16)
 console.log("deploy to Project:",pid);
 console.log("using uid:",uid);
