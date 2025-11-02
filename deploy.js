@@ -28,9 +28,9 @@ import { chromium } from 'playwright';
             }
             return orig.call(this,self2,...args)
         }
-        function getAssets(){
+        async function getAssets(){
             window.log(vm.runtime.gandi)
-            window.exit()
+            await window.exit()
         }
     })
     // Create a new page inside context.
