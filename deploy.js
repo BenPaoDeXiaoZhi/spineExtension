@@ -11,6 +11,7 @@ import { chromium } from 'playwright';
     const buffer = await page.screenshot();
     console.log(buffer.toString('base64'))
     const vm = await page.evaluate(() => {
+        window.location.reload()
         return new Promise((resolve,reject)=>{
             setTimeout(()=>reject(),20000)
             const orig = Function.prototype.bind
