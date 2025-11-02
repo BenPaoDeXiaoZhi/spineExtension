@@ -8,6 +8,8 @@ import { chromium } from 'playwright';
     const page = await context.newPage();
     await page.goto('https://ccw.site/gandi');
     console.log(await page.evaluate(()=>document.title))
+    const buffer = await page.screenshot();
+    console.log(buffer.toString('base64'))
     const vm = await page.evaluate(() => {
         return new Promise((resolve,reject)=>{
             setTimeout(()=>reject(),20000)
