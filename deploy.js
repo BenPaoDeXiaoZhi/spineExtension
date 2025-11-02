@@ -67,7 +67,7 @@ try{
             vm.updateGandiAssetData("extension.js",getExt())
             document.querySelector(".gandi_save-controller_controller_AGp8k").click()
             clearTimeout(tid)
-            setTimeout(window.exit,5000)
+            setTimeout(()=>window.exit().then(),5000)
         }
     })
     // Create a new page inside context.
