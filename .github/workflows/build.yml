@@ -30,7 +30,7 @@ jobs:
         ls public
 
     - name: prepare playwright
-      run: npm run pri
+      run: npm run pwi
 
     - name: Deploy to ccw
       run: | 
