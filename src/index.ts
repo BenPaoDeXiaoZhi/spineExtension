@@ -19,7 +19,8 @@ class ext extends SimpleExt{
             setSkinId,
             this.translate('spineAnimation.setSkinId.text',
             BlockType.COMMAND,
-            {arguments:{
+            {
+                arguments:{
                     TARGET_NAME: {
                         type: ArgumentType.STRING,
                         menu: 'sprite_menu'
@@ -29,7 +30,8 @@ class ext extends SimpleExt{
                         default:"0"
                     }
                 }
-        })
+            }
+        )
         console.log(this.info)
     }
     getInfo(): extInfo {
