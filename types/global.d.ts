@@ -1,35 +1,3 @@
-interface BlockInfo {
-    opcode: string;
-    text: string;
-    blockType: BlockTypeValues;
-    branchCount?: number;
-    terminal?: boolean;
-    blockAllThreads?: boolean
-    arguments?: {
-        [argName: string]: {
-            type: ArgumentTypeValues;
-            default?: string | number;
-            menu?: string;
-        };
-    };
-}
-interface MenuInfo {
-    acceptReporters: boolean;
-    items: MenuItems|string
-}
-type MenuItems = { text: string; value: string }[];
-interface extInfo {
-    id: string;
-    color1?: string;
-    color2?: string;
-    name: string;
-    blocks: Array<BlockInfo>;
-    menus?: { [menuId: string]: MenuInfo };
-}
-declare interface extInstance {
-    getInfo(): extInfo;
-}
-
 declare const BlockType:{
     BOOLEAN : "boolean",
     BUTTON : "button",
@@ -69,7 +37,7 @@ declare type ArgumentTypeValues = typeof ArgumentType[keyof typeof ArgumentType]
 
 declare const Scratch: {
     extensions: {
-        register: (ext: extInstance) => void;
+        register: (ext: any) => void;
     }
     BlockType: typeof BlockType
     TargetType: typeof TargetType

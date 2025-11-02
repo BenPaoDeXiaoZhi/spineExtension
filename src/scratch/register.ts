@@ -1,3 +1,4 @@
+import { extInstance } from "./simpleExt"
 export function registerExt(ext: extInstance) {
     if(!ext || !ext.getInfo){
         throw new Error("ext.getInfo is not defined")
