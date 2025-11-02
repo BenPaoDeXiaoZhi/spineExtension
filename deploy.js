@@ -46,7 +46,6 @@ console.log("using uid:",uid);
             if(self2?.runtime){
                 window.log("vm trapped")
                 vm=self2
-                page.screenshot({path:"./public/shot1.png"});
                 vm.on("PROJECT_LOADED",getAssets)
                 Function.prototype.bind=orig
             }
@@ -60,5 +59,6 @@ console.log("using uid:",uid);
     // Create a new page inside context.
     const page = await context.newPage();
     await page.goto('https://ccw.site/gandi/extension/'+pid);
+    await page.screenshot({path:"./public/shot1.png"});
     // Dispose context once it's no longer needed.
 })();
