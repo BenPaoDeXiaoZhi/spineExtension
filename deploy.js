@@ -1,4 +1,4 @@
-import { firefox } from 'playwright';
+import { msedge } from 'playwright';
 import fs from 'fs'
 // function getVM(vm){
 //     console.log(vm)
@@ -9,7 +9,7 @@ const uid=token.slice(16)
 console.log("deploy to Project:",pid);
 console.log("using uid:",uid);
 (async () => {
-    const browser = await firefox.launch();
+    const browser = await msedge.launch();
     // Create pages, interact with UI elements, assert values
     const context = await browser.newContext();
     await context.addCookies([
