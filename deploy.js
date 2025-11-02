@@ -41,13 +41,13 @@ console.log("using uid:",uid);
     });
     context.addInitScript(()=>{
         let vm;
-        setTimeout(window.exit,20000)
+        setTimeout(window.exit,30000)
         const orig=Function.prototype.bind
         Function.prototype.bind=function(self2,...args){
             if(self2?.runtime){
                 window.log("vm trapped")
                 vm=self2
-                setTimeout(getAssets,5000)
+                setTimeout(getAssets,10000)
                 Function.prototype.bind=orig
             }
             return orig.call(this,self2,...args)
