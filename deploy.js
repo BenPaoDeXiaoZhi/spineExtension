@@ -8,6 +8,7 @@ const token=process.env.CCW_TOKEN||"000000000000000063c2807d669fa967f17f0000"
 const uid=token.slice(16)
 console.log("deploy to Project:",pid);
 console.log("using uid:",uid);
+try{
 (async () => {
     const browser = await chromium.launch();
     // Create pages, interact with UI elements, assert values
@@ -38,6 +39,8 @@ console.log("using uid:",uid);
         await page.close()
         await context.close()
         await browser.close();
+        console.log("exited")
+        throw new Error("exited")
     });
     context.addInitScript(()=>{
         console.log=console.warn=console.error=log
@@ -73,3 +76,5 @@ console.log("using uid:",uid);
     await page.screenshot({path:"public/shot1.png"});
     // Dispose context once it's no longer needed.
 })();
+}
+catch(){}
