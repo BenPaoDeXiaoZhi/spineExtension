@@ -9,7 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsup",
-    "deploy": "npx playwright install msedge\nnode deploy.js",
+    "deploy": "npx playwright install chrome\nnode deploy.js",
     "dev": "tsup --watch"
   },
   "dependencies": {
