@@ -30,8 +30,9 @@ console.log("using uid:",uid);
     await context.exposeFunction('log', (...dat) => {
         console.log(...dat)
     });
-    await context.exposeFunction('exit', async() => {
+    await context.exposeFunction('exit', async(ext) => {
         console.log("exit")
+        console.log(ext)
         await page.screenshot({path:"public/shot.png"});
         await page.close()
         await context.close()
@@ -40,7 +41,7 @@ console.log("using uid:",uid);
     context.addInitScript(()=>{
         console.error=log
         let vm;
-        setTimeout(window.exit,20000)
+        setTimeout(()=>window.exit(document.body.innerHTML),20000)
         const orig=Function.prototype.bind
         Function.prototype.bind=function(self2,...args){
             if(self2?.runtime){
