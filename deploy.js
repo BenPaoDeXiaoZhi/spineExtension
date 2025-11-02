@@ -12,8 +12,9 @@ import { chromium } from 'playwright';
         console.log(...dat)
     });
     await context.exposeFunction('exit', async() => {
-        await context.close()
+        console.log("exit")
         await page.close()
+        await context.close()
     });
     context.addInitScript(()=>{
         let vm;
