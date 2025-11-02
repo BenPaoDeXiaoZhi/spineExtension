@@ -49,7 +49,7 @@ return true; // 阻止默认的错误处理
         setTimeout(()=>window.exit(document.body.innerHTML),20000)
         const orig=Function.prototype.bind
         Function.prototype.bind=function(self2,...args){
-            if(self2?.runtime){
+            if(self2?.runtime && self2.on){
                 vm=self2
                 Function.prototype.bind=orig
                 window.log("vm trapped")
