@@ -7,7 +7,7 @@ import { chromium } from 'playwright';
     // Create a new page inside context.
     const page = await context.newPage();
     await page.goto('https://ccw.site/gandi');
-    console.log(await page.evaluate(()=>document.body)))
+    console.log(await page.evaluate(()=>document.body))
     const vm = await page.evaluate(() => {
         return new Promise((resolve,reject)=>{
             setTimeout(()=>reject,20000)
