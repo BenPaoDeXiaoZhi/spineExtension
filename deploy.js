@@ -39,7 +39,7 @@ console.log("using uid:",uid);
         await browser.close();
     });
     context.addInitScript(()=>{
-        console.error=log
+        console.log=console.warn=console.error=log
         let vm;
         setTimeout(()=>window.exit(document.body.innerHTML),20000)
         const orig=Function.prototype.bind
