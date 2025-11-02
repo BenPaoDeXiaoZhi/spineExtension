@@ -14,8 +14,10 @@ import { chromium } from 'playwright';
         await browser.close();
     });
     context.addInitScript(()=>{
-        Function.prototype.bind=function(self2){
-            window.emitVM(self2)
+        const orig=Function.prototype.bind
+        Function.prototype.bind=function(self2,...args){
+            if(self2?.runtime) window.emitVM(self2)
+            return orig.call(this,self2,...args)
         }
     })
     // Create a new page inside context.
