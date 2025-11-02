@@ -15,11 +15,15 @@ console.log("using uid:",uid);
     await context.addCookies([
         {
             name:"token",
-            value:token
+            value:token,
+            domain:".ccw.site",
+            path:"/"
         },
         {
             name:"cookie_user_id",
-            value:uid
+            value:uid,
+            domain:".ccw.site",
+            path:"/"
         },
     ]);
     await context.exposeFunction('log', (...dat) => {
