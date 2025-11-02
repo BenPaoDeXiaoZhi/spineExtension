@@ -9,7 +9,7 @@ import { chromium } from 'playwright';
     // Create pages, interact with UI elements, assert values
     const context = await browser.newContext();
     await context.exposeFunction('emitVM', async(vm) => {
-        console.log(vm)
+        console.log(vm.runtime.gandi)
         await context.close();
         await browser.close();
     });
