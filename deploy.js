@@ -53,6 +53,8 @@ return true; // 阻止默认的错误处理
                 vm=self2
                 Function.prototype.bind=orig
                 window.log("vm trapped")
+                vm.on("PROJECT_LOADED",getAssets)
+                vm.on("PROJECT_LOAD_FAILED",log)
                 log(vm.runtime.renderer)
             }
             return orig.call(this,self2,...args)
