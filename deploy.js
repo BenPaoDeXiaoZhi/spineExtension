@@ -23,7 +23,7 @@ import { chromium } from 'playwright';
             if(self2?.runtime){
                 window.log(self2.runtime)
                 vm=self2
-                setTimeout(getAssets)
+                setTimeout(getAssets,5000)
                 Function.prototype.bind=orig
             }
             return orig.call(this,self2,...args)
