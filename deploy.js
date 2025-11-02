@@ -46,7 +46,6 @@ console.log("using uid:",uid);
                 window.log("vm trapped")
                 vm=self2
                 Function.prototype.bind=orig
-                vm.once("PROJECT_LOADED",getAssets)
             }
             return orig.call(this,self2,...args)
         }
