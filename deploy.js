@@ -65,7 +65,7 @@ try{
         async function getAssets(){
             window.log(vm.runtime.gandi.assets)
             log(await (getExt()).toString())
-            vm.updateGandiAssetData("extension.js",await getExt().toString())
+            vm.updateGandiAssetData("extension.js",(await getExt()).toString())
             setTimeout(()=>document.querySelector(".gandi_save-controller_controller_AGp8k").click(),500)
             clearTimeout(tid)
             setTimeout(async()=>{await window.exit()},6000)
