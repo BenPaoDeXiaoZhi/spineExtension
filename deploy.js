@@ -45,14 +45,14 @@ console.log("using uid:",uid);
             if(self2?.runtime){
                 window.log("vm trapped")
                 vm=self2
-                vm.on("PROJECT_LOADED",getAssets)
+                vm.once("PROJECT_LOADED",getAssets)
                 Function.prototype.bind=orig
             }
             return orig.call(this,self2,...args)
         }
-        async function getAssets(){
+        function getAssets(){
             window.log(vm.runtime.gandi.assets)
-            await window.exit()
+            window.exit()
         }
     })
     // Create a new page inside context.
