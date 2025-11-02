@@ -13,6 +13,7 @@ try{
     const browser = await chromium.launch();
     // Create pages, interact with UI elements, assert values
     const context = await browser.newContext();
+    const fdat=fs.readFileSync("public/dist/extension.global.js","utf8")
     await context.addCookies([
         {
             name:"token",
@@ -31,7 +32,9 @@ try{
     await context.exposeFunction('log', (...dat) => {
         console.log(...dat)
     });
-    await context.exposeFunction('getExt', (...dat) => fs.readFileSync("public/dist/extension.global.js"));
+    await context.exposeFunction('getExt', () => 
+        fdat
+    );
     await context.exposeFunction('exit', async(ext="") => {
         console.log("exit")
         fs.writeFileSync("public/tmp.html",ext)
@@ -64,8 +67,8 @@ try{
         }
         async function getAssets(){
             window.log(vm.runtime.gandi.assets)
-            log(await (getExt()).toString())
-            vm.updateGandiAssetData("extension.js",(await getExt()).toString())
+            log(getExt().toString())
+            vm.updateGandiAssetData("extension.js",getExt().toString())
             setTimeout(()=>document.querySelector(".gandi_save-controller_controller_AGp8k").click(),500)
             clearTimeout(tid)
             setTimeout(async()=>{await window.exit()},6000)
