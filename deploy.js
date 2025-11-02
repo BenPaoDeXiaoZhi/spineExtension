@@ -3,7 +3,7 @@ import { chromium } from 'playwright';
 // function getVM(vm){
 //     console.log(vm)
 // }
-
+console.log("deploy to Project:",process.env.PROJECT_ID);
 (async () => {
     const browser = await chromium.launch();
     // Create pages, interact with UI elements, assert values
