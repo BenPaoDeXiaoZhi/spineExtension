@@ -8,16 +8,29 @@ import { chromium } from 'playwright';
     const browser = await chromium.launch();
     // Create pages, interact with UI elements, assert values
     const context = await browser.newContext();
-    await context.exposeFunction('emitVM', async(vm) => {
-        console.log(vm.runtime.gandi)
-        await context.close();
-        await browser.close();
+    await context.exposeFunction('log', (...dat) => {
+        console.log(...dat)
+    });
+    await context.exposeFunction('exit', async() => {
+        await context.close()
+        await page.close()
     });
     context.addInitScript(()=>{
+        let vm;
+        setTimeout(window.exit,20000)
         const orig=Function.prototype.bind
         Function.prototype.bind=function(self2,...args){
-            if(self2?.runtime) window.emitVM(self2)
+            if(self2?.runtime){
+                window.log(self2.runtime)
+                vm=self2
+                setTimeout(getAssets)
+                Function.prototype.bind=orig
+            }
             return orig.call(this,self2,...args)
+        }
+        function getAssets(){
+            window.log(vm.runtime.gandi)
+            window.exit()
         }
     })
     // Create a new page inside context.
