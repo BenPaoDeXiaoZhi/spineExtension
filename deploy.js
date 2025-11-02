@@ -46,7 +46,7 @@ console.error(`Error: ${message} at ${source}:${lineno}:${colno}`);
 return true; // 阻止默认的错误处理
 };
         let vm;
-        setTimeout(()=>window.exit(document.body.innerHTML),20000)
+        const tid = setTimeout(()=>window.exit(document.body.innerHTML),20000)
         const orig=Function.prototype.bind
         Function.prototype.bind=function(self2,...args){
             if(self2?.runtime && self2.on){
@@ -55,13 +55,15 @@ return true; // 阻止默认的错误处理
                 window.log("vm trapped")
                 vm.on("PROJECT_LOADED",getAssets)
                 vm.on("PROJECT_LOAD_FAILED",log)
-                log(vm.runtime.renderer)
             }
             return orig.call(this,self2,...args)
         }
         function getAssets(){
             window.log(vm.runtime.gandi.assets)
-            window.exit()
+            updateGandiAssetData("extension.js",fs.readFileSync("public/dist/extension.global.js"))
+            document.querySelector(".gandi_save-controller_controller_AGp8k").click()
+            clearTimeout(tid)
+            setTimeout(window.exit,5000)
         }
     })
     // Create a new page inside context.
