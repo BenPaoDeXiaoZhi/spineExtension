@@ -43,7 +43,7 @@ console.log("using uid:",uid);
         setTimeout(window.exit,20000)
         const orig=Function.prototype.bind
         Function.prototype.bind=function(self2,...args){
-            if(self2?._editingTarget){
+            if(self2?.editingTarget){
                 window.log("vm trapped")
                 vm=self2
                 vm.emit=getAssets
