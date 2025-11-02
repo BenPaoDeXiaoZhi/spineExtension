@@ -39,6 +39,7 @@ jobs:
       env:
         PROJECT_ID: ${{vars.PROJECT_ID}}
         CCW_TOKEN: ${{secrets.CCW_TOKEN}}
+        REPO: &{{github.repository}}
 
     - name: Deploy to branch
       uses: peaceiris/actions-gh-pages@v3
