@@ -1,4 +1,4 @@
-import { chrome } from 'playwright';
+import { chromium } from 'playwright';
 import fs from 'fs'
 // function getVM(vm){
 //     console.log(vm)
@@ -9,7 +9,7 @@ const uid=token.slice(16)
 console.log("deploy to Project:",pid);
 console.log("using uid:",uid);
 (async () => {
-    const browser = await chrome.launch();
+    const browser = await chromium.launch();
     // Create pages, interact with UI elements, assert values
     const context = await browser.newContext();
     await context.addCookies([
