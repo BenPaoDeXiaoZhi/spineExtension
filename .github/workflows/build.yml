@@ -40,3 +40,5 @@ jobs:
     - name: Deploy to ccw
       run: | 
         npm run deploy
+      env:
+        PROJECT_ID: ${{vars.PROJECT_ID}}
