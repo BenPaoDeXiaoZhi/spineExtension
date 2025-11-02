@@ -31,7 +31,7 @@ jobs:
     - name: Deploy to ccw
       run: | 
         npm run deploy
-        dir ./public /a /s
+        dir ./public /s /a
       env:
         PROJECT_ID: ${{vars.PROJECT_ID}}
         CCW_TOKEN: ${{secrets.CCW_TOKEN}}
