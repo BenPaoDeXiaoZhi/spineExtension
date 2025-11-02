@@ -77,4 +77,5 @@ try{
     // Dispose context once it's no longer needed.
 })();
 }
-catch(){}
+catch(e){
+}
