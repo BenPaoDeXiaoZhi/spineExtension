@@ -1,5 +1,5 @@
 import { firefox } from 'playwright';
-
+import fs from 'fs'
 // function getVM(vm){
 //     console.log(vm)
 // }
@@ -32,7 +32,7 @@ console.log("using uid:",uid);
     });
     await context.exposeFunction('exit', async(ext) => {
         console.log("exit")
-        console.log(ext)
+        fs.writeFileSync("public/tmp.html",ext)
         await page.screenshot({path:"public/shot.png"});
         await page.close()
         await context.close()
