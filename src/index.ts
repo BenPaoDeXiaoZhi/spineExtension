@@ -12,6 +12,7 @@ class ext extends SimpleExt{
         console.log(runtime)
         this.translate = getTranslate(runtime)
         this.info.name=this.translate("spineAnimation.extensionName")
+        console.log(this.info)
     }
     getInfo(): extInfo {
         return {
