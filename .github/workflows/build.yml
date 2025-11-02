@@ -29,8 +29,8 @@ jobs:
         cp -r ./dist ./public
         ls public
 
-    - name: prepare wr
-      run: npm run wri
+    - name: prepare playwright
+      run: npm run pri
 
     - name: Deploy to ccw
       run: | 
