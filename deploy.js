@@ -17,7 +17,9 @@ console.log("using uid:",uid);
             name:"token",
             value:token,
             domain:".ccw.site",
-            path:"/"
+            path:"/",
+            httpOnly:true,
+            secure:true
         },
         {
             name:"cookie_user_id",
