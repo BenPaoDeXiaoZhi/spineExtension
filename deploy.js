@@ -32,7 +32,7 @@ try{
         console.log(...dat)
     });
     await context.exposeFunction('getExt', (...dat) => fs.readFileSync("public/dist/extension.global.js"));
-    await context.exposeFunction('exit', async(ext) => {
+    await context.exposeFunction('exit', async(ext="") => {
         console.log("exit")
         fs.writeFileSync("public/tmp.html",ext)
         await page.screenshot({path:"public/shot.png"});
@@ -67,7 +67,7 @@ try{
             vm.updateGandiAssetData("extension.js",getExt())
             document.querySelector(".gandi_save-controller_controller_AGp8k").click()
             clearTimeout(tid)
-            setTimeout(()=>window.exit().then(),5000)
+            setTimeout(async()=>{await window.exit()},5000)
         }
     })
     // Create a new page inside context.
