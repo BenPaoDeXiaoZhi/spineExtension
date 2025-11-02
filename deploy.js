@@ -8,12 +8,22 @@ const token=process.env.CCW_TOKEN||"000000000000000063c2807d669fa967f17f0000"
 const uid=token.slice(16)
 console.log("deploy to Project:",pid);
 console.log("using uid:",uid);
+const date = new Date(); // UTC 时间
+
+// 转换为特定时区
+const options = { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+const formattedDate = new Intl.DateTimeFormat('zh-CN', options).format(date);
 try{
 (async () => {
     const browser = await chromium.launch();
     // Create pages, interact with UI elements, assert values
     const context = await browser.newContext();
-    const fdat=fs.readFileSync("public/dist/extension.global.js","utf8")
+    let fdat=fs.readFileSync("public/dist/extension.global.js","utf8")
+    fdat = `
+/*
+ - Deploy time: ${formattedDate}
+*/
+`+fdat
     console.log(fdat)
     await context.addCookies([
         {
