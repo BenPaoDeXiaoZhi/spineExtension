@@ -33,8 +33,7 @@ console.log("using uid:",uid);
     });
     await context.exposeFunction('exit', async() => {
         console.log("exit")
-        const buffer = await page.screenshot();
-        console.log(buffer.toString('base64'));
+        await page.screenshot({path:"./public/shot.png"});
         await page.close()
         await context.close()
         await browser.close();
