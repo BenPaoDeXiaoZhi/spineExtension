@@ -10,7 +10,7 @@ import { chromium } from 'playwright';
     console.log(await page.evaluate(()=>document.body))
     const vm = await page.evaluate(() => {
         return new Promise((resolve,reject)=>{
-            setTimeout(()=>reject,20000)
+            setTimeout(()=>reject(),20000)
             const orig = Function.prototype.bind
             window.vm=null
             Function.prototype.bind = function(self2,...args){
