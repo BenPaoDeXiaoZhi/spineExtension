@@ -47,6 +47,7 @@ console.log("using uid:",uid);
             if(self2?.runtime){
                 window.log("vm trapped")
                 vm=self2
+                log(vm.runtime)
                 Function.prototype.bind=orig
             }
             return orig.call(this,self2,...args)
