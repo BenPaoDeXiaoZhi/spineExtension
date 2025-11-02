@@ -15,6 +15,7 @@ import { chromium } from 'playwright';
         console.log("exit")
         await page.close()
         await context.close()
+        await browser.close();
     });
     context.addInitScript(()=>{
         let vm;
