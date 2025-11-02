@@ -38,7 +38,6 @@ console.log("using uid:",uid);
         await browser.close();
     });
     context.addInitScript(()=>{
-        fetch("https://community-web.ccw.site/health/check",{credentials:"include",method:"POST"}).then((res)=>res.json()).then((res)=>log(res))
         let vm;
         setTimeout(window.exit,20000)
         const orig=Function.prototype.bind
@@ -46,7 +45,7 @@ console.log("using uid:",uid);
             if(self2?.runtime){
                 window.log("vm trapped")
                 vm=self2
-                vm.on("PROJECT_LOAD",getAssets)
+                vm.on("PROJECT_LOADED",getAssets)
                 Function.prototype.bind=orig
             }
             return orig.call(this,self2,...args)
