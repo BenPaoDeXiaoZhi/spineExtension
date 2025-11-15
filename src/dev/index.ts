@@ -31,6 +31,7 @@ for (let i of ["Azusa", "CH0070", "Airi"]) {
     const atlasUrl = `https://l2d-pro.schale.qzz.io/${i.toLowerCase()}_home/${i}_home.atlas`, skelUrl = `https://l2d-pro.schale.qzz.io/${i.toLowerCase()}_home/${i}_home.skel`
     assetMgr.loadBinary(skelUrl)
     assetMgr.loadTextureAtlas(atlasUrl);
+    console.log(`loading data for ${i}`)
     let animationStateData: Spine.AnimationStateData;
     let animationState: Spine.AnimationState;
     let skeleton: Spine.Skeleton;
