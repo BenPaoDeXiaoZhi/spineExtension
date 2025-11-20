@@ -56,6 +56,7 @@ time: ${formattedDate} */
 }
     if(!options?.watch){
         dat.onSuccess=undefined
+        server.close()
     }
     return dat
 });
