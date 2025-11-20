@@ -1,5 +1,12 @@
 {
     "compilerOptions": {
-        "typeRoots": ["./types"]
+        "typeRoots": [
+            "./types"
+        ],
+        "paths": {
+            "scratch-vm": [
+                "./node_modules/@turbowarp/types/index.d.ts"
+            ]
+        }
     },
 }
