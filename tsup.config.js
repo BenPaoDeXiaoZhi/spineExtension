@@ -14,7 +14,7 @@ if(options.watch){
     });
 };
 
-export default defineConfig({
+export default defineConfig((options)=>({
     entry: {
         extension: 'src/index.ts',
         index: 'src/dev/index.ts',
@@ -57,4 +57,4 @@ time: ${formattedDate} */
         }
         console.log('ok', formattedDate);
     },
-});
+}));
