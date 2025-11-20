@@ -1,12 +1,12 @@
 import { defineConfig } from 'tsup';
 import { WebSocketServer } from 'ws';
 import { readFileSync } from 'fs';
-const clients=[]
-const server = new WebSocketServer({ port: 8888 });
+
 /**
  * @type {Array<WebSocket>}
  */
-var clients = [];
+const clients=[]
+const server = new WebSocketServer({ port: 8888 });
 server.on('connection', (ws) => {
     clients.push(ws);
     ws.send('1');
