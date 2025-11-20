@@ -36497,7 +36497,9 @@ void main () {
     spineRenderer.begin();
     spineRenderer.drawSkeleton(skeleton2);
     spineRenderer.end();
-    requestAnimationFrame(() => render(skeleton2, tk, animationState, spineRenderer));
+    requestAnimationFrame(
+      () => render(skeleton2, tk, animationState, spineRenderer)
+    );
   }
   for (let i of ["Azusa", "CH0070", "Airi"]) {
     const root = document.createElement("div");
@@ -36513,6 +36515,7 @@ void main () {
     const atlasUrl = `https://l2d-pro.schale.qzz.io/${i.toLowerCase()}_home/${i}_home.atlas`, skelUrl = `https://l2d-pro.schale.qzz.io/${i.toLowerCase()}_home/${i}_home.skel`;
     assetMgr.loadBinary(skelUrl);
     assetMgr.loadTextureAtlas(atlasUrl);
+    console.log(`loading data for ${i}`);
     let animationStateData;
     let animationState;
     let skeleton2;
@@ -36549,7 +36552,9 @@ void main () {
       window.skeleton = skeleton2;
       window.animationState = animationState;
       console.log(atlasLoader, skeletonLoader, skeleton2);
-      requestAnimationFrame(() => render(skeleton2, tk, animationState, spineRenderer));
+      requestAnimationFrame(
+        () => render(skeleton2, tk, animationState, spineRenderer)
+      );
     })(assetMgr);
   }
 })();

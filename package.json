@@ -23,6 +23,8 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "@turbowarp/types": "^0.0.13"
+    "@turbowarp/types": "^0.0.13",
+    "@types/ws": "^8.18.1",
+    "ws": "^8.18.3"
   }
 }

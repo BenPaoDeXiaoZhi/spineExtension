@@ -1,78 +1,84 @@
-import { registerExt } from "./scratch/register";
-import { getTranslate, Id } from "./l18n/translate";
-import SimpleExt, { Items } from "./scratch/simpleExt";
-import type { MenuItems } from "./scratch/simpleExt";
+import { registerExt } from './scratch/register';
+import { getTranslate, Id } from './l18n/translate';
+import SimpleExt from './scratch/simpleExt';
+import type { MenuItems } from './scratch/simpleExt';
 const { BlockType, ArgumentType } = Scratch;
-import type VM from "scratch-vm";
+import type VM from 'scratch-vm';
 type Utility = VM.BlockUtility;
 
 class ext extends SimpleExt {
     translate: (id: Id, args?: object) => string;
     runtime: VM.Runtime;
     constructor(runtime: VM.Runtime) {
-        super("spineAnimation", "foo");
+        super('spineAnimation', 'foo');
         this.runtime = runtime;
         console.log(runtime);
         this.translate = getTranslate(runtime);
         this.prepareInfo();
     }
     prepareInfo() {
-        this.info.name = this.translate("spineAnimation.extensionName");
+        this.info.name = this.translate('spineAnimation.extensionName');
         this.buildBlock(
-            "setSkinId",
-            this.translate("spineAnimation.setSkinId.text"),
+            'setSkinId',
+            this.translate('spineAnimation.setSkinId.text'),
             BlockType.COMMAND,
             {
                 arguments: {
                     TARGET_NAME: {
                         type: ArgumentType.STRING,
-                        menu: "sprite_menu",
+                        menu: 'sprite_menu',
                     },
                     SKIN_ID: {
                         type: ArgumentType.NUMBER,
-                        default: "0",
+                        default: '0',
                     },
                 },
             }
         );
         this.buildBlock(
-            "loadSkeleton",
-            this.translate("spineAnimation.loadSkeleton.text"),
+            'loadSkeleton',
+            this.translate('spineAnimation.loadSkeleton.text'),
             BlockType.COMMAND,
             {
                 arguments: {
                     ID: {
                         type: ArgumentType.STRING,
-                        menu: "skeleton_menu",
+                        menu: 'skeleton_menu',
                     },
                 },
             }
         );
-        this.buildMenu("sprite_menu", true, "spriteMenu");
-        this.buildMenu("skeleton_menu", true, "skeletonMenu");
+        this.buildMenu('sprite_menu', true, this.spriteMenu);
+        this.buildMenu('skeleton_menu', true, 'skeletonMenu');
         console.log(this.info);
     }
+
     spriteMenu(): MenuItems {
-        const items = new Items([
+        const items = [
             {
-                text: this.translate("spineAnimation.spriteMenu.currentTarget"),
-                value: "__this__",
+                text: this.translate('spineAnimation.spriteMenu.currentTarget'),
+                value: '__this__',
             },
-        ]);
+        ];
         for (const target of this.runtime.targets) {
             const target_name = target.sprite.name;
             const target_value = target.sprite.name;
             if (target.isSprite()) {
                 if (target.id !== this.runtime.getEditingTarget()?.id) {
-                    items.addItem(target_name, target_value);
+                    items.push({ text: target_name, value: target_value });
                 }
             }
         }
         return items;
     }
+
+    skeletonMenu(): MenuItems {
+        return [{ text: 'b', value: 'bcdf' }];
+    }
+
     setSkinId({ TARGET_NAME, SKIN_ID }, util: Utility) {
         let target: VM.RenderedTarget;
-        if (TARGET_NAME === "__this__") {
+        if (TARGET_NAME === '__this__') {
             target = util.target;
         } else {
             target = this.runtime.targets.find(

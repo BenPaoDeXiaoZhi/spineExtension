@@ -41,12 +41,15 @@ export interface BlockInfo {
 
 export class SimpleExt implements extInstance {
     info: extInfo;
+
     constructor(id: string, name: string) {
-        this.info = { id, name, blocks: [] };
+        this.info = { id, name, blocks: [], menus: {} };
     }
+
     getInfo(): extInfo {
         return this.info;
     }
+
     buildBlock(
         opcode: string,
         text: string,
@@ -61,6 +64,7 @@ export class SimpleExt implements extInstance {
         Object.assign(block, other);
         this.info.blocks.push(block);
     }
+
     buildMenu(
         name: string,
         acceptReporters: boolean,
@@ -68,7 +72,7 @@ export class SimpleExt implements extInstance {
     ) {
         if (items instanceof Function) {
             const menu_name = items.name || `menu_${name}`;
-            this[menu_name] = items;
+            this[menu_name] ??= items;
             this.info.menus[name] = {
                 acceptReporters,
                 items: menu_name,
@@ -79,24 +83,6 @@ export class SimpleExt implements extInstance {
                 items: items,
             };
         }
-    }
-}
-export class Items extends Array implements MenuItems {
-    constructor(items: MenuItems | string[][] = []) {
-        super();
-        items.forEach((item) => {
-            this.pushItem(item);
-        });
-    }
-    pushItem(item: string[] | MenuItem) {
-        if (item instanceof Array) {
-            this.push({ text: item[0], value: item[1] });
-        } else {
-            this.push(item);
-        }
-    }
-    addItem(text: string, value: string) {
-        this.push({ text, value });
     }
 }
 
