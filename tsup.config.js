@@ -13,7 +13,7 @@ server.on('connection', (ws) => {
 });
 
 export default defineConfig((options)=>{
-    return {
+    const dat={
     entry: {
         extension: 'src/index.ts',
         index: 'src/dev/index.ts',
@@ -26,11 +26,6 @@ export default defineConfig((options)=>{
         options.charset = 'utf8';
     },
     onSuccess() {
-        if(!options?.watch){
-            server.close()
-            process.exit(0)
-            return "abc"
-        };
         const date = new Date();
 
         // 转换为特定时区
@@ -58,4 +53,9 @@ time: ${formattedDate} */
         }
         console.log('ok', formattedDate);
     },
-}});
+}
+    if(!options?.watch){
+        dat.onSuccess=undefined
+    }
+    return dat
+});
