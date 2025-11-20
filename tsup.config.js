@@ -2,7 +2,8 @@ import { defineConfig } from 'tsup';
 import { WebSocketServer } from 'ws';
 import { readFileSync } from 'fs';
 
-if(options.watch){
+export default defineConfig((options)=>{
+    if(options.watch){
     const server = new WebSocketServer({ port: 8888 });
     /**
      * @type {Array<WebSocket>}
@@ -12,9 +13,8 @@ if(options.watch){
         clients.push(ws);
         ws.send('1');
     });
-};
-
-export default defineConfig((options)=>{return {
+    };
+    return {
     entry: {
         extension: 'src/index.ts',
         index: 'src/dev/index.ts',
