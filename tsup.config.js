@@ -1,19 +1,18 @@
 import { defineConfig } from 'tsup';
 import { WebSocketServer } from 'ws';
 import { readFileSync } from 'fs';
+const clients=[]
+const server = new WebSocketServer({ port: 8888 });
+/**
+ * @type {Array<WebSocket>}
+ */
+var clients = [];
+server.on('connection', (ws) => {
+    clients.push(ws);
+    ws.send('1');
+});
 
 export default defineConfig((options)=>{
-    if(options.watch){
-    const server = new WebSocketServer({ port: 8888 });
-    /**
-     * @type {Array<WebSocket>}
-     */
-    var clients = [];
-    server.on('connection', (ws) => {
-        clients.push(ws);
-        ws.send('1');
-    });
-    };
     return {
     entry: {
         extension: 'src/index.ts',
@@ -28,6 +27,7 @@ export default defineConfig((options)=>{
     },
     async onSuccess() {
         if(!options.watch){
+            server.close()
             return "abc"
         };
         const date = new Date();
