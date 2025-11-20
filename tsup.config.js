@@ -1,15 +1,19 @@
 import { defineConfig } from 'tsup';
 import { WebSocketServer } from 'ws';
 import { readFileSync } from 'fs';
-const server = new WebSocketServer({ port: 8888 });
-/**
- * @type {Array<WebSocket>}
- */
-let clients = [];
-server.on('connection', (ws) => {
-    clients.push(ws);
-    ws.send('1');
-});
+
+if(options.watch){
+    const server = new WebSocketServer({ port: 8888 });
+    /**
+     * @type {Array<WebSocket>}
+     */
+    var clients = [];
+    server.on('connection', (ws) => {
+        clients.push(ws);
+        ws.send('1');
+    });
+};
+
 export default defineConfig({
     entry: {
         extension: 'src/index.ts',
@@ -23,6 +27,9 @@ export default defineConfig({
         options.charset = 'utf8';
     },
     async onSuccess() {
+        if(!options.watch){
+            return "abc"
+        };
         const date = new Date();
 
         // 转换为特定时区
