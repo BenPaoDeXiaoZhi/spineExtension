@@ -25,9 +25,10 @@ export default defineConfig((options)=>{
     esbuildOptions(options) {
         options.charset = 'utf8';
     },
-    async onSuccess() {
-        if(!options.watch){
+    onSuccess() {
+        if(!options?.watch){
             server.close()
+            process.exit(0)
             return "abc"
         };
         const date = new Date();
