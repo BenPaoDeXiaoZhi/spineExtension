@@ -61,11 +61,9 @@ class ext extends SimpleExt {
             },
         ];
         for (const target of this.runtime.targets) {
-            const target_name = target.sprite.name;
-            const target_value = target.sprite.name;
             if (target.isSprite()) {
                 if (target.id !== this.runtime.getEditingTarget()?.id) {
-                    items.push({ text: target_name, value: target_value });
+                    items.push({ text: target.sprite.name, value: target.sprite.name });
                 }
             }
         }
