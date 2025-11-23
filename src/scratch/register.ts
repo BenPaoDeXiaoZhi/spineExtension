@@ -15,7 +15,7 @@ export function registerExt(ext: extInstance) {
                 console.error(`当前opcode:${block.opcode}函数未定义!`);
             };
         }
-        for (let arg of block.text.match(/(?<=\[).+?(?=\])/g)) {
+        for (let arg of block.text.match(/(?<=\[).+?(?=\])/g) || []) {
             if (!block.arguments) {
                 error(`块${block.opcode}未设置arguments`);
                 break;

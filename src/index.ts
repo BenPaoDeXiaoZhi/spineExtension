@@ -4,6 +4,7 @@ import SimpleExt from './scratch/simpleExt';
 import type { MenuItems } from './scratch/simpleExt';
 const { BlockType, ArgumentType } = Scratch;
 import type VM from 'scratch-vm';
+import { scratchStroageUI } from './util/storage';
 type Utility = VM.BlockUtility;
 
 class ext extends SimpleExt {
@@ -18,8 +19,9 @@ class ext extends SimpleExt {
     }
     prepareInfo() {
         this.info.name = this.translate('spineAnimation.extensionName');
+
         this.buildBlock(
-            'setSkinId',
+            this.setSkinId,
             this.translate('spineAnimation.setSkinId.text'),
             BlockType.COMMAND,
             {
@@ -36,7 +38,7 @@ class ext extends SimpleExt {
             }
         );
         this.buildBlock(
-            'loadSkeleton',
+            this.loadSkeleton,
             this.translate('spineAnimation.loadSkeleton.text'),
             BlockType.COMMAND,
             {
@@ -48,8 +50,9 @@ class ext extends SimpleExt {
                 },
             }
         );
+        this.buildButton(this.initUI, 'abcd');
         this.buildMenu('sprite_menu', true, this.spriteMenu);
-        this.buildMenu('skeleton_menu', true, 'skeletonMenu');
+        this.buildMenu('skeleton_menu', true, this.skeletonMenu);
         console.log(this.info);
     }
 
@@ -63,7 +66,10 @@ class ext extends SimpleExt {
         for (const target of this.runtime.targets) {
             if (target.isSprite()) {
                 if (target.id !== this.runtime.getEditingTarget()?.id) {
-                    items.push({ text: target.sprite.name, value: target.sprite.name });
+                    items.push({
+                        text: target.sprite.name,
+                        value: target.sprite.name,
+                    });
                 }
             }
         }
@@ -71,10 +77,11 @@ class ext extends SimpleExt {
     }
 
     skeletonMenu(): MenuItems {
-        return [{ text: 'b', value: 'bcdf' }];
+        return [{ text: 'test', value: 'spine/Hina_home.skel' }];
     }
 
-    setSkinId({ TARGET_NAME, SKIN_ID }, util: Utility) {
+    setSkinId(arg: { TARGET_NAME: string; SKIN_ID: string }, util: Utility) {
+        const { TARGET_NAME, SKIN_ID } = arg;
         let target: VM.RenderedTarget;
         if (TARGET_NAME === '__this__') {
             target = util.target;
@@ -92,6 +99,14 @@ class ext extends SimpleExt {
         if (skin) {
             drawable.skin = skin;
         }
+    }
+    loadSkeleton(arg: { ID: string }) {
+        const { ID } = arg;
+    }
+    initUI() {
+        const s = new scratchStroageUI(this.runtime.storage, 'spineAnimation');
+        s.createUI();
+        console.log(s);
     }
 }
 registerExt(new ext(Scratch.runtime));

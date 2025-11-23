@@ -1,3 +1,4 @@
+import { BlockUtility } from 'scratch-vm';
 export interface MenuItem {
     text: string;
     value: string;
@@ -50,12 +51,23 @@ export class SimpleExt implements extInstance {
         return this.info;
     }
 
-    buildBlock(
-        opcode: string,
+    buildBlock<T extends object>(
+        op:
+            | string
+            | ((
+                  args: { mutation: any } & { [k in keyof T]: any },
+                  util: BlockUtility
+              ) => any),
         text: string,
         blockType: BlockTypeValues,
-        other
+        other: { arguments?: T } = {}
     ) {
+        let opcode: string;
+        if (op instanceof Function) {
+            opcode = op.name;
+        } else {
+            opcode = op;
+        }
         const block: BlockInfo = {
             opcode,
             text,
@@ -63,6 +75,21 @@ export class SimpleExt implements extInstance {
         };
         Object.assign(block, other);
         this.info.blocks.push(block);
+    }
+
+    buildButton(op: string | (() => any), text: string) {
+        let opcode: string;
+        if (op instanceof Function) {
+            opcode = op.name;
+        } else {
+            opcode = op;
+        }
+        this.info.blocks.push({
+            opcode,
+            text,
+            blockType: Scratch.BlockType.BUTTON,
+            func: opcode,
+        } as BlockInfo);
     }
 
     buildMenu(
