@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
-import cssonly from 'rollup-plugin-css-only';
 export default defineConfig({
     build: {
         lib: {
@@ -9,12 +8,13 @@ export default defineConfig({
             name: 'extension',
         },
         rollupOptions: {
-            plugins: [
-                cssonly({
-                    output: false,
-                }),
-            ],
+            plugins: [],
         },
+        cssCodeSplit: false,
     },
-    plugins: [svelte()],
+    plugins: [
+        svelte({
+            emitCss: false,
+        }),
+    ],
 });
