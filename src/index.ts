@@ -43,7 +43,6 @@ class SpineSkin extends Skin implements RenderWebGL.Skin {
             this.gl.TEXTURE_MAG_FILTER,
             this.gl.NEAREST
         );
-        this._texture = texture;
         this.gl.texImage2D(
             this.gl.TEXTURE_2D,
             0,
@@ -52,6 +51,7 @@ class SpineSkin extends Skin implements RenderWebGL.Skin {
             this.gl.UNSIGNED_BYTE,
             ctx.getImageData(0, 0, 300, 300)
         );
+        this._texture = texture;
     }
 }
 

@@ -1,6 +1,8 @@
-/* deploy by dev
- - Deploy time: 2025/11/29 17:03:44
-*/
+/* deploy by Github CI/CD
+ - Deploy time: 2025/11/29 17:05:02
+ - Commit id: undefined
+ - Repository: undefined
+ - Actor: undefined*/
 (() => {
   // src/spine/3.8/spine-webgl.js
   var __extends = /* @__PURE__ */ (function() {
