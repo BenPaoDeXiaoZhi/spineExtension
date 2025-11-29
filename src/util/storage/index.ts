@@ -1,6 +1,4 @@
 import type ScratchStorage from 'scratch-storage';
-import { mount } from 'svelte';
-import Index from './components/index.svelte';
 
 export class scratchStroageUI {
     storage: ScratchStorage;
@@ -28,7 +26,7 @@ export class scratchStroageUI {
         } else if (data instanceof Blob) {
             fileData = await data.arrayBuffer();
         } else if (data instanceof Uint8Array) {
-            fileData = data.buffer;
+            fileData = data.buffer as ArrayBuffer;
         } else if (data instanceof ArrayBuffer) {
             fileData = data;
         } else {
@@ -42,17 +40,5 @@ export class scratchStroageUI {
         );
     }
 
-    createUI(root?: HTMLDivElement | undefined) {
-        let target: HTMLDivElement = root;
-        if (!target) {
-            target = document.createElement('div');
-            target.style.position = 'fixed';
-            target.style.top = '0px';
-            target.style.left = '0px';
-            document.body.appendChild(target);
-        }
-        return mount(Index, {
-            target,
-        });
-    }
+    createUI() {}
 }

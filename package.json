@@ -14,15 +14,12 @@
     "dev": "tsup --watch"
   },
   "dependencies": {
-    "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "40webgl": "npm:@esotericsoftware/spine-webgl@4.0",
     "42webgl": "npm:@esotericsoftware/spine-webgl@4.2",
     "4webgl": "npm:@esotericsoftware/spine-webgl@4.2",
     "axios": "^1.13.2",
-    "esbuild-svelte": "^0.9.3",
     "pixi.js": "^8.14.0",
     "playwright": "^1.56.1",
-    "svelte": "^5.43.14",
     "svelte-preprocess": "^6.0.3",
     "tsup": "^8.5.0",
     "typescript": "^5.9.3",
