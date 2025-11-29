@@ -13,14 +13,16 @@ const Skin = (Scratch.runtime.renderer as unknown as { exports: any }).exports
 class SpineSkin extends Skin implements RenderWebGL.Skin {
     _renderer: RenderWebGL;
     gl: AnyWebGLContext;
+    _size: [number, number];
+
     constructor(id: number, renderer: RenderWebGL) {
         super(id);
         this._renderer = renderer;
-        this._texture = renderer.gl.createTexture();
         this.gl = renderer.gl;
         const tmp = document.createElement('canvas');
+        console.log(tmp);
         const ctx = tmp.getContext('2d');
-        ctx.rect(100, 100, 100, 100);
+        ctx.fillRect(0, 0, 100, 100);
         const texture = this.gl.createTexture();
         this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
         this.gl.texParameteri(
@@ -51,7 +53,14 @@ class SpineSkin extends Skin implements RenderWebGL.Skin {
             this.gl.UNSIGNED_BYTE,
             ctx.getImageData(0, 0, 300, 300)
         );
+        this.size = [100, 100];
         this._texture = texture;
+    }
+    set size(size: [number, number]) {
+        this._size = size;
+    }
+    get size() {
+        return this._size;
     }
 }
 

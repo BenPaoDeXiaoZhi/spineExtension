@@ -1,5 +1,5 @@
 /* deploy by Github CI/CD
- - Deploy time: 2025/11/29 17:05:02
+ - Deploy time: 2025/11/29 17:15:15
  - Commit id: undefined
  - Repository: undefined
  - Actor: undefined*/
@@ -175,14 +175,15 @@
   var SpineSkin = class extends Skin {
     _renderer;
     gl;
+    _size;
     constructor(id, renderer) {
       super(id);
       this._renderer = renderer;
-      this._texture = renderer.gl.createTexture();
       this.gl = renderer.gl;
       const tmp = document.createElement("canvas");
+      console.log(tmp);
       const ctx = tmp.getContext("2d");
-      ctx.rect(100, 100, 100, 100);
+      ctx.fillRect(0, 0, 100, 100);
       const texture = this.gl.createTexture();
       this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
       this.gl.texParameteri(
@@ -213,7 +214,14 @@
         this.gl.UNSIGNED_BYTE,
         ctx.getImageData(0, 0, 300, 300)
       );
+      this.size = [100, 100];
       this._texture = texture;
+    }
+    set size(size) {
+      this._size = size;
+    }
+    get size() {
+      return this._size;
     }
   };
   var ext = class extends simpleExt_default {
