@@ -6,7 +6,13 @@
         "paths": {
             "scratch-vm": [
                 "./node_modules/@turbowarp/types/index.d.ts"
+            ],
+            "scratch-render": [
+                "./node_modules/@turbowarp/types/index.d.ts"
             ]
         }
     },
+    "exclude": [
+        "./node_modules/**"
+    ]
 }

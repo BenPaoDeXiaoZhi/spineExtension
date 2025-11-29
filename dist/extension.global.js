@@ -1,8 +1,6 @@
-/* deploy by Github CI/CD
- - Deploy time: 2025/11/29 16:23:20
- - Commit id: undefined
- - Repository: undefined
- - Actor: undefined*/
+/* deploy by dev
+ - Deploy time: 2025/11/29 17:03:44
+*/
 (() => {
   // src/scratch/register.ts
   function registerExt(ext2) {
@@ -171,14 +169,61 @@
 
   // src/index.ts
   var { BlockType, ArgumentType } = Scratch;
+  var Skin = Scratch.runtime.renderer.exports.Skin;
+  var SpineSkin = class extends Skin {
+    _renderer;
+    gl;
+    constructor(id, renderer) {
+      super(id);
+      this._renderer = renderer;
+      this._texture = renderer.gl.createTexture();
+      this.gl = renderer.gl;
+      const tmp = document.createElement("canvas");
+      const ctx = tmp.getContext("2d");
+      ctx.rect(100, 100, 100, 100);
+      const texture = this.gl.createTexture();
+      this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
+      this.gl.texParameteri(
+        this.gl.TEXTURE_2D,
+        this.gl.TEXTURE_WRAP_S,
+        this.gl.CLAMP_TO_EDGE
+      );
+      this.gl.texParameteri(
+        this.gl.TEXTURE_2D,
+        this.gl.TEXTURE_WRAP_T,
+        this.gl.CLAMP_TO_EDGE
+      );
+      this.gl.texParameteri(
+        this.gl.TEXTURE_2D,
+        this.gl.TEXTURE_MIN_FILTER,
+        this.gl.NEAREST
+      );
+      this.gl.texParameteri(
+        this.gl.TEXTURE_2D,
+        this.gl.TEXTURE_MAG_FILTER,
+        this.gl.NEAREST
+      );
+      this._texture = texture;
+      this.gl.texImage2D(
+        this.gl.TEXTURE_2D,
+        0,
+        this.gl.RGBA,
+        this.gl.RGBA,
+        this.gl.UNSIGNED_BYTE,
+        ctx.getImageData(0, 0, 300, 300)
+      );
+    }
+  };
   var ext = class extends simpleExt_default {
     translate;
     runtime;
+    renderer;
     constructor(runtime) {
       super("spineAnimation", "foo");
       this.runtime = runtime;
       console.log(runtime);
       this.translate = getTranslate(runtime);
+      this.renderer = runtime.renderer;
       this.prepareInfo();
     }
     prepareInfo() {
@@ -263,6 +308,13 @@
     }
     loadSkeleton(arg) {
       const { ID } = arg;
+      const skinId = this.renderer._nextSkinId;
+      const newSkin = this.renderer._allSkins[skinId] = new SpineSkin(
+        skinId,
+        this.renderer
+      );
+      console.log(newSkin);
+      return skinId;
     }
     initUI() {
       const s = new scratchStroageUI(this.runtime.storage, "spineAnimation");
