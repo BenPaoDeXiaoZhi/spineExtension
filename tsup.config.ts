@@ -56,6 +56,9 @@ export default defineConfig((tsupOptions) => {
         sourcemap: false,
         clean: true,
         format: 'iife',
+        loader: {
+            '.css': 'text',
+        },
         esbuildOptions(options) {
             options.charset = 'utf8';
         },

@@ -1,4 +1,5 @@
 import type ScratchStorage from 'scratch-storage';
+import mainStyle from './style.asset';
 
 export class scratchStroageUI {
     storage: ScratchStorage;
@@ -40,5 +41,24 @@ export class scratchStroageUI {
         );
     }
 
-    createUI() {}
+    createUI() {
+        if (!customElements.get('scratch-storage-ui')) {
+            customElements.define('scratch-storage-ui', Container);
+        }
+    }
+}
+
+export class Container extends HTMLElement {
+    constructor() {
+        super();
+    }
+    connectedCallback() {
+        const shadow = this.attachShadow({ mode: 'open' });
+        const style = document.createElement('style');
+        style.innerText = mainStyle;
+        const bg = document.createElement('div');
+        bg.className = 'bg';
+        shadow.appendChild(bg);
+        shadow.appendChild(style);
+    }
 }

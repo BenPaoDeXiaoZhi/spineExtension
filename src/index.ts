@@ -1,89 +1,30 @@
 import { registerExt } from './scratch/register';
 import { getTranslate, Id } from './l18n/translate';
-import RenderWebGL, { AnyWebGLContext } from 'scratch-render';
-import SimpleExt from './scratch/simpleExt';
-import type { MenuItems } from './scratch/simpleExt';
-const { BlockType, ArgumentType } = Scratch;
+import { SimpleExt } from './scratch/simpleExt';
+import type { extInfo, MenuItems } from './scratch/simpleExt';
+const { BlockType, ArgumentType, runtime } = Scratch;
 import type VM from 'scratch-vm';
 import { scratchStroageUI } from './util/storage';
+import { SpineSkin } from './spineSkin';
 type Utility = VM.BlockUtility;
-
-const Skin = (Scratch.runtime.renderer as unknown as { exports: any }).exports
-    .Skin as typeof RenderWebGL.Skin;
-class SpineSkin extends Skin implements RenderWebGL.Skin {
-    _renderer: RenderWebGL;
-    gl: AnyWebGLContext;
-    _size: [number, number];
-
-    constructor(id: number, renderer: RenderWebGL) {
-        super(id);
-        this._renderer = renderer;
-        this.gl = renderer.gl;
-        const tmp = document.createElement('canvas');
-        console.log(tmp);
-        const ctx = tmp.getContext('2d');
-        ctx.fillRect(0, 0, 100, 100);
-        const texture = this.gl.createTexture();
-        this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
-        this.gl.texParameteri(
-            this.gl.TEXTURE_2D,
-            this.gl.TEXTURE_WRAP_S,
-            this.gl.CLAMP_TO_EDGE
-        );
-        this.gl.texParameteri(
-            this.gl.TEXTURE_2D,
-            this.gl.TEXTURE_WRAP_T,
-            this.gl.CLAMP_TO_EDGE
-        );
-        this.gl.texParameteri(
-            this.gl.TEXTURE_2D,
-            this.gl.TEXTURE_MIN_FILTER,
-            this.gl.NEAREST
-        );
-        this.gl.texParameteri(
-            this.gl.TEXTURE_2D,
-            this.gl.TEXTURE_MAG_FILTER,
-            this.gl.NEAREST
-        );
-        this.gl.texImage2D(
-            this.gl.TEXTURE_2D,
-            0,
-            this.gl.RGBA,
-            this.gl.RGBA,
-            this.gl.UNSIGNED_BYTE,
-            ctx.getImageData(0, 0, 300, 300)
-        );
-        this.size = [100, 100];
-        this._texture = texture;
-    }
-    set size(size: [number, number]) {
-        this._size = size;
-    }
-    get size() {
-        return this._size;
-    }
-}
 
 class ext extends SimpleExt {
     translate: (id: Id, args?: object) => string;
     runtime: VM.Runtime;
     renderer: RenderWebGL;
     constructor(runtime: VM.Runtime) {
+        console.log(runtime);
         super('spineAnimation', 'foo');
         this.runtime = runtime;
-        console.log(runtime);
+        console.log(this);
         this.translate = getTranslate(runtime);
         this.renderer = runtime.renderer;
-        this.prepareInfo();
-    }
-    prepareInfo() {
         this.info.name = this.translate('spineAnimation.extensionName');
-
-        this.buildBlock(
-            this.setSkinId,
-            this.translate('spineAnimation.setSkinId.text'),
-            BlockType.COMMAND,
+        this.info.blocks = [
             {
+                opcode: this.setSkinId.name,
+                text: this.translate('spineAnimation.setSkinId.text'),
+                blockType: BlockType.COMMAND,
                 arguments: {
                     TARGET_NAME: {
                         type: ArgumentType.STRING,
@@ -94,25 +35,34 @@ class ext extends SimpleExt {
                         default: '0',
                     },
                 },
-            }
-        );
-        this.buildBlock(
-            this.loadSkeleton,
-            this.translate('spineAnimation.loadSkeleton.text'),
-            BlockType.COMMAND,
+            },
             {
+                opcode: this.loadSkeleton.name,
+                text: this.translate('spineAnimation.loadSkeleton.text'),
+                blockType: BlockType.COMMAND,
                 arguments: {
                     ID: {
                         type: ArgumentType.STRING,
                         menu: 'skeleton_menu',
                     },
                 },
-            }
-        );
-        this.buildButton(this.initUI, 'abcd');
-        this.buildMenu('sprite_menu', true, this.spriteMenu);
-        this.buildMenu('skeleton_menu', true, this.skeletonMenu);
-        console.log(this.info);
+            },
+            {
+                func: this.initUI.name,
+                blockType: BlockType.BUTTON,
+                text: 'abcd',
+            },
+        ];
+        this.info.menus = {
+            sprite_menu: {
+                items: this.spriteMenu.name,
+                acceptReporters: true,
+            },
+            skeleton_menu: {
+                items: this.skeletonMenu.name,
+                acceptReporters: true,
+            },
+        };
     }
 
     spriteMenu(): MenuItems {
@@ -138,8 +88,8 @@ class ext extends SimpleExt {
     skeletonMenu(): MenuItems {
         return [{ text: 'test', value: 'spine/Hina_home.skel' }];
     }
-
     setSkinId(arg: { TARGET_NAME: string; SKIN_ID: string }, util: Utility) {
+        this.info.blocks[0].opcode;
         const { TARGET_NAME, SKIN_ID } = arg;
         let target: VM.RenderedTarget;
         if (TARGET_NAME === '__this__') {
@@ -175,4 +125,4 @@ class ext extends SimpleExt {
         console.log(s);
     }
 }
-registerExt(new ext(Scratch.runtime));
+registerExt(new ext(runtime));

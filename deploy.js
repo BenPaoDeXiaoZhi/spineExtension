@@ -14,7 +14,7 @@ try {
         const browser = await chromium.launch();
         // Create pages, interact with UI elements, assert values
         const context = await browser.newContext();
-        let fdat = fs.readFileSync('public/dist/extension.global.js', 'utf8');
+        let fdat = fs.readFileSync('./dist/extension.global.js', 'utf8');
         console.log(fdat);
         await context.addCookies([
             {
@@ -36,8 +36,6 @@ try {
         });
         await context.exposeFunction('exit', async (ext = '') => {
             console.log('exit');
-            fs.writeFileSync('public/tmp.html', ext);
-            await page.screenshot({ path: 'public/shot.png' });
             await page.close();
             await context.close();
             await browser.close();

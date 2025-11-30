@@ -1,4 +1,4 @@
-import { BlockUtility } from 'scratch-vm';
+import VM from 'scratch-vm';
 export interface MenuItem {
     text: string;
     value: string;
@@ -16,16 +16,13 @@ export interface extInfo {
     color1?: string;
     color2?: string;
     name: string;
-    blocks: Array<BlockInfo>;
+    blocks: BlockInfo[];
     menus?: { [menuId: string]: MenuInfo };
 }
 
-export interface extInstance {
-    getInfo(): extInfo;
-}
-
 export interface BlockInfo {
-    opcode: string;
+    opcode?: string;
+    func?: string;
     text: string;
     blockType: BlockTypeValues;
     branchCount?: number;
@@ -40,7 +37,7 @@ export interface BlockInfo {
     };
 }
 
-export class SimpleExt implements extInstance {
+export class SimpleExt {
     info: extInfo;
 
     constructor(id: string, name: string) {
@@ -49,67 +46,6 @@ export class SimpleExt implements extInstance {
 
     getInfo(): extInfo {
         return this.info;
-    }
-
-    buildBlock<T extends object>(
-        op:
-            | string
-            | ((
-                  args: { mutation: any } & { [k in keyof T]: any },
-                  util: BlockUtility
-              ) => any),
-        text: string,
-        blockType: BlockTypeValues,
-        other: { arguments?: T } = {}
-    ) {
-        let opcode: string;
-        if (op instanceof Function) {
-            opcode = op.name;
-        } else {
-            opcode = op;
-        }
-        const block: BlockInfo = {
-            opcode,
-            text,
-            blockType,
-        };
-        Object.assign(block, other);
-        this.info.blocks.push(block);
-    }
-
-    buildButton(op: string | (() => any), text: string) {
-        let opcode: string;
-        if (op instanceof Function) {
-            opcode = op.name;
-        } else {
-            opcode = op;
-        }
-        this.info.blocks.push({
-            opcode,
-            text,
-            blockType: Scratch.BlockType.BUTTON,
-            func: opcode,
-        } as BlockInfo);
-    }
-
-    buildMenu(
-        name: string,
-        acceptReporters: boolean,
-        items: MenuItems | string | (() => MenuItems)
-    ) {
-        if (items instanceof Function) {
-            const menu_name = items.name || `menu_${name}`;
-            this[menu_name] ??= items;
-            this.info.menus[name] = {
-                acceptReporters,
-                items: menu_name,
-            };
-        } else {
-            this.info.menus[name] = {
-                acceptReporters,
-                items: items,
-            };
-        }
     }
 }
 

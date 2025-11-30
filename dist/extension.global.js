@@ -1,5 +1,5 @@
 /* deploy by Github CI/CD
- - Deploy time: 2025/11/29 17:15:15
+ - Deploy time: 2025/11/30 13:19:39
  - Commit id: undefined
  - Repository: undefined
  - Actor: undefined*/
@@ -11,39 +11,45 @@
     }
     const info = ext2.getInfo();
     console.group(`register extension ${info.id}`);
-    function error(dat) {
-      console.error(`register extension ${info.id}: ${dat}`);
-    }
-    for (let block of info.blocks) {
-      if (!ext2[block.opcode]) {
-        error(`未设置的opcode function:${block.opcode}`);
-        ext2[block.opcode] = () => {
-          console.error(`当前opcode:${block.opcode}函数未定义!`);
-        };
-      }
-      for (let arg of block.text.match(/(?<=\[).+?(?=\])/g) || []) {
-        if (!block.arguments) {
-          error(`块${block.opcode}未设置arguments`);
-          break;
+    try {
+      for (let block of info.blocks) {
+        if (!block.opcode && !block.func) {
+          console.error("opcode未定义");
+          continue;
         }
-        if (!block.arguments[arg]) {
-          error(`块${block.opcode}未设置参数${arg}`);
+        if (!ext2[block.opcode] && !block.func) {
+          console.error(`未设置的opcode function:`, block);
+          ext2[block.opcode] = () => {
+            console.error(`当前opcode:${block.opcode}函数未定义!`);
+          };
         }
-      }
-    }
-    for (let menu in info.menus || {}) {
-      const menuInfo = info.menus[menu];
-      if (!(menuInfo.items instanceof Array)) {
-        if (!ext2[menuInfo.items]) {
-          error(`menu${menu}的items函数未设置`);
-          ext2[menuInfo.items] = () => ({
-            text: "未设置！！！",
-            value: "not setted"
-          });
+        for (let arg of block.text.match(/(?<=\[).+?(?=\])/g) || []) {
+          if (!block.arguments) {
+            console.error(`块${block.opcode}未设置arguments`);
+            break;
+          }
+          if (!block.arguments[arg]) {
+            console.error(`块${block.opcode}未设置参数${arg}`);
+          }
         }
       }
+      for (let menu in info.menus || {}) {
+        const menuInfo = info.menus[menu];
+        if (!(menuInfo.items instanceof Array)) {
+          if (!ext2[menuInfo.items]) {
+            console.error(`menu${menu}的items函数未设置`);
+            ext2[menuInfo.items] = () => ({
+              text: "未设置！！！",
+              value: "not setted"
+            });
+          }
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      console.groupEnd();
     }
-    console.groupEnd();
     Scratch.extensions.register(ext2);
   }
 
@@ -68,8 +74,8 @@
   };
 
   // src/l18n/translate.ts
-  function getTranslate(runtime) {
-    const fmt = runtime.getFormatMessage({ "zh-cn": zh_cn_default, en: en_default });
+  function getTranslate(runtime2) {
+    const fmt = runtime2.getFormatMessage({ "zh-cn": zh_cn_default, en: en_default });
     return function(id, args) {
       return fmt({
         default: id
@@ -86,52 +92,10 @@
     getInfo() {
       return this.info;
     }
-    buildBlock(op, text, blockType, other = {}) {
-      let opcode;
-      if (op instanceof Function) {
-        opcode = op.name;
-      } else {
-        opcode = op;
-      }
-      const block = {
-        opcode,
-        text,
-        blockType
-      };
-      Object.assign(block, other);
-      this.info.blocks.push(block);
-    }
-    buildButton(op, text) {
-      let opcode;
-      if (op instanceof Function) {
-        opcode = op.name;
-      } else {
-        opcode = op;
-      }
-      this.info.blocks.push({
-        opcode,
-        text,
-        blockType: Scratch.BlockType.BUTTON,
-        func: opcode
-      });
-    }
-    buildMenu(name, acceptReporters, items) {
-      if (items instanceof Function) {
-        const menu_name = items.name || `menu_${name}`;
-        this[menu_name] ??= items;
-        this.info.menus[name] = {
-          acceptReporters,
-          items: menu_name
-        };
-      } else {
-        this.info.menus[name] = {
-          acceptReporters,
-          items
-        };
-      }
-    }
   };
-  var simpleExt_default = SimpleExt;
+
+  // src/util/storage/style.asset.css
+  var style_asset_default = "bg {\r\n    background-color: rgba(0, 0, 0, 0.3);\r\n}";
 
   // src/util/storage/index.ts
   var scratchStroageUI = class {
@@ -166,11 +130,27 @@
       );
     }
     createUI() {
+      if (!customElements.get("scratch-storage-ui")) {
+        customElements.define("scratch-storage-ui", Container);
+      }
+    }
+  };
+  var Container = class extends HTMLElement {
+    constructor() {
+      super();
+    }
+    connectedCallback() {
+      const shadow = this.attachShadow({ mode: "open" });
+      const style = document.createElement("style");
+      style.innerText = style_asset_default;
+      const bg = document.createElement("div");
+      bg.className = "bg";
+      shadow.appendChild(bg);
+      shadow.appendChild(style);
     }
   };
 
-  // src/index.ts
-  var { BlockType, ArgumentType } = Scratch;
+  // src/spineSkin.ts
   var Skin = Scratch.runtime.renderer.exports.Skin;
   var SpineSkin = class extends Skin {
     _renderer;
@@ -185,37 +165,9 @@
       const ctx = tmp.getContext("2d");
       ctx.fillRect(0, 0, 100, 100);
       const texture = this.gl.createTexture();
-      this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
-      this.gl.texParameteri(
-        this.gl.TEXTURE_2D,
-        this.gl.TEXTURE_WRAP_S,
-        this.gl.CLAMP_TO_EDGE
-      );
-      this.gl.texParameteri(
-        this.gl.TEXTURE_2D,
-        this.gl.TEXTURE_WRAP_T,
-        this.gl.CLAMP_TO_EDGE
-      );
-      this.gl.texParameteri(
-        this.gl.TEXTURE_2D,
-        this.gl.TEXTURE_MIN_FILTER,
-        this.gl.NEAREST
-      );
-      this.gl.texParameteri(
-        this.gl.TEXTURE_2D,
-        this.gl.TEXTURE_MAG_FILTER,
-        this.gl.NEAREST
-      );
-      this.gl.texImage2D(
-        this.gl.TEXTURE_2D,
-        0,
-        this.gl.RGBA,
-        this.gl.RGBA,
-        this.gl.UNSIGNED_BYTE,
-        ctx.getImageData(0, 0, 300, 300)
-      );
       this.size = [100, 100];
       this._texture = texture;
+      this._setTexture(ctx.getImageData(0, 0, 200, 200));
     }
     set size(size) {
       this._size = size;
@@ -223,26 +175,30 @@
     get size() {
       return this._size;
     }
+    getTexture(scale) {
+      return this._texture || super.getTexture(scale);
+    }
   };
-  var ext = class extends simpleExt_default {
+
+  // src/index.ts
+  var { BlockType, ArgumentType, runtime } = Scratch;
+  var ext = class extends SimpleExt {
     translate;
     runtime;
     renderer;
-    constructor(runtime) {
+    constructor(runtime2) {
+      console.log(runtime2);
       super("spineAnimation", "foo");
-      this.runtime = runtime;
-      console.log(runtime);
-      this.translate = getTranslate(runtime);
-      this.renderer = runtime.renderer;
-      this.prepareInfo();
-    }
-    prepareInfo() {
+      this.runtime = runtime2;
+      console.log(this);
+      this.translate = getTranslate(runtime2);
+      this.renderer = runtime2.renderer;
       this.info.name = this.translate("spineAnimation.extensionName");
-      this.buildBlock(
-        this.setSkinId,
-        this.translate("spineAnimation.setSkinId.text"),
-        BlockType.COMMAND,
+      this.info.blocks = [
         {
+          opcode: this.setSkinId.name,
+          text: this.translate("spineAnimation.setSkinId.text"),
+          blockType: BlockType.COMMAND,
           arguments: {
             TARGET_NAME: {
               type: ArgumentType.STRING,
@@ -253,25 +209,34 @@
               default: "0"
             }
           }
-        }
-      );
-      this.buildBlock(
-        this.loadSkeleton,
-        this.translate("spineAnimation.loadSkeleton.text"),
-        BlockType.COMMAND,
+        },
         {
+          opcode: this.loadSkeleton.name,
+          text: this.translate("spineAnimation.loadSkeleton.text"),
+          blockType: BlockType.COMMAND,
           arguments: {
             ID: {
               type: ArgumentType.STRING,
               menu: "skeleton_menu"
             }
           }
+        },
+        {
+          func: this.initUI.name,
+          blockType: BlockType.BUTTON,
+          text: "abcd"
         }
-      );
-      this.buildButton(this.initUI, "abcd");
-      this.buildMenu("sprite_menu", true, this.spriteMenu);
-      this.buildMenu("skeleton_menu", true, this.skeletonMenu);
-      console.log(this.info);
+      ];
+      this.info.menus = {
+        sprite_menu: {
+          items: this.spriteMenu.name,
+          acceptReporters: true
+        },
+        skeleton_menu: {
+          items: this.skeletonMenu.name,
+          acceptReporters: true
+        }
+      };
     }
     spriteMenu() {
       var _a;
@@ -297,6 +262,7 @@
       return [{ text: "test", value: "spine/Hina_home.skel" }];
     }
     setSkinId(arg, util) {
+      this.info.blocks[0].opcode;
       const { TARGET_NAME, SKIN_ID } = arg;
       let target;
       if (TARGET_NAME === "__this__") {
@@ -332,5 +298,5 @@
       console.log(s);
     }
   };
-  registerExt(new ext(Scratch.runtime));
+  registerExt(new ext(runtime));
 })();

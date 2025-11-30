@@ -10,7 +10,8 @@
             "scratch-render": [
                 "./node_modules/@turbowarp/types/index.d.ts"
             ]
-        }
+        },
+        "esModuleInterop": true
     },
     "exclude": [
         "./node_modules/**"
