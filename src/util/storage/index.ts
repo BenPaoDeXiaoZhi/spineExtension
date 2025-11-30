@@ -58,7 +58,13 @@ export class Container extends HTMLElement {
         style.innerHTML = mainStyle;
         const container = document.createElement('div');
         container.className = 'bg';
-        container.innerText = 'hello';
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        const header = document.createElement('header');
+        header.className = 'header';
+        header.innerHTML = 'upload spine';
+        modal.appendChild(header);
+        container.appendChild(modal);
         shadow.appendChild(container);
         shadow.appendChild(style);
     }

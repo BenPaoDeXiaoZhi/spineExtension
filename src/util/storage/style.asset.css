@@ -1,15 +1,38 @@
-.bg::before {
+.bg::after {
     background-color: #0000004c;
-    display: flex;
+    content: '';
+    position: fixed;
+    left: 0;
+    top: 0;
     width: 100%;
     height: 100%;
-    position: absolute;
+}
+.bg {
+    width: 100%;
+    height: 100%;
+    position: fixed;
     left: 0;
     top: 0;
     z-index: 540;
-    content: "";
+    vertical-align: center;
 }
-.bg{
+.modal {
+    margin: 100px auto;
+    width: 580px;
+    background-color: var(--theme-color-300, #2e3644);
+    border: 1px solid var(--theme-color-200, #3e495b);
+    border-radius: 12px;
+    user-select: none;
+    min-height: 100px;
+    position: relative;
+    z-index: 550;
+}
+.header {
+    color: white;
     display: flex;
     justify-content: center;
+    font-size: 18px;
+    border-bottom: 1px solid var(--theme-color-350, #1d2634);
+    height: 100%;
+    padding: 10px;
 }
