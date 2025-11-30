@@ -43,6 +43,6 @@ jobs:
               uses: peaceiris/actions-gh-pages@v3
               with:
                   github_token: ${{ secrets.GITHUB_TOKEN }}
-                  publish_dir: ./public # 构建产物
+                  publish_dir: ./dist # 构建产物
                   publish_branch: build-branch # 目标分支
                   force_orphan: true # 保持分支干净

@@ -55,10 +55,11 @@ export class Container extends HTMLElement {
     connectedCallback() {
         const shadow = this.attachShadow({ mode: 'open' });
         const style = document.createElement('style');
-        style.innerText = mainStyle;
-        const bg = document.createElement('div');
-        bg.className = 'bg';
-        shadow.appendChild(bg);
+        style.innerHTML = mainStyle;
+        const container = document.createElement('div');
+        container.className = 'bg';
+        container.innerText = 'hello';
+        shadow.appendChild(container);
         shadow.appendChild(style);
     }
 }

@@ -1,8 +1,6 @@
-/* deploy by Github CI/CD
- - Deploy time: 2025/11/30 13:19:39
- - Commit id: undefined
- - Repository: undefined
- - Actor: undefined*/
+/* deploy by dev
+ - Deploy time: 2025/11/30 13:50:23
+*/
 (() => {
   // src/scratch/register.ts
   function registerExt(ext2) {
@@ -95,7 +93,7 @@
   };
 
   // src/util/storage/style.asset.css
-  var style_asset_default = "bg {\r\n    background-color: rgba(0, 0, 0, 0.3);\r\n}";
+  var style_asset_default = '.bg::before {\r\n    background-color: #0000004c;\r\n    display: flex;\r\n    width: 100%;\r\n    height: 100%;\r\n    position: absolute;\r\n    left: 0;\r\n    top: 0;\r\n    z-index: 540;\r\n    content: "";\r\n}\r\n.bg{\r\n    display: flex;\r\n    justify-content: center;\r\n}';
 
   // src/util/storage/index.ts
   var scratchStroageUI = class {
@@ -142,10 +140,11 @@
     connectedCallback() {
       const shadow = this.attachShadow({ mode: "open" });
       const style = document.createElement("style");
-      style.innerText = style_asset_default;
-      const bg = document.createElement("div");
-      bg.className = "bg";
-      shadow.appendChild(bg);
+      style.innerHTML = style_asset_default;
+      const container = document.createElement("div");
+      container.className = "bg";
+      container.innerText = "hello";
+      shadow.appendChild(container);
       shadow.appendChild(style);
     }
   };
