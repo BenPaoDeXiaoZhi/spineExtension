@@ -59,6 +59,7 @@ export default defineConfig((tsupOptions) => {
         format: 'iife',
         loader: {
             '.css': 'text',
+            '.svg': 'text',
         },
         publicDir: './public',
         esbuildOptions(options) {

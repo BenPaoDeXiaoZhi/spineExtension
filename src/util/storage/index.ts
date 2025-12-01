@@ -1,5 +1,7 @@
 import type ScratchStorage from 'scratch-storage';
 import mainStyle from './style.asset';
+// @ts-ignore: allow importing svg without a module declaration
+import closeSvg from './close.svg';
 
 export class scratchStroageUI {
     storage: ScratchStorage;
@@ -62,7 +64,18 @@ export class Container extends HTMLElement {
         modal.className = 'modal';
         const header = document.createElement('header');
         header.className = 'header';
-        header.innerHTML = 'upload spine';
+        const headerText = document.createElement('div');
+        headerText.style.width = 'fit-content';
+        headerText.style.margin = 'auto';
+        headerText.innerText = '上传spine文件';
+        const close = document.createElement('button');
+        close.className = 'close';
+        close.innerHTML = closeSvg;
+        close.addEventListener('click', (e) => {
+            this.remove();
+        });
+        header.appendChild(headerText);
+        header.appendChild(close);
         modal.appendChild(header);
         container.appendChild(modal);
         shadow.appendChild(container);
