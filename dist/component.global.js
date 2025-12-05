@@ -1,6 +1,8 @@
-/* deploy by dev
- - Deploy time: 2025/12/1 17:14:07
-*/
+/* deploy by Github CI/CD
+ - Deploy time: 2025/12/5 19:00:43
+ - Commit id: undefined
+ - Repository: undefined
+ - Actor: undefined*/
 (() => {
   // src/util/storage/style.asset.css
   var style_asset_default = ".bg {\r\n    width: 100%;\r\n    height: 100%;\r\n    position: fixed;\r\n    left: 0;\r\n    top: 0;\r\n    z-index: 540;\r\n    background-color: #0000004c;\r\n    user-select: none;\r\n}\r\n.modal {\r\n    margin: 100px auto;\r\n    width: 580px;\r\n    background-color: var(--theme-color-300, #2e3644);\r\n    border: 1px solid var(--theme-color-200, #3e495b);\r\n    border-radius: 12px;\r\n    min-height: 100px;\r\n    user-select: none;\r\n    position: relative;\r\n    z-index: 550;\r\n}\r\n.header {\r\n    color: white;\r\n    display: flex;\r\n    font-size: 18px;\r\n    border-bottom: 1px solid var(--theme-color-350, #1d2634);\r\n    height: 100%;\r\n    padding: 10px;\r\n}\r\n.close {\r\n    background-color: transparent;\r\n    border: none;\r\n    border-radius: 5px;\r\n    position: absolute;\r\n    right: 5px;\r\n    padding: 0;\r\n    width: 24px;\r\n    height: 24px;\r\n    transition: background-color 0.15s ease-out;\r\n    cursor: pointer;\r\n}\r\n.close:hover {\r\n    background-color: rgba(255, 255, 255, 0.16);\r\n}\r\n";

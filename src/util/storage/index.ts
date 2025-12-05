@@ -12,7 +12,7 @@ export class scratchStroageUI {
         this.extId = extId;
     }
 
-    async loadFile(assetId: string) {
+    loadFile(assetId: string) {
         return fetch(`https://m.ccw.site/user_projects_assets/${assetId}`);
     }
 

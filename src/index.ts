@@ -6,6 +6,7 @@ const { BlockType, ArgumentType, runtime } = Scratch;
 import type VM from 'scratch-vm';
 import { scratchStroageUI } from './util/storage';
 import { SpineSkin } from './spineSkin';
+import spine from './spine/4.2/spine-webgl';
 type Utility = VM.BlockUtility;
 
 class ext extends SimpleExt {
@@ -86,7 +87,15 @@ class ext extends SimpleExt {
     }
 
     skeletonMenu(): MenuItems {
-        return [{ text: 'test', value: 'spine/Hina_home.skel' }];
+        return [
+            {
+                text: 'test',
+                value: JSON.stringify([
+                    'spine/Hina_home.skel',
+                    'spine/Hina_home.atlas',
+                ]),
+            },
+        ];
     }
     setSkinId(arg: { TARGET_NAME: string; SKIN_ID: string }, util: Utility) {
         this.info.blocks[0].opcode;
@@ -109,13 +118,41 @@ class ext extends SimpleExt {
             drawable.skin = skin;
         }
     }
-    loadSkeleton(arg: { ID: string }) {
+    async loadSkeleton(arg: { ID: string }) {
         const { ID } = arg;
-        const skinId = this.renderer._nextSkinId;
-        const newSkin = (this.renderer._allSkins[skinId] = new SpineSkin(
-            skinId,
-            this.renderer
-        ));
+        const [skelDir, atlasDir] = JSON.parse(ID);
+        const skinId = this.renderer._nextSkinId++;
+
+        const assetMgr = new spine.AssetManager(
+            this.runtime.renderer.gl,
+            'https://m.ccw.site/user_projects_assets/'
+        );
+        assetMgr.loadBinary(skelDir);
+        assetMgr.loadTextureAtlas(atlasDir);
+        await assetMgr.loadAll();
+        const atlasLoader = new spine.AtlasAttachmentLoader(
+            assetMgr.get(atlasDir)
+        );
+        const skeletonLoader = new spine.SkeletonBinary(atlasLoader);
+        const skeletonData = skeletonLoader.readSkeletonData(
+            assetMgr.get(skelDir)
+        );
+        const skeleton = new spine.Skeleton(skeletonData);
+        const animationStateData = new spine.AnimationStateData(skeleton.data);
+        const animationState = new spine.AnimationState(animationStateData);
+        skeleton.setToSetupPose();
+        console.log(skeleton, animationState);
+        const newSkin = (this.renderer._allSkins[skinId] =
+            new SpineSkin<'4.2webgl'>(
+                skinId,
+                this.renderer,
+                '4.2webgl',
+                //@ts-ignore
+                skeleton,
+                animationState,
+                new spine.TimeKeeper()
+            ));
+        newSkin.size = [640, 360];
         console.log(newSkin);
         return skinId;
     }
