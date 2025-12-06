@@ -51,8 +51,8 @@ export class SpineSkin<V extends keyof typeof spineVersions>
         renderer: RenderWebGL,
         version: V,
         skeleton: {
-            '4.0webgl': spine42.Skeleton;
-            '4.2webgl': spine40.Skeleton;
+            '4.2webgl': spine42.Skeleton;
+            '4.0webgl': spine40.Skeleton;
             '3.8webgl': spine38.Skeleton;
         }[V],
         animationState: (typeof spineVersions)[V]['AnimationState'],
