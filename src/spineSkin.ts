@@ -8,7 +8,7 @@ const Skin = (Scratch.runtime.renderer as unknown as { exports: any }).exports
     .Skin as typeof RenderWebGL.Skin;
 console.log(Skin);
 /**
- * @deprecated
+ * 重写hasInstance,使scratch renderer在渲染阶段使用spineSkin.render()
  */
 export function patchSpineSkin(runtime: VM.Runtime) {
     const [id, skin] = (runtime.renderer as any).createSpineSkin() as [
@@ -63,7 +63,8 @@ export class SpineSkin<V extends keyof typeof spineVersions>
         this.canvas = document.createElement('canvas');
         this.renderer = new this.spine.SceneRenderer(
             this.canvas,
-            this.canvas.getContext('webgl')
+            this.canvas.getContext('webgl'),
+            false
         );
         this.gl = renderer.gl;
         this._texture = this.gl.createTexture();
