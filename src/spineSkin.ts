@@ -1,30 +1,11 @@
 import RenderWebGL, { AnyWebGLContext } from 'scratch-render';
 import spineVersions from './spine/spineVersions';
-import spine42 from './spine/4.2/spine-webgl';
-import type spine40 from './spine/4.0/spine-webgl';
+import { Skeleton, AnimationState } from './spine/spineVersions';
 import type spine38 from './spine/3.8/spine-webgl';
 
 const Skin = (Scratch.runtime.renderer as unknown as { exports: any }).exports
     .Skin as typeof RenderWebGL.Skin;
 console.log(Skin);
-
-type Skeleton<V extends keyof typeof spineVersions> = {
-    '4.2webgl': spine42.Skeleton;
-    '4.0webgl': spine40.Skeleton;
-    '3.8webgl': spine38.Skeleton;
-}[V];
-
-type AnimationState<V extends keyof typeof spineVersions> = {
-    '4.2webgl': spine42.AnimationState;
-    '4.0webgl': spine40.AnimationState;
-    '3.8webgl': spine38.AnimationState;
-}[V];
-
-type SceneRenderer<V extends keyof typeof spineVersions> = {
-    '4.2webgl': spine42.SceneRenderer;
-    '4.0webgl': spine40.SceneRenderer;
-    '3.8webgl': spine38.SceneRenderer;
-}[V];
 
 /**
  * 重写hasInstance,使scratch renderer在渲染阶段使用spineSkin.render()

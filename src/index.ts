@@ -6,12 +6,18 @@ const { BlockType, ArgumentType, runtime } = Scratch;
 import type VM from 'scratch-vm';
 import { scratchStroageUI } from './util/storage';
 import { SpineSkin, patchSpineSkin } from './spineSkin';
-import spine from './spine/4.2/spine-webgl';
+import spineVersions from './spine/spineVersions';
+import { Spine40Manager, Spine42Manager } from './spineManager';
 type Utility = VM.BlockUtility;
+type SpineManagers = {
+    '4.0webgl': Spine40Manager;
+    '4.2webgl': Spine42Manager;
+};
 
 class ext extends SimpleExt {
     translate: (id: Id, args?: object) => string;
     runtime: VM.Runtime;
+    managers: SpineManagers;
     renderer: RenderWebGL;
     constructor(runtime: VM.Runtime) {
         console.log(runtime);
@@ -21,6 +27,8 @@ class ext extends SimpleExt {
         this.translate = getTranslate(runtime);
         this.renderer = runtime.renderer;
         patchSpineSkin(this.runtime);
+        this.managers['4.0webgl'] = new Spine40Manager(this.renderer);
+        this.managers['4.2webgl'] = new Spine42Manager(this.renderer);
         this.info.name = this.translate('spineAnimation.extensionName');
         this.info.blocks = [
             {
@@ -43,7 +51,7 @@ class ext extends SimpleExt {
                 text: this.translate('spineAnimation.loadSkeleton.text'),
                 blockType: BlockType.COMMAND,
                 arguments: {
-                    ID: {
+                    CONFIG: {
                         type: ArgumentType.STRING,
                         menu: 'skeleton_menu',
                     },
@@ -91,10 +99,11 @@ class ext extends SimpleExt {
         return [
             {
                 text: 'test',
-                value: JSON.stringify([
-                    'spine/Hina_home.skel',
-                    'spine/Hina_home.atlas',
-                ]),
+                value: JSON.stringify({
+                    skel: 'spine/Hina_home.skel',
+                    atlas: 'spine/Hina_home.atlas',
+                    version: '4.2webgl',
+                }),
             },
         ];
     }
@@ -119,39 +128,32 @@ class ext extends SimpleExt {
             drawable.skin = skin;
         }
     }
-    async loadSkeleton(arg: { ID: string }) {
-        const { ID } = arg;
-        const [skelDir, atlasDir] = JSON.parse(ID);
-        const skinId = this.renderer._nextSkinId++;
 
-        const assetMgr = new spine.AssetManager(
-            this.runtime.renderer.gl,
-            'https://m.ccw.site/user_projects_assets/'
-        );
-        assetMgr.loadBinary(skelDir);
-        assetMgr.loadTextureAtlas(atlasDir);
-        await assetMgr.loadAll();
-        const atlasLoader = new spine.AtlasAttachmentLoader(
-            assetMgr.get(atlasDir)
-        );
-        const skeletonLoader = new spine.SkeletonBinary(atlasLoader);
-        const skeletonData = skeletonLoader.readSkeletonData(
-            assetMgr.get(skelDir)
-        );
-        const skeleton = new spine.Skeleton(skeletonData);
-        const animationStateData = new spine.AnimationStateData(skeleton.data);
-        const animationState = new spine.AnimationState(animationStateData);
-        skeleton.setToSetupPose();
+    async loadSkeleton(arg: { CONFIG: string }) {
+        const { CONFIG: ID } = arg;
+        const { skel, atlas, version } = JSON.parse(ID) as {
+            skel: string;
+            atlas: string;
+            version: keyof SpineManagers;
+        };
+        if (!(skel && atlas && version in Object.keys(spineVersions))) {
+            throw new Error(
+                this.translate('spineAnimation.loadSkeleton.configError')
+            );
+        }
+        const { skeleton, animationState } = await this.managers[
+            version
+        ].loadSkeleton(skel, atlas);
         console.log(skeleton, animationState);
-        const newSkin = (this.renderer._allSkins[skinId] =
-            new SpineSkin<'4.2webgl'>(
-                skinId,
-                this.renderer,
-                '4.2webgl',
-                skeleton,
-                animationState,
-                new spine.TimeKeeper()
-            ));
+        const skinId = this.renderer._nextSkinId++;
+        const newSkin = (this.renderer._allSkins[skinId] = new SpineSkin(
+            skinId,
+            this.renderer,
+            version,
+            skeleton,
+            animationState,
+            new spineVersions[version].TimeKeeper()
+        ));
         newSkin.size = [640, 360];
         console.log(newSkin);
         return skinId;
