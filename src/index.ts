@@ -5,7 +5,7 @@ import type { extInfo, MenuItems } from './scratch/simpleExt';
 const { BlockType, ArgumentType, runtime } = Scratch;
 import type VM from 'scratch-vm';
 import { scratchStroageUI } from './util/storage';
-import { SpineSkin } from './spineSkin';
+import { SpineSkin, patchSpineSkin } from './spineSkin';
 import spine from './spine/4.2/spine-webgl';
 type Utility = VM.BlockUtility;
 
@@ -20,6 +20,7 @@ class ext extends SimpleExt {
         console.log(this);
         this.translate = getTranslate(runtime);
         this.renderer = runtime.renderer;
+        patchSpineSkin(this.runtime);
         this.info.name = this.translate('spineAnimation.extensionName');
         this.info.blocks = [
             {
@@ -147,7 +148,6 @@ class ext extends SimpleExt {
                 skinId,
                 this.renderer,
                 '4.2webgl',
-                //@ts-ignore
                 skeleton,
                 animationState,
                 new spine.TimeKeeper()

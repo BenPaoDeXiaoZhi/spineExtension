@@ -1,5 +1,5 @@
 /* deploy by Github CI/CD
- - Deploy time: 2025/12/5 19:00:43
+ - Deploy time: 2025/12/6 15:16:02
  - Commit id: undefined
  - Repository: undefined
  - Actor: undefined*/
@@ -36661,63 +36661,81 @@ void main () {
   // src/spineSkin.ts
   var Skin = Scratch.runtime.renderer.exports.Skin;
   console.log(Skin);
+  function patchSpineSkin(runtime2) {
+    const [id, skin] = runtime2.renderer.createSpineSkin();
+    runtime2.renderer._allSkins[id] = void 0;
+    runtime2.renderer._nextSkinId--;
+    Object.defineProperty(
+      Object.getPrototypeOf(skin).constructor,
+      Symbol.hasInstance,
+      {
+        value: function(instance) {
+          if (instance instanceof SpineSkin || (instance == null ? void 0 : instance.spine)) {
+            return true;
+          }
+          return false;
+        },
+        writable: true
+      }
+    );
+    console.log(Object.getPrototypeOf(skin).constructor);
+  }
   var SpineSkin = class extends Skin {
     renderer;
     gl;
     _size;
-    canvas;
     skeleton;
     animationState;
     timeKeeper;
-    spine;
+    version;
     constructor(id, renderer, version, skeleton2, animationState, timeKeeper) {
       super(id);
-      this.spine = spineVersions_default[version];
-      this.canvas = document.createElement("canvas");
-      this.renderer = new this.spine.SceneRenderer(
-        this.canvas,
-        this.canvas.getContext("webgl")
-      );
+      this.version = version;
+      const spine4 = spineVersions_default[version];
+      this.renderer = new spine4.SceneRenderer(renderer.canvas, renderer.gl);
       this.gl = renderer.gl;
       this._texture = this.gl.createTexture();
       this.skeleton = skeleton2;
       this.animationState = animationState;
       this.timeKeeper = timeKeeper;
-      this.render();
-      this.size = [200, 200];
-      this._rotationCenter = [0, 0];
+      skeleton2.setToSetupPose();
+      this.size = [640, 360];
+      if ("getBoundsRect" in skeleton2 && "Physics" in spine4) {
+        skeleton2.updateWorldTransform(spine4.Physics.update);
+        const rect = skeleton2.getBoundsRect();
+        skeleton2.scaleX = this.size[0] / rect.width || 1;
+        skeleton2.scaleY = this.size[1] / rect.height || 1;
+        skeleton2.x = 0;
+        skeleton2.y = 0;
+      }
+      this._rotationCenter = [320, 180];
     }
     set size(size) {
-      this.canvas.width = size[0];
-      this.canvas.height = size[1];
       this._size = size;
     }
     get size() {
       return this._size;
     }
     getTexture(scale) {
-      requestAnimationFrame(this.render.bind(this));
       return this._texture;
     }
     render() {
       console.log("render");
-      this.skeleton.updateWorldTransform(this.spine.Physics.update);
+      const spine4 = spineVersions_default[this.version];
+      if ("Physics" in spine4) {
+        this.skeleton.updateWorldTransform(spine4.Physics.update);
+      } else {
+        this.skeleton.updateWorldTransform();
+      }
       this.timeKeeper.update();
       this.animationState.update(this.timeKeeper.delta);
-      this.animationState.apply(this.skeleton);
+      this.animationState.apply(
+        this.skeleton
+      );
       this.renderer.begin();
       this.renderer.drawSkeleton(this.skeleton, false);
       this.renderer.end();
-      this.gl.bindTexture(this.gl.TEXTURE_2D, this._texture);
-      this.gl.texImage2D(
-        this.gl.TEXTURE_2D,
-        0,
-        this.gl.RGBA,
-        this.gl.RGBA,
-        this.gl.UNSIGNED_BYTE,
-        this.canvas
-      );
-      this.emit(Skin.Events.WasAltered);
+      requestAnimationFrame(() => this.emit(Skin.Events.WasAltered));
     }
   };
 
@@ -36734,6 +36752,7 @@ void main () {
       console.log(this);
       this.translate = getTranslate(runtime2);
       this.renderer = runtime2.renderer;
+      patchSpineSkin(this.runtime);
       this.info.name = this.translate("spineAnimation.extensionName");
       this.info.blocks = [
         {
@@ -36858,7 +36877,6 @@ void main () {
         skinId,
         this.renderer,
         "4.2webgl",
-        //@ts-ignore
         skeleton2,
         animationState,
         new spine_webgl_default.TimeKeeper()
