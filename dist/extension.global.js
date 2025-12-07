@@ -1,5 +1,5 @@
 /* deploy by Github CI/CD
- - Deploy time: 2025/12/6 15:16:02
+ - Deploy time: 2025/12/7 17:31:58
  - Commit id: undefined
  - Repository: undefined
  - Actor: undefined*/
@@ -60,7 +60,8 @@
     "spineAnimation.pass.text": "直接执行reporter[A]",
     "spineAnimation.setSkinId.text": "将角色[TARGET_NAME]的skin设为ID为[SKIN_ID]的skin",
     "spineAnimation.spriteMenu.currentTarget": "当前角色",
-    "spineAnimation.loadSkeleton.text": "加载id为[ID]的spine骨骼"
+    "spineAnimation.loadSkeleton.text": "加载配置为[CONFIG]的spine骨骼",
+    "spineAnimation.loadSkeleton.configError": "请输入有效配置"
   };
 
   // src/l18n/en.ts
@@ -70,16 +71,20 @@
     "spineAnimation.pass.text": "Run reporter[A] and ignore the return value",
     "spineAnimation.setSkinId.text": "Set the skin of character [TARGET_NAME] to the skin with ID [SKIN_ID]",
     "spineAnimation.spriteMenu.currentTarget": "Current target",
-    "spineAnimation.loadSkeleton.text": "load spine skeleton with id:[ID]"
+    "spineAnimation.loadSkeleton.text": "load spine skeleton with config:[CONFIG]",
+    "spineAnimation.loadSkeleton.configError": "please input correct configs"
   };
 
   // src/l18n/translate.ts
   function getTranslate(runtime2) {
     const fmt = runtime2.getFormatMessage({ "zh-cn": zh_cn_default, en: en_default });
     return function(id, args) {
-      return fmt({
-        default: id
-      }, args);
+      return fmt(
+        {
+          default: id
+        },
+        args
+      );
     };
   }
 
@@ -168,6 +173,63 @@
       container.appendChild(modal);
       shadow.appendChild(container);
       shadow.appendChild(style);
+    }
+  };
+
+  // src/spineSkin.ts
+  var Skin = Scratch.runtime.renderer.exports.Skin;
+  console.log(Skin);
+  function patchSpineSkin(runtime2) {
+    const [id, skin] = runtime2.renderer.createSpineSkin();
+    runtime2.renderer._allSkins[id] = void 0;
+    runtime2.renderer._nextSkinId--;
+    Object.defineProperty(
+      Object.getPrototypeOf(skin).constructor,
+      Symbol.hasInstance,
+      {
+        value: function(instance) {
+          if (instance instanceof SpineSkin || (instance == null ? void 0 : instance.spine)) {
+            return true;
+          }
+          return false;
+        },
+        writable: true
+      }
+    );
+    console.log(Object.getPrototypeOf(skin).constructor);
+  }
+  var SpineSkin = class extends Skin {
+    gl;
+    manager;
+    _size;
+    skeleton;
+    animationState;
+    tk;
+    constructor(id, renderer, manager, skeleton2, animationState, tk) {
+      super(id);
+      this.gl = renderer.gl;
+      this.manager = manager;
+      this.skeleton = skeleton2;
+      this.tk = tk;
+      this.animationState = animationState;
+      this._texture = this.gl.createTexture();
+      this.size = [640, 360];
+      this._rotationCenter = [320, 180];
+    }
+    set size(size) {
+      this._size = size;
+    }
+    get size() {
+      return this._size;
+    }
+    getTexture(scale) {
+      return this._texture;
+    }
+    render() {
+      console.log("render");
+      this.manager.drawSkeleton(this.skeleton, this.tk, this.animationState);
+      this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
+      requestAnimationFrame(() => this.emit(Skin.Events.WasAltered));
     }
   };
 
@@ -11089,7 +11151,7 @@
     })(webgl = spine4.webgl || (spine4.webgl = {}));
   })(spine || (spine = {}));
   var spine38 = Object.assign(spine, spine.webgl);
-  var spine38webgl = spine38;
+  var spine_webgl_default = spine38;
 
   // src/spine/4.0/spine-webgl.js
   var spine2 = (() => {
@@ -22550,7 +22612,7 @@
     };
     return src_exports;
   })();
-  var spine40webgl = spine2;
+  var spine_webgl_default2 = spine2;
 
   // src/spine/4.2/spine-webgl.js
   var spine3 = (() => {
@@ -36648,102 +36710,204 @@ void main () {
     };
     return __toCommonJS(index_exports);
   })();
-  var spine_webgl_default = spine3;
-  var spine42webgl = spine3;
+  var spine_webgl_default3 = spine3;
 
   // src/spine/spineVersions.ts
-  var spineVersions_default = {
-    "3.8webgl": spine38webgl,
-    "4.0webgl": spine40webgl,
-    "4.2webgl": spine42webgl
+  var spineVersions = {
+    "3.8webgl": spine_webgl_default,
+    "4.0webgl": spine_webgl_default2,
+    "4.2webgl": spine_webgl_default3
+  };
+  var spineVersions_default = spineVersions;
+
+  // src/spineManager.ts
+  function loadAsset(assetManager, skeletonUrl, atlasUrl) {
+    if (skeletonUrl.endsWith(".skel")) {
+      assetManager.loadBinary(skeletonUrl);
+    } else {
+      assetManager.loadJson(skeletonUrl);
+    }
+    assetManager.loadTextureAtlas(atlasUrl);
+    return assetManager;
+  }
+  function parseSkeleton(assetManager, spine4, skeletonUrl, atlasUrl) {
+    const atlasLoader = new spine4.AtlasAttachmentLoader(
+      assetManager.get(atlasUrl)
+    );
+    let loader;
+    if (skeletonUrl.endsWith(".skel")) {
+      loader = new spine4.SkeletonBinary(atlasLoader);
+    } else {
+      loader = new spine4.SkeletonJson(atlasLoader);
+    }
+    const skeletonData2 = loader.readSkeletonData(assetManager.get(skeletonUrl));
+    const skeleton2 = new spine4.Skeleton(skeletonData2);
+    const animationStateData = new spine4.AnimationStateData(skeletonData2);
+    const animationState = new spine4.AnimationState(animationStateData);
+    return { skeleton: skeleton2, animationState };
+  }
+  var SpineManager = class {
+    version;
+    constructor(version) {
+      this.version = version;
+    }
+  };
+  var Spine4Manager = class extends SpineManager {
+    assetManager;
+    sceneRenderer;
+    constructor(version) {
+      super(version);
+    }
+    async loadSkeleton(skeletonUrl, atlasUrl) {
+      loadAsset(this.assetManager, skeletonUrl, atlasUrl);
+      await this.assetManager.loadAll();
+    }
+  };
+  var Spine42Manager = class extends Spine4Manager {
+    assetManager;
+    sceneRenderer;
+    constructor(renderer) {
+      super("4.2webgl");
+      this.assetManager = new spine_webgl_default3.AssetManager(renderer.gl);
+      this.sceneRenderer = new spine_webgl_default3.SceneRenderer(
+        renderer.canvas,
+        renderer.gl
+      );
+    }
+    async loadSkeleton(skeletonUrl, atlasUrl) {
+      await super.loadSkeleton(skeletonUrl, atlasUrl);
+      return parseSkeleton(this.assetManager, spine_webgl_default3, skeletonUrl, atlasUrl);
+    }
+    drawSkeleton(skeleton2, tk, animationState) {
+      skeleton2.updateWorldTransform(spine_webgl_default3.Physics.update);
+      tk.update();
+      animationState.update(tk.delta);
+      animationState.apply(skeleton2);
+      this.sceneRenderer.begin();
+      this.sceneRenderer.drawSkeleton(skeleton2);
+      this.sceneRenderer.end();
+    }
+  };
+  var Spine40Manager = class extends Spine4Manager {
+    assetManager;
+    sceneRenderer;
+    spine;
+    constructor(renderer) {
+      super("4.0webgl");
+      this.assetManager = new spine_webgl_default2.AssetManager(renderer.gl);
+      this.sceneRenderer = new spine_webgl_default2.SceneRenderer(
+        renderer.canvas,
+        renderer.gl
+      );
+    }
+    async loadSkeleton(skeletonUrl, atlasUrl) {
+      await super.loadSkeleton(skeletonUrl, atlasUrl);
+      return parseSkeleton(this.assetManager, spine_webgl_default2, skeletonUrl, atlasUrl);
+    }
+    drawSkeleton(skeleton2, tk, animationState) {
+      skeleton2.updateWorldTransform();
+      tk.update();
+      animationState.update(tk.delta);
+      animationState.apply(skeleton2);
+      this.sceneRenderer.begin();
+      this.sceneRenderer.drawSkeleton(skeleton2);
+      this.sceneRenderer.end();
+    }
   };
 
-  // src/spineSkin.ts
-  var Skin = Scratch.runtime.renderer.exports.Skin;
-  console.log(Skin);
-  function patchSpineSkin(runtime2) {
-    const [id, skin] = runtime2.renderer.createSpineSkin();
-    runtime2.renderer._allSkins[id] = void 0;
-    runtime2.renderer._nextSkinId--;
-    Object.defineProperty(
-      Object.getPrototypeOf(skin).constructor,
-      Symbol.hasInstance,
-      {
-        value: function(instance) {
-          if (instance instanceof SpineSkin || (instance == null ? void 0 : instance.spine)) {
-            return true;
-          }
-          return false;
-        },
-        writable: true
-      }
-    );
-    console.log(Object.getPrototypeOf(skin).constructor);
-  }
-  var SpineSkin = class extends Skin {
-    renderer;
-    gl;
-    _size;
-    skeleton;
-    animationState;
-    timeKeeper;
-    version;
-    constructor(id, renderer, version, skeleton2, animationState, timeKeeper) {
-      super(id);
-      this.version = version;
-      const spine4 = spineVersions_default[version];
-      this.renderer = new spine4.SceneRenderer(renderer.canvas, renderer.gl);
-      this.gl = renderer.gl;
-      this._texture = this.gl.createTexture();
-      this.skeleton = skeleton2;
-      this.animationState = animationState;
-      this.timeKeeper = timeKeeper;
-      skeleton2.setToSetupPose();
-      this.size = [640, 360];
-      if ("getBoundsRect" in skeleton2 && "Physics" in spine4) {
-        skeleton2.updateWorldTransform(spine4.Physics.update);
-        const rect = skeleton2.getBoundsRect();
-        skeleton2.scaleX = this.size[0] / rect.width || 1;
-        skeleton2.scaleY = this.size[1] / rect.height || 1;
-        skeleton2.x = 0;
-        skeleton2.y = 0;
-      }
-      this._rotationCenter = [320, 180];
+  // src/util/htmlReport/index.ts
+  var HTMLReport = class {
+    element;
+    monitorValue;
+    value;
+    constructor(element, value = element.innerText, monitorValue = element.innerText) {
+      this.value = value;
+      this.element = element;
+      this.monitorValue = monitorValue;
     }
-    set size(size) {
-      this._size = size;
+    /**
+     * 通过修改replace的方法，绕过blockly的encodeEntities
+     * (有点蠢,但是改的少哈)
+     * @returns 该report的html代码
+     */
+    replace() {
+      return this.element.outerHTML;
     }
-    get size() {
-      return this._size;
+    toString() {
+      return this.monitorValue;
     }
-    getTexture(scale) {
-      return this._texture;
-    }
-    render() {
-      console.log("render");
-      const spine4 = spineVersions_default[this.version];
-      if ("Physics" in spine4) {
-        this.skeleton.updateWorldTransform(spine4.Physics.update);
-      } else {
-        this.skeleton.updateWorldTransform();
-      }
-      this.timeKeeper.update();
-      this.animationState.update(this.timeKeeper.delta);
-      this.animationState.apply(
-        this.skeleton
-      );
-      this.renderer.begin();
-      this.renderer.drawSkeleton(this.skeleton, false);
-      this.renderer.end();
-      requestAnimationFrame(() => this.emit(Skin.Events.WasAltered));
+    valueOf() {
+      return this.value;
     }
   };
+  function patch(runtime2) {
+    if (runtime2.visualReport.spinePatched) {
+      return;
+    }
+    runtime2.visualReport.spinePatched = true;
+    const originReport = runtime2.visualReport;
+    runtime2.visualReport = function(id, value) {
+      if (value instanceof HTMLReport) {
+        const Runtime = this.constructor;
+        this.emit(Runtime.VISUAL_REPORT, { id, value });
+      } else {
+        originReport.call(this, id, value);
+      }
+    };
+    const originUpdate = runtime2.requestUpdateMonitor;
+    runtime2.requestUpdateMonitor = function(monitor) {
+      const value = monitor.get("value");
+      if (value instanceof HTMLReport) {
+        originUpdate.call(this, monitor.set("value", value.monitorValue));
+      } else {
+        originUpdate.call(this, monitor);
+      }
+    };
+  }
 
   // src/index.ts
   var { BlockType, ArgumentType, runtime } = Scratch;
+  var SpineConfig = class {
+    _skel;
+    _atlas;
+    version;
+    constructor(config) {
+      this.version = config.version;
+      this.skel = config.skel;
+      this.atlas = config.atlas;
+    }
+    set skel(v) {
+      if (v.startsWith("http")) {
+        this._skel = v;
+      } else {
+        this._skel = `https://m.ccw.site/user_projects_assets/${v}`;
+      }
+    }
+    get skel() {
+      return this._skel;
+    }
+    set atlas(v) {
+      if (v.startsWith("http")) {
+        this._atlas = v;
+      } else {
+        this._atlas = `https://m.ccw.site/user_projects_assets/${v}`;
+      }
+    }
+    get atlas() {
+      return this._atlas;
+    }
+    toJSON() {
+      return {
+        skel: this.skel,
+        atlas: this.atlas,
+        version: this.version
+      };
+    }
+  };
   var ext = class extends SimpleExt {
     translate;
     runtime;
+    managers;
     renderer;
     constructor(runtime2) {
       console.log(runtime2);
@@ -36753,6 +36917,11 @@ void main () {
       this.translate = getTranslate(runtime2);
       this.renderer = runtime2.renderer;
       patchSpineSkin(this.runtime);
+      patch(this.runtime);
+      this.managers = {
+        "4.0webgl": new Spine40Manager(this.renderer),
+        "4.2webgl": new Spine42Manager(this.renderer)
+      };
       this.info.name = this.translate("spineAnimation.extensionName");
       this.info.blocks = [
         {
@@ -36773,9 +36942,9 @@ void main () {
         {
           opcode: this.loadSkeleton.name,
           text: this.translate("spineAnimation.loadSkeleton.text"),
-          blockType: BlockType.COMMAND,
+          blockType: BlockType.REPORTER,
           arguments: {
-            ID: {
+            CONFIG: {
               type: ArgumentType.STRING,
               menu: "skeleton_menu"
             }
@@ -36819,15 +36988,18 @@ void main () {
       return items;
     }
     skeletonMenu() {
-      return [
-        {
-          text: "test",
-          value: JSON.stringify([
-            "spine/Hina_home.skel",
-            "spine/Hina_home.atlas"
-          ])
-        }
-      ];
+      const menuItems = [];
+      menuItems.push({
+        text: "test",
+        value: JSON.stringify(
+          new SpineConfig({
+            skel: "spine/Hina_home.skel",
+            atlas: "spine/Hina_home.atlas",
+            version: "4.2webgl"
+          })
+        )
+      });
+      return menuItems;
     }
     setSkinId(arg, util) {
       this.info.blocks[0].opcode;
@@ -36851,39 +37023,40 @@ void main () {
       }
     }
     async loadSkeleton(arg) {
-      const { ID } = arg;
-      const [skelDir, atlasDir] = JSON.parse(ID);
-      const skinId = this.renderer._nextSkinId++;
-      const assetMgr = new spine_webgl_default.AssetManager(
-        this.runtime.renderer.gl,
-        "https://m.ccw.site/user_projects_assets/"
+      const { CONFIG } = arg;
+      const { skel, atlas, version } = JSON.parse(CONFIG);
+      const skelFileName = skel.split("/").pop();
+      const skelFileNameArr = skelFileName.split(".").slice(0, -1);
+      const name = skelFileNameArr.join(".");
+      if (!(skel && atlas && version in spineVersions_default)) {
+        throw new Error(
+          this.translate("spineAnimation.loadSkeleton.configError")
+        );
+      }
+      const manager = this.managers[version];
+      const { skeleton: skeleton2, animationState } = await manager.loadSkeleton(
+        skel,
+        atlas
       );
-      assetMgr.loadBinary(skelDir);
-      assetMgr.loadTextureAtlas(atlasDir);
-      await assetMgr.loadAll();
-      const atlasLoader = new spine_webgl_default.AtlasAttachmentLoader(
-        assetMgr.get(atlasDir)
-      );
-      const skeletonLoader = new spine_webgl_default.SkeletonBinary(atlasLoader);
-      const skeletonData2 = skeletonLoader.readSkeletonData(
-        assetMgr.get(skelDir)
-      );
-      const skeleton2 = new spine_webgl_default.Skeleton(skeletonData2);
-      const animationStateData = new spine_webgl_default.AnimationStateData(skeleton2.data);
-      const animationState = new spine_webgl_default.AnimationState(animationStateData);
-      skeleton2.setToSetupPose();
       console.log(skeleton2, animationState);
+      const skinId = this.renderer._nextSkinId++;
       const newSkin = this.renderer._allSkins[skinId] = new SpineSkin(
         skinId,
         this.renderer,
-        "4.2webgl",
+        manager,
         skeleton2,
         animationState,
-        new spine_webgl_default.TimeKeeper()
+        new spineVersions_default[version].TimeKeeper()
       );
-      newSkin.size = [640, 360];
       console.log(newSkin);
-      return skinId;
+      const info = `名称为${name},<br>版本为${version},<br>skinId为${skinId}的骨骼`;
+      const container = document.createElement("div");
+      container.innerHTML = info;
+      return new HTMLReport(
+        container,
+        { skinId },
+        info.replace("<br>", "\n")
+      );
     }
     initUI() {
       const s = new scratchStroageUI(this.runtime.storage, "spineAnimation");

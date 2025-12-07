@@ -1,5 +1,5 @@
 /* deploy by Github CI/CD
- - Deploy time: 2025/12/6 15:16:02
+ - Deploy time: 2025/12/7 17:31:58
  - Commit id: undefined
  - Repository: undefined
  - Actor: undefined*/
@@ -10922,7 +10922,7 @@
     })(webgl = spine5.webgl || (spine5.webgl = {}));
   })(spine || (spine = {}));
   var spine38 = Object.assign(spine, spine.webgl);
-  var spine38webgl = spine38;
+  var spine_webgl_default = spine38;
 
   // src/spine/4.0/spine-webgl.js
   var spine2 = (() => {
@@ -22383,7 +22383,7 @@
     };
     return src_exports;
   })();
-  var spine40webgl = spine2;
+  var spine_webgl_default2 = spine2;
 
   // src/spine/4.2/spine-webgl.js
   var spine3 = (() => {
@@ -36481,14 +36481,15 @@ void main () {
     };
     return __toCommonJS(index_exports);
   })();
-  var spine42webgl = spine3;
+  var spine_webgl_default3 = spine3;
 
   // src/spine/spineVersions.ts
-  var spineVersions_default = {
-    "3.8webgl": spine38webgl,
-    "4.0webgl": spine40webgl,
-    "4.2webgl": spine42webgl
+  var spineVersions = {
+    "3.8webgl": spine_webgl_default,
+    "4.0webgl": spine_webgl_default2,
+    "4.2webgl": spine_webgl_default3
   };
+  var spineVersions_default = spineVersions;
 
   // src/dev/index.ts
   var spine4 = spineVersions_default["4.2webgl"];

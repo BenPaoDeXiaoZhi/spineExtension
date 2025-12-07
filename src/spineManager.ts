@@ -35,26 +35,36 @@ function parseSkeleton(
     return { skeleton, animationState };
 }
 
-abstract class SpineManager {
+export abstract class SpineManager {
     abstract sceneRenderer: any;
     version: keyof typeof spineVersions;
     abstract assetManager: any;
-    spine: any;
     constructor(version: keyof typeof spineVersions) {
         this.version = version;
-        this.spine = spineVersions[version];
     }
     abstract loadSkeleton(skeletonUrl: string, atlasUrl: string): any;
+    abstract drawSkeleton(skeleton: any, tk: any, animationState: any): any;
 }
 
-export class Spine4Manager extends SpineManager {
+export abstract class Spine4Manager extends SpineManager {
     assetManager: any;
     sceneRenderer: any;
-    spine: any;
-    constructor(renderer: RenderWebGL, version: keyof typeof spineVersions) {
+    constructor(version: keyof typeof spineVersions) {
         super(version);
-        this.assetManager = new this.spine.AssetManager(renderer.gl);
-        this.sceneRenderer = new this.spine.SceneRenderer(
+    }
+    async loadSkeleton(skeletonUrl: string, atlasUrl: string): Promise<any> {
+        loadAsset(this.assetManager, skeletonUrl, atlasUrl);
+        await this.assetManager.loadAll(); // in 4.x
+    }
+}
+
+export class Spine42Manager extends Spine4Manager {
+    assetManager: spine42.AssetManager;
+    sceneRenderer: spine42.SceneRenderer;
+    constructor(renderer: RenderWebGL) {
+        super('4.2webgl');
+        this.assetManager = new spine42.AssetManager(renderer.gl);
+        this.sceneRenderer = new spine42.SceneRenderer(
             renderer.canvas,
             renderer.gl
         );
@@ -63,41 +73,24 @@ export class Spine4Manager extends SpineManager {
         skeletonUrl: string,
         atlasUrl: string
     ): Promise<{
-        skeleton: spine42.Skeleton | spine40.Skeleton;
-        animationState: spine42.AnimationState | spine40.AnimationState;
-    }> {
-        loadAsset(this.assetManager, skeletonUrl, atlasUrl);
-        await this.assetManager.loadAll(); // in 4.x
-        return parseSkeleton(
-            this.assetManager,
-            this.spine,
-            skeletonUrl,
-            atlasUrl
-        );
-    }
-}
-
-export class Spine42Manager extends Spine4Manager {
-    assetManager: spine42.AssetManager;
-    sceneRenderer: spine42.SceneRenderer;
-    spine: typeof spine42;
-    constructor(renderer: RenderWebGL) {
-        super(renderer, '4.2webgl');
-    }
-    async loadSkeleton(
-        skeletonUrl: string,
-        atlasUrl: string
-    ): Promise<{
         skeleton: spine42.Skeleton;
         animationState: spine42.AnimationState;
     }> {
-        return (await super.loadSkeleton(
-            skeletonUrl,
-            atlasUrl
-        )) as unknown as Promise<{
-            skeleton: spine42.Skeleton;
-            animationState: spine42.AnimationState;
-        }>;
+        await super.loadSkeleton(skeletonUrl, atlasUrl);
+        return parseSkeleton(this.assetManager, spine42, skeletonUrl, atlasUrl);
+    }
+    drawSkeleton(
+        skeleton: spine42.Skeleton,
+        tk: spine42.TimeKeeper,
+        animationState: spine42.AnimationState
+    ) {
+        skeleton.updateWorldTransform(spine42.Physics.update); //in 4.2
+        tk.update();
+        animationState.update(tk.delta);
+        animationState.apply(skeleton);
+        this.sceneRenderer.begin();
+        this.sceneRenderer.drawSkeleton(skeleton);
+        this.sceneRenderer.end();
     }
 }
 
@@ -106,7 +99,12 @@ export class Spine40Manager extends Spine4Manager {
     sceneRenderer: spine40.SceneRenderer;
     spine: typeof spine40;
     constructor(renderer: RenderWebGL) {
-        super(renderer, '4.0webgl');
+        super('4.0webgl');
+        this.assetManager = new spine40.AssetManager(renderer.gl);
+        this.sceneRenderer = new spine40.SceneRenderer(
+            renderer.canvas,
+            renderer.gl
+        );
     }
 
     async loadSkeleton(
@@ -116,12 +114,21 @@ export class Spine40Manager extends Spine4Manager {
         skeleton: spine40.Skeleton;
         animationState: spine40.AnimationState;
     }> {
-        return (await super.loadSkeleton(
-            skeletonUrl,
-            atlasUrl
-        )) as unknown as Promise<{
-            skeleton: spine40.Skeleton;
-            animationState: spine40.AnimationState;
-        }>;
+        await super.loadSkeleton(skeletonUrl, atlasUrl);
+        return parseSkeleton(this.assetManager, spine40, skeletonUrl, atlasUrl);
+    }
+
+    drawSkeleton(
+        skeleton: spine40.Skeleton,
+        tk: spine40.TimeKeeper,
+        animationState: spine40.AnimationState
+    ) {
+        skeleton.updateWorldTransform(); //in 4.0 and 3.8
+        tk.update();
+        animationState.update(tk.delta);
+        animationState.apply(skeleton);
+        this.sceneRenderer.begin();
+        this.sceneRenderer.drawSkeleton(skeleton);
+        this.sceneRenderer.end();
     }
 }

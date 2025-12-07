@@ -8,11 +8,56 @@ import { scratchStroageUI } from './util/storage';
 import { SpineSkin, patchSpineSkin } from './spineSkin';
 import spineVersions from './spine/spineVersions';
 import { Spine40Manager, Spine42Manager } from './spineManager';
+import { patch, HTMLReport } from './util/htmlReport';
 type Utility = VM.BlockUtility;
 type SpineManagers = {
     '4.0webgl': Spine40Manager;
     '4.2webgl': Spine42Manager;
 };
+
+class SpineConfig {
+    private _skel: string;
+    private _atlas: string;
+    version: keyof SpineManagers;
+    constructor(config: {
+        skel: string;
+        atlas: string;
+        version: keyof SpineManagers;
+    }) {
+        this.version = config.version;
+        this.skel = config.skel;
+        this.atlas = config.atlas;
+    }
+    set skel(v: string) {
+        if (v.startsWith('http')) {
+            this._skel = v;
+        } else {
+            this._skel = `https://m.ccw.site/user_projects_assets/${v}`;
+        }
+    }
+    get skel() {
+        return this._skel;
+    }
+
+    set atlas(v: string) {
+        if (v.startsWith('http')) {
+            this._atlas = v;
+        } else {
+            this._atlas = `https://m.ccw.site/user_projects_assets/${v}`;
+        }
+    }
+    get atlas() {
+        return this._atlas;
+    }
+
+    toJSON() {
+        return {
+            skel: this.skel,
+            atlas: this.atlas,
+            version: this.version,
+        };
+    }
+}
 
 class ext extends SimpleExt {
     translate: (id: Id, args?: object) => string;
@@ -27,8 +72,11 @@ class ext extends SimpleExt {
         this.translate = getTranslate(runtime);
         this.renderer = runtime.renderer;
         patchSpineSkin(this.runtime);
-        this.managers['4.0webgl'] = new Spine40Manager(this.renderer);
-        this.managers['4.2webgl'] = new Spine42Manager(this.renderer);
+        patch(this.runtime);
+        this.managers = {
+            '4.0webgl': new Spine40Manager(this.renderer),
+            '4.2webgl': new Spine42Manager(this.renderer),
+        };
         this.info.name = this.translate('spineAnimation.extensionName');
         this.info.blocks = [
             {
@@ -49,7 +97,7 @@ class ext extends SimpleExt {
             {
                 opcode: this.loadSkeleton.name,
                 text: this.translate('spineAnimation.loadSkeleton.text'),
-                blockType: BlockType.COMMAND,
+                blockType: BlockType.REPORTER,
                 arguments: {
                     CONFIG: {
                         type: ArgumentType.STRING,
@@ -96,16 +144,18 @@ class ext extends SimpleExt {
     }
 
     skeletonMenu(): MenuItems {
-        return [
-            {
-                text: 'test',
-                value: JSON.stringify({
+        const menuItems: MenuItems = [];
+        menuItems.push({
+            text: 'test',
+            value: JSON.stringify(
+                new SpineConfig({
                     skel: 'spine/Hina_home.skel',
                     atlas: 'spine/Hina_home.atlas',
                     version: '4.2webgl',
-                }),
-            },
-        ];
+                })
+            ),
+        });
+        return menuItems;
     }
     setSkinId(arg: { TARGET_NAME: string; SKIN_ID: string }, util: Utility) {
         this.info.blocks[0].opcode;
@@ -130,33 +180,44 @@ class ext extends SimpleExt {
     }
 
     async loadSkeleton(arg: { CONFIG: string }) {
-        const { CONFIG: ID } = arg;
-        const { skel, atlas, version } = JSON.parse(ID) as {
+        const { CONFIG } = arg;
+        const { skel, atlas, version } = JSON.parse(CONFIG) as {
             skel: string;
             atlas: string;
             version: keyof SpineManagers;
         };
-        if (!(skel && atlas && version in Object.keys(spineVersions))) {
+        const skelFileName = skel.split('/').pop();
+        const skelFileNameArr = skelFileName.split('.').slice(0, -1);
+        const name = skelFileNameArr.join('.');
+        if (!(skel && atlas && version in spineVersions)) {
             throw new Error(
                 this.translate('spineAnimation.loadSkeleton.configError')
             );
         }
-        const { skeleton, animationState } = await this.managers[
-            version
-        ].loadSkeleton(skel, atlas);
+        const manager = this.managers[version];
+        const { skeleton, animationState } = await manager.loadSkeleton(
+            skel,
+            atlas
+        );
         console.log(skeleton, animationState);
         const skinId = this.renderer._nextSkinId++;
         const newSkin = (this.renderer._allSkins[skinId] = new SpineSkin(
             skinId,
             this.renderer,
-            version,
+            manager,
             skeleton,
             animationState,
             new spineVersions[version].TimeKeeper()
         ));
-        newSkin.size = [640, 360];
         console.log(newSkin);
-        return skinId;
+        const info = `名称为${name},<br>版本为${version},<br>skinId为${skinId}的骨骼`;
+        const container = document.createElement('div');
+        container.innerHTML = info;
+        return new HTMLReport(
+            container,
+            { skinId },
+            info.replace('<br>', '\n')
+        );
     }
     initUI() {
         const s = new scratchStroageUI(this.runtime.storage, 'spineAnimation');
