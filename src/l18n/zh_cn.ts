@@ -6,6 +6,6 @@ export default {
     'spineAnimation.setSkinId.text':
         '将角色[TARGET_NAME]的skin设为ID为[SKIN_ID]的skin',
     'spineAnimation.spriteMenu.currentTarget': '当前角色',
-    'spineAnimation.loadSkeleton.text': '加载id为[ID]的spine骨骼',
+    'spineAnimation.loadSkeleton.text': '加载配置为[CONFIG]的spine骨骼并命名为[NAME]',
     'spineAnimation.loadSkeleton.configError': '请输入有效配置',
 };
