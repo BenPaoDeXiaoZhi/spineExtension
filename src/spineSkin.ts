@@ -111,7 +111,7 @@ export class SpineSkin<V extends keyof typeof spineVersions>
         //     this.gl.UNSIGNED_BYTE,
         //     this.canvas
         // );
-        this.gl.blendFunc(this.gl.SRC_ALPHA,this.gl.gl.ONE_MINUS_SRC_ALPHA)//reset blendfunc
+        this.gl.blendFunc(this.gl.SRC_ALPHA,this.gl.ONE_MINUS_SRC_ALPHA)//reset blendfunc
         requestAnimationFrame(() => this.emit((Skin as any).Events.WasAltered));//request next frame
     }
 }
