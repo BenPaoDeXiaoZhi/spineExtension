@@ -1,5 +1,5 @@
 /* deploy by Github CI/CD
- - Deploy time: 2025/12/7 17:31:58
+ - Deploy time: 2025/12/7 19:48:02
  - Commit id: undefined
  - Repository: undefined
  - Actor: undefined*/
@@ -58,9 +58,9 @@
     "spineAnimation.extensionName": "spine骨骼动画",
     "spineAnimation.showRuntime.text": "console输出runtime信息并保存至window._runtime",
     "spineAnimation.pass.text": "直接执行reporter[A]",
-    "spineAnimation.setSkinId.text": "将角色[TARGET_NAME]的skin设为ID为[SKIN_ID]的skin",
+    "spineAnimation.setSkinSkeleton.text": "将角色[TARGET_NAME]的skin设为骨骼[SKELETON]",
     "spineAnimation.spriteMenu.currentTarget": "当前角色",
-    "spineAnimation.loadSkeleton.text": "加载配置为[CONFIG]的spine骨骼",
+    "spineAnimation.loadSkeleton.text": "加载配置为[CONFIG]的spine骨骼并命名为[NAME]",
     "spineAnimation.loadSkeleton.configError": "请输入有效配置"
   };
 
@@ -69,9 +69,9 @@
     "spineAnimation.extensionName": "spine animation",
     "spineAnimation.showRuntime.text": "Print scratch runtime and assign to window._runtime",
     "spineAnimation.pass.text": "Run reporter[A] and ignore the return value",
-    "spineAnimation.setSkinId.text": "Set the skin of character [TARGET_NAME] to the skin with ID [SKIN_ID]",
+    "spineAnimation.setSkinSkeleton.text": "Set the skin of character [TARGET_NAME] to Skeleton:[SKELETON]",
     "spineAnimation.spriteMenu.currentTarget": "Current target",
-    "spineAnimation.loadSkeleton.text": "load spine skeleton with config:[CONFIG]",
+    "spineAnimation.loadSkeleton.text": "Load the spine skeleton with configuration [CONFIG] and name it [NAME]",
     "spineAnimation.loadSkeleton.configError": "please input correct configs"
   };
 
@@ -226,7 +226,6 @@
       return this._texture;
     }
     render() {
-      console.log("render");
       this.manager.drawSkeleton(this.skeleton, this.tk, this.animationState);
       this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
       requestAnimationFrame(() => this.emit(Skin.Events.WasAltered));
@@ -283,17 +282,17 @@
         for (var i = 0, n = timelines.length; i < n; i++)
           timelines[i].apply(skeleton2, lastTime, time, events, alpha, blend, direction);
       };
-      Animation2.binarySearch = function(values, target, step) {
+      Animation2.binarySearch = function(values2, target, step) {
         if (step === void 0) {
           step = 1;
         }
         var low = 0;
-        var high = values.length / step - 2;
+        var high = values2.length / step - 2;
         if (high == 0)
           return step;
         var current = high >>> 1;
         while (true) {
-          if (values[(current + 1) * step] <= target)
+          if (values2[(current + 1) * step] <= target)
             low = current + 1;
           else
             high = current;
@@ -302,9 +301,9 @@
           current = low + high >>> 1;
         }
       };
-      Animation2.linearSearch = function(values, target, step) {
-        for (var i = 0, last = values.length - step; i <= last; i += step)
-          if (values[i] > target)
+      Animation2.linearSearch = function(values2, target, step) {
+        for (var i = 0, last = values2.length - step; i <= last; i += step)
+          if (values2[i] > target)
             return i;
         return -1;
       };
@@ -8879,8 +8878,8 @@
           v[webgl2.M22] = 1;
           v[webgl2.M33] = 1;
         }
-        Matrix42.prototype.set = function(values) {
-          this.values.set(values);
+        Matrix42.prototype.set = function(values2) {
+          this.values.set(values2);
           return this;
         };
         Matrix42.prototype.transpose = function() {
@@ -11348,10 +11347,10 @@
         }
         return false;
       }
-      addAll(values) {
+      addAll(values2) {
         let oldSize = this.size;
-        for (var i = 0, n = values.length; i < n; i++)
-          this.add(values[i]);
+        for (var i = 0, n = values2.length; i < n; i++)
+          this.add(values2[i]);
         return oldSize != this.size;
       }
       contains(value) {
@@ -14539,7 +14538,7 @@
           line = reader.readLine();
         }
         let names = null;
-        let values = null;
+        let values2 = null;
         while (true) {
           if (line === null)
             break;
@@ -14571,13 +14570,13 @@
               else {
                 if (!names) {
                   names = [];
-                  values = [];
+                  values2 = [];
                 }
                 names.push(entry[0]);
                 let entryValues = [];
                 for (let i = 0; i < count; i++)
                   entryValues.push(parseInt(entry[i + 1]));
-                values.push(entryValues);
+                values2.push(entryValues);
               }
             }
             if (region.originalWidth == 0 && region.originalHeight == 0) {
@@ -14586,9 +14585,9 @@
             }
             if (names && names.length > 0) {
               region.names = names;
-              region.values = values;
+              region.values = values2;
               names = null;
-              values = null;
+              values2 = null;
             }
             region.u = region.x / page.width;
             region.v = region.y / page.height;
@@ -20211,8 +20210,8 @@
         v[M22] = 1;
         v[M33] = 1;
       }
-      set(values) {
-        this.values.set(values);
+      set(values2) {
+        this.values.set(values2);
         return this;
       }
       transpose() {
@@ -22825,10 +22824,10 @@
         }
         return false;
       }
-      addAll(values) {
+      addAll(values2) {
         let oldSize = this.size;
-        for (var i = 0, n = values.length; i < n; i++)
-          this.add(values[i]);
+        for (var i = 0, n = values2.length; i < n; i++)
+          this.add(values2[i]);
         return oldSize != this.size;
       }
       contains(value) {
@@ -27353,7 +27352,7 @@
         }
         let page = null;
         let names = null;
-        let values = null;
+        let values2 = null;
         while (true) {
           if (line === null) break;
           if (line.trim().length == 0) {
@@ -27377,23 +27376,23 @@
                 field(region);
               else {
                 if (!names) names = [];
-                if (!values) values = [];
+                if (!values2) values2 = [];
                 names.push(entry[0]);
                 let entryValues = [];
                 for (let i = 0; i < count; i++)
                   entryValues.push(parseInt(entry[i + 1]));
-                values.push(entryValues);
+                values2.push(entryValues);
               }
             }
             if (region.originalWidth == 0 && region.originalHeight == 0) {
               region.originalWidth = region.width;
               region.originalHeight = region.height;
             }
-            if (names && names.length > 0 && values && values.length > 0) {
+            if (names && names.length > 0 && values2 && values2.length > 0) {
               region.names = names;
-              region.values = values;
+              region.values = values2;
               names = null;
-              values = null;
+              values2 = null;
             }
             region.u = region.x / page.width;
             region.v = region.y / page.height;
@@ -34317,8 +34316,8 @@
         v[M22] = 1;
         v[M33] = 1;
       }
-      set(values) {
-        this.values.set(values);
+      set(values2) {
+        this.values.set(values2);
         return this;
       }
       transpose() {
@@ -36816,14 +36815,50 @@ void main () {
   };
 
   // src/util/htmlReport/index.ts
-  var HTMLReport = class {
-    element;
+  var elements = [];
+  var values = [];
+  var HTMLReport = class _HTMLReport {
+    elementId;
     monitorValue;
-    value;
-    constructor(element, value = element.innerText, monitorValue = element.innerText) {
-      this.value = value;
-      this.element = element;
-      this.monitorValue = monitorValue;
+    valueId;
+    constructor(element, value, monitorValue = element.innerText) {
+      Object.setPrototypeOf(Object.getPrototypeOf(this), /* @__PURE__ */ Object.create(null));
+      Object.defineProperties(this, {
+        valueId: {
+          value: values.push(value) - 1,
+          writable: false,
+          enumerable: false
+        },
+        elementId: {
+          value: elements.push(element) - 1,
+          writable: false,
+          enumerable: false
+        },
+        monitorValue: {
+          value: monitorValue,
+          writable: false,
+          enumerable: false
+        },
+        replace: {
+          value: Object.setPrototypeOf(this.replace, /* @__PURE__ */ Object.create(null)),
+          writable: false,
+          enumerable: false
+        },
+        toString: {
+          value: Object.setPrototypeOf(
+            this.toString,
+            /* @__PURE__ */ Object.create(null)
+          ),
+          writable: false,
+          enumerable: false
+        },
+        valueOf: {
+          value: Object.setPrototypeOf(this.valueOf, /* @__PURE__ */ Object.create(null)),
+          writable: false,
+          enumerable: false
+        }
+      });
+      return this;
     }
     /**
      * 通过修改replace的方法，绕过blockly的encodeEntities
@@ -36831,15 +36866,23 @@ void main () {
      * @returns 该report的html代码
      */
     replace() {
-      return this.element.outerHTML;
+      return elements[this.elementId].outerHTML;
     }
     toString() {
       return this.monitorValue;
     }
     valueOf() {
-      return this.value;
+      return values[this.valueId];
+    }
+    static [Symbol.hasInstance](inst) {
+      if ((inst == null ? void 0 : inst.constructor) === _HTMLReport) {
+        return true;
+      }
+      return false;
     }
   };
+  Object.setPrototypeOf(HTMLReport, /* @__PURE__ */ Object.create(null));
+  Object.setPrototypeOf(HTMLReport[Symbol.hasInstance], /* @__PURE__ */ Object.create(null));
   function patch(runtime2) {
     if (runtime2.visualReport.spinePatched) {
       return;
@@ -36925,17 +36968,17 @@ void main () {
       this.info.name = this.translate("spineAnimation.extensionName");
       this.info.blocks = [
         {
-          opcode: this.setSkinId.name,
-          text: this.translate("spineAnimation.setSkinId.text"),
+          opcode: this.setSkinSkeleton.name,
+          text: this.translate("spineAnimation.setSkinSkeleton.text"),
           blockType: BlockType.COMMAND,
           arguments: {
             TARGET_NAME: {
               type: ArgumentType.STRING,
               menu: "sprite_menu"
             },
-            SKIN_ID: {
+            SKELETON: {
               type: ArgumentType.NUMBER,
-              default: "0"
+              defaultValue: 0
             }
           }
         },
@@ -36947,6 +36990,10 @@ void main () {
             CONFIG: {
               type: ArgumentType.STRING,
               menu: "skeleton_menu"
+            },
+            NAME: {
+              type: ArgumentType.STRING,
+              defaultValue: "hina"
             }
           }
         },
@@ -37001,9 +37048,19 @@ void main () {
       });
       return menuItems;
     }
-    setSkinId(arg, util) {
-      this.info.blocks[0].opcode;
-      const { TARGET_NAME, SKIN_ID } = arg;
+    setSkinSkeleton(arg, util) {
+      const { TARGET_NAME, SKELETON } = arg;
+      console.log(SKELETON);
+      let skinId;
+      if (SKELETON instanceof HTMLReport) {
+        skinId = SKELETON.valueOf().skinId;
+      } else {
+        skinId = Number(SKELETON);
+      }
+      if (isNaN(skinId)) {
+        console.error("请输入数字或有效的skeleton数据");
+        return;
+      }
       let target;
       if (TARGET_NAME === "__this__") {
         target = util.target;
@@ -37017,17 +37074,14 @@ void main () {
       }
       const drawableId = target.drawableID;
       const drawable = this.runtime.renderer._allDrawables[drawableId];
-      const skin = this.runtime.renderer._allSkins[SKIN_ID];
+      const skin = this.runtime.renderer._allSkins[skinId];
       if (skin) {
         drawable.skin = skin;
       }
     }
     async loadSkeleton(arg) {
-      const { CONFIG } = arg;
+      const { CONFIG, NAME } = arg;
       const { skel, atlas, version } = JSON.parse(CONFIG);
-      const skelFileName = skel.split("/").pop();
-      const skelFileNameArr = skelFileName.split(".").slice(0, -1);
-      const name = skelFileNameArr.join(".");
       if (!(skel && atlas && version in spineVersions_default)) {
         throw new Error(
           this.translate("spineAnimation.loadSkeleton.configError")
@@ -37049,13 +37103,16 @@ void main () {
         new spineVersions_default[version].TimeKeeper()
       );
       console.log(newSkin);
-      const info = `名称为${name},<br>版本为${version},<br>skinId为${skinId}的骨骼`;
+      const info = `名称为${NAME},<br>版本为${version},<br>skinId为${skinId}的骨骼`;
       const container = document.createElement("div");
       container.innerHTML = info;
       return new HTMLReport(
         container,
-        { skinId },
-        info.replace("<br>", "\n")
+        Object.setPrototypeOf(
+          { skinId, skeleton: skeleton2, animationState },
+          /* @__PURE__ */ Object.create(null)
+        ),
+        info.replaceAll("<br>", "\n")
       );
     }
     initUI() {

@@ -31,7 +31,7 @@ export interface BlockInfo {
     arguments?: {
         [argName: string]: {
             type: ArgumentTypeValues;
-            default?: string | number;
+            defaultValue?: string | number;
             menu?: string;
         };
     };

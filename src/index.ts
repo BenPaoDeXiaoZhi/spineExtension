@@ -9,6 +9,7 @@ import { SpineSkin, patchSpineSkin } from './spineSkin';
 import spineVersions from './spine/spineVersions';
 import { Spine40Manager, Spine42Manager } from './spineManager';
 import { patch, HTMLReport } from './util/htmlReport';
+import { Skeleton } from '40webgl';
 type Utility = VM.BlockUtility;
 type SpineManagers = {
     '4.0webgl': Spine40Manager;
@@ -80,17 +81,17 @@ class ext extends SimpleExt {
         this.info.name = this.translate('spineAnimation.extensionName');
         this.info.blocks = [
             {
-                opcode: this.setSkinId.name,
-                text: this.translate('spineAnimation.setSkinId.text'),
+                opcode: this.setSkinSkeleton.name,
+                text: this.translate('spineAnimation.setSkinSkeleton.text'),
                 blockType: BlockType.COMMAND,
                 arguments: {
                     TARGET_NAME: {
                         type: ArgumentType.STRING,
                         menu: 'sprite_menu',
                     },
-                    SKIN_ID: {
+                    SKELETON: {
                         type: ArgumentType.NUMBER,
-                        default: '0',
+                        defaultValue: 0,
                     },
                 },
             },
@@ -102,6 +103,10 @@ class ext extends SimpleExt {
                     CONFIG: {
                         type: ArgumentType.STRING,
                         menu: 'skeleton_menu',
+                    },
+                    NAME: {
+                        type: ArgumentType.STRING,
+                        defaultValue: 'hina',
                     },
                 },
             },
@@ -157,9 +162,23 @@ class ext extends SimpleExt {
         });
         return menuItems;
     }
-    setSkinId(arg: { TARGET_NAME: string; SKIN_ID: string }, util: Utility) {
-        this.info.blocks[0].opcode;
-        const { TARGET_NAME, SKIN_ID } = arg;
+    setSkinSkeleton(
+        arg: { TARGET_NAME: string; SKELETON: string | HTMLReport },
+        util: Utility
+    ) {
+        const { TARGET_NAME, SKELETON } = arg;
+
+        console.log(SKELETON);
+        let skinId: any;
+        if (SKELETON instanceof HTMLReport) {
+            skinId = SKELETON.valueOf().skinId;
+        } else {
+            skinId = Number(SKELETON);
+        }
+        if (isNaN(skinId)) {
+            console.error('请输入数字或有效的skeleton数据');
+            return;
+        }
         let target: VM.RenderedTarget;
         if (TARGET_NAME === '__this__') {
             target = util.target;
@@ -173,22 +192,20 @@ class ext extends SimpleExt {
         }
         const drawableId = target.drawableID;
         const drawable = this.runtime.renderer._allDrawables[drawableId];
-        const skin = this.runtime.renderer._allSkins[SKIN_ID];
+        const skin = this.runtime.renderer._allSkins[skinId];
         if (skin) {
             drawable.skin = skin;
         }
     }
 
-    async loadSkeleton(arg: { CONFIG: string }) {
-        const { CONFIG } = arg;
+    async loadSkeleton(arg: { CONFIG: string; NAME: string }) {
+        const { CONFIG, NAME } = arg;
+
         const { skel, atlas, version } = JSON.parse(CONFIG) as {
             skel: string;
             atlas: string;
             version: keyof SpineManagers;
         };
-        const skelFileName = skel.split('/').pop();
-        const skelFileNameArr = skelFileName.split('.').slice(0, -1);
-        const name = skelFileNameArr.join('.');
         if (!(skel && atlas && version in spineVersions)) {
             throw new Error(
                 this.translate('spineAnimation.loadSkeleton.configError')
@@ -210,13 +227,16 @@ class ext extends SimpleExt {
             new spineVersions[version].TimeKeeper()
         ));
         console.log(newSkin);
-        const info = `名称为${name},<br>版本为${version},<br>skinId为${skinId}的骨骼`;
+        const info = `名称为${NAME},<br>版本为${version},<br>skinId为${skinId}的骨骼`;
         const container = document.createElement('div');
         container.innerHTML = info;
         return new HTMLReport(
             container,
-            { skinId },
-            info.replace('<br>', '\n')
+            Object.setPrototypeOf(
+                { skinId, skeleton, animationState },
+                Object.create(null)
+            ),
+            info.replaceAll('<br>', '\n')
         );
     }
     initUI() {

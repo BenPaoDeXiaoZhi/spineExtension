@@ -1,17 +1,51 @@
-import VM from 'scratch-vm';
-
+let elements: HTMLElement[] = [];
+let values: any[] = [];
 export class HTMLReport {
-    element: HTMLElement;
-    monitorValue: string;
-    value: any;
+    readonly elementId: number;
+    readonly monitorValue: string;
+    readonly valueId: number;
     constructor(
         element: HTMLElement,
-        value: any = element.innerText,
+        value: any,
         monitorValue: string = element.innerText
     ) {
-        this.value = value;
-        this.element = element;
-        this.monitorValue = monitorValue;
+        Object.setPrototypeOf(Object.getPrototypeOf(this), Object.create(null));
+        Object.defineProperties(this, {
+            valueId: {
+                value: values.push(value) - 1,
+                writable: false,
+                enumerable: false,
+            },
+            elementId: {
+                value: elements.push(element) - 1,
+                writable: false,
+                enumerable: false,
+            },
+            monitorValue: {
+                value: monitorValue,
+                writable: false,
+                enumerable: false,
+            },
+            replace: {
+                value: Object.setPrototypeOf(this.replace, Object.create(null)),
+                writable: false,
+                enumerable: false,
+            },
+            toString: {
+                value: Object.setPrototypeOf(
+                    this.toString,
+                    Object.create(null)
+                ),
+                writable: false,
+                enumerable: false,
+            },
+            valueOf: {
+                value: Object.setPrototypeOf(this.valueOf, Object.create(null)),
+                writable: false,
+                enumerable: false,
+            },
+        });
+        return this;
     }
     /**
      * 通过修改replace的方法，绕过blockly的encodeEntities
@@ -19,15 +53,24 @@ export class HTMLReport {
      * @returns 该report的html代码
      */
     replace() {
-        return this.element.outerHTML;
+        return elements[this.elementId].outerHTML;
     }
     toString() {
         return this.monitorValue;
     }
     valueOf() {
-        return this.value;
+        return values[this.valueId];
+    }
+    static [Symbol.hasInstance](inst: any) {
+        if (inst?.constructor === HTMLReport) {
+            return true;
+        }
+        return false;
     }
 }
+Object.setPrototypeOf(HTMLReport, Object.create(null));
+Object.setPrototypeOf(HTMLReport[Symbol.hasInstance], Object.create(null));
+
 export function patch(runtime) {
     if (runtime.visualReport.spinePatched) {
         return;

@@ -69,7 +69,6 @@ export class SpineSkin extends Skin implements RenderWebGL.Skin {
         return this._texture;
     }
     render() {
-        console.log('render');
         this.manager.drawSkeleton(this.skeleton, this.tk, this.animationState);
         this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA); //reset blendfunc
         requestAnimationFrame(() => this.emit((Skin as any).Events.WasAltered)); //request next frame
