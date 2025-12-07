@@ -98,7 +98,6 @@ export class SpineSkin<V extends keyof typeof spineVersions>
         (this.animationState as unknown as typeof spine.AnimationState).apply(
             this.skeleton
         );
-        this.gl.enable(this.gl.BLEND);
         this.renderer.begin();
         this.renderer.drawSkeleton(this.skeleton, false);
         this.renderer.end();
@@ -112,6 +111,7 @@ export class SpineSkin<V extends keyof typeof spineVersions>
         //     this.gl.UNSIGNED_BYTE,
         //     this.canvas
         // );
-        requestAnimationFrame(() => this.emit((Skin as any).Events.WasAltered));
+        this.gl.blendFunc(this.gl.SRC_ALPHA,this.gl.gl.ONE_MINUS_SRC_ALPHA)//reset blendfunc
+        requestAnimationFrame(() => this.emit((Skin as any).Events.WasAltered));//request next frame
     }
 }
