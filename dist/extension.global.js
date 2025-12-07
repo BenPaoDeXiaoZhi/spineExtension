@@ -1,5 +1,5 @@
 /* deploy by Github CI/CD
- - Deploy time: 2025/12/7 19:48:02
+ - Deploy time: 2025/12/7 20:35:14
  - Commit id: undefined
  - Repository: undefined
  - Actor: undefined*/
@@ -36906,6 +36906,14 @@ void main () {
         originUpdate.call(this, monitor);
       }
     };
+    const originLog = console.log;
+    console.log = function(...dat) {
+      if (dat.length == 1 && dat[0] instanceof HTMLReport) {
+        originLog.call(this, dat[0].valueOf());
+      } else {
+        originLog.call(this, ...dat);
+      }
+    };
   }
 
   // src/index.ts
@@ -37109,7 +37117,7 @@ void main () {
       return new HTMLReport(
         container,
         Object.setPrototypeOf(
-          { skinId, skeleton: skeleton2, animationState },
+          { skinId, skeleton: skeleton2, animationState, skel, atlas, version },
           /* @__PURE__ */ Object.create(null)
         ),
         info.replaceAll("<br>", "\n")

@@ -233,7 +233,7 @@ class ext extends SimpleExt {
         return new HTMLReport(
             container,
             Object.setPrototypeOf(
-                { skinId, skeleton, animationState },
+                { skinId, skeleton, animationState, skel, atlas, version },
                 Object.create(null)
             ),
             info.replaceAll('<br>', '\n')

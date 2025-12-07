@@ -101,4 +101,14 @@ export function patch(runtime) {
             originUpdate.call(this, monitor);
         }
     };
+
+    //修改console.log
+    const originLog = console.log;
+    console.log = function (...dat) {
+        if (dat.length == 1 && dat[0] instanceof HTMLReport) {
+            originLog.call(this, dat[0].valueOf());
+        } else {
+            originLog.call(this, ...dat);
+        }
+    };
 }
