@@ -102,13 +102,23 @@ export function patch(runtime) {
         }
     };
 
-    //修改console.log
-    const originLog = console.log;
-    console.log = function (...dat) {
-        if (dat.length == 1 && dat[0] instanceof HTMLReport) {
-            originLog.call(this, dat[0].valueOf());
-        } else {
-            originLog.call(this, ...dat);
-        }
+    //修改console
+    console.log = patchLog(console.log);
+    console.info = patchLog(console.info);
+}
+function patchLog(func: (...dat) => any) {
+    return function (...dat) {
+        const args = dat.map((arg) => {
+            if (arg instanceof HTMLReport) {
+                return Object.assign(
+                    new String(arg.monitorValue.replaceAll('\n', '  ')),
+                    {
+                        value: values[arg.valueId],
+                    }
+                );
+            }
+            return arg;
+        });
+        func.call(this, ...args);
     };
 }

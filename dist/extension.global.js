@@ -1,5 +1,5 @@
 /* deploy by Github CI/CD
- - Deploy time: 2025/12/7 20:35:14
+ - Deploy time: 2025/12/7 20:54:03
  - Commit id: undefined
  - Repository: undefined
  - Actor: undefined*/
@@ -36906,13 +36906,23 @@ void main () {
         originUpdate.call(this, monitor);
       }
     };
-    const originLog = console.log;
-    console.log = function(...dat) {
-      if (dat.length == 1 && dat[0] instanceof HTMLReport) {
-        originLog.call(this, dat[0].valueOf());
-      } else {
-        originLog.call(this, ...dat);
-      }
+    console.log = patchLog(console.log);
+    console.info = patchLog(console.info);
+  }
+  function patchLog(func) {
+    return function(...dat) {
+      const args = dat.map((arg) => {
+        if (arg instanceof HTMLReport) {
+          return Object.assign(
+            new String(arg.monitorValue.replaceAll("\n", "  ")),
+            {
+              value: values[arg.valueId]
+            }
+          );
+        }
+        return arg;
+      });
+      func.call(this, ...args);
     };
   }
 
