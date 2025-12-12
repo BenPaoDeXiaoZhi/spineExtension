@@ -8,7 +8,7 @@ import { scratchStroageUI } from './util/storage';
 import { SpineSkin, patchSpineSkin } from './spineSkin';
 import spineVersions from './spine/spineVersions';
 import { Spine40Manager, Spine42Manager } from './spineManager';
-import { patch, HTMLReport } from './util/htmlReport';
+import { patch, HTMLReport, IHTMLReport } from './util/htmlReport';
 import { Skeleton } from '40webgl';
 type Utility = VM.BlockUtility;
 type SpineManagers = {
@@ -163,7 +163,7 @@ class ext extends SimpleExt {
         return menuItems;
     }
     setSkinSkeleton(
-        arg: { TARGET_NAME: string; SKELETON: string | HTMLReport },
+        arg: { TARGET_NAME: string; SKELETON: string | IHTMLReport },
         util: Utility
     ) {
         const { TARGET_NAME, SKELETON } = arg;

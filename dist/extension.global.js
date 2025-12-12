@@ -1,5 +1,5 @@
 /* deploy by Github CI/CD
- - Deploy time: 2025/12/7 20:54:03
+ - Deploy time: 2025/12/12 21:06:42
  - Commit id: undefined
  - Repository: undefined
  - Actor: undefined*/
@@ -282,17 +282,17 @@
         for (var i = 0, n = timelines.length; i < n; i++)
           timelines[i].apply(skeleton2, lastTime, time, events, alpha, blend, direction);
       };
-      Animation2.binarySearch = function(values2, target, step) {
+      Animation2.binarySearch = function(values, target, step) {
         if (step === void 0) {
           step = 1;
         }
         var low = 0;
-        var high = values2.length / step - 2;
+        var high = values.length / step - 2;
         if (high == 0)
           return step;
         var current = high >>> 1;
         while (true) {
-          if (values2[(current + 1) * step] <= target)
+          if (values[(current + 1) * step] <= target)
             low = current + 1;
           else
             high = current;
@@ -301,9 +301,9 @@
           current = low + high >>> 1;
         }
       };
-      Animation2.linearSearch = function(values2, target, step) {
-        for (var i = 0, last = values2.length - step; i <= last; i += step)
-          if (values2[i] > target)
+      Animation2.linearSearch = function(values, target, step) {
+        for (var i = 0, last = values.length - step; i <= last; i += step)
+          if (values[i] > target)
             return i;
         return -1;
       };
@@ -8878,8 +8878,8 @@
           v[webgl2.M22] = 1;
           v[webgl2.M33] = 1;
         }
-        Matrix42.prototype.set = function(values2) {
-          this.values.set(values2);
+        Matrix42.prototype.set = function(values) {
+          this.values.set(values);
           return this;
         };
         Matrix42.prototype.transpose = function() {
@@ -11347,10 +11347,10 @@
         }
         return false;
       }
-      addAll(values2) {
+      addAll(values) {
         let oldSize = this.size;
-        for (var i = 0, n = values2.length; i < n; i++)
-          this.add(values2[i]);
+        for (var i = 0, n = values.length; i < n; i++)
+          this.add(values[i]);
         return oldSize != this.size;
       }
       contains(value) {
@@ -14538,7 +14538,7 @@
           line = reader.readLine();
         }
         let names = null;
-        let values2 = null;
+        let values = null;
         while (true) {
           if (line === null)
             break;
@@ -14570,13 +14570,13 @@
               else {
                 if (!names) {
                   names = [];
-                  values2 = [];
+                  values = [];
                 }
                 names.push(entry[0]);
                 let entryValues = [];
                 for (let i = 0; i < count; i++)
                   entryValues.push(parseInt(entry[i + 1]));
-                values2.push(entryValues);
+                values.push(entryValues);
               }
             }
             if (region.originalWidth == 0 && region.originalHeight == 0) {
@@ -14585,9 +14585,9 @@
             }
             if (names && names.length > 0) {
               region.names = names;
-              region.values = values2;
+              region.values = values;
               names = null;
-              values2 = null;
+              values = null;
             }
             region.u = region.x / page.width;
             region.v = region.y / page.height;
@@ -20210,8 +20210,8 @@
         v[M22] = 1;
         v[M33] = 1;
       }
-      set(values2) {
-        this.values.set(values2);
+      set(values) {
+        this.values.set(values);
         return this;
       }
       transpose() {
@@ -22824,10 +22824,10 @@
         }
         return false;
       }
-      addAll(values2) {
+      addAll(values) {
         let oldSize = this.size;
-        for (var i = 0, n = values2.length; i < n; i++)
-          this.add(values2[i]);
+        for (var i = 0, n = values.length; i < n; i++)
+          this.add(values[i]);
         return oldSize != this.size;
       }
       contains(value) {
@@ -27352,7 +27352,7 @@
         }
         let page = null;
         let names = null;
-        let values2 = null;
+        let values = null;
         while (true) {
           if (line === null) break;
           if (line.trim().length == 0) {
@@ -27376,23 +27376,23 @@
                 field(region);
               else {
                 if (!names) names = [];
-                if (!values2) values2 = [];
+                if (!values) values = [];
                 names.push(entry[0]);
                 let entryValues = [];
                 for (let i = 0; i < count; i++)
                   entryValues.push(parseInt(entry[i + 1]));
-                values2.push(entryValues);
+                values.push(entryValues);
               }
             }
             if (region.originalWidth == 0 && region.originalHeight == 0) {
               region.originalWidth = region.width;
               region.originalHeight = region.height;
             }
-            if (names && names.length > 0 && values2 && values2.length > 0) {
+            if (names && names.length > 0 && values && values.length > 0) {
               region.names = names;
-              region.values = values2;
+              region.values = values;
               names = null;
-              values2 = null;
+              values = null;
             }
             region.u = region.x / page.width;
             region.v = region.y / page.height;
@@ -34316,8 +34316,8 @@
         v[M22] = 1;
         v[M33] = 1;
       }
-      set(values2) {
-        this.values.set(values2);
+      set(values) {
+        this.values.set(values);
         return this;
       }
       transpose() {
@@ -36815,74 +36815,31 @@ void main () {
   };
 
   // src/util/htmlReport/index.ts
-  var elements = [];
-  var values = [];
-  var HTMLReport = class _HTMLReport {
-    elementId;
-    monitorValue;
-    valueId;
-    constructor(element, value, monitorValue = element.innerText) {
-      Object.setPrototypeOf(Object.getPrototypeOf(this), /* @__PURE__ */ Object.create(null));
-      Object.defineProperties(this, {
-        valueId: {
-          value: values.push(value) - 1,
-          writable: false,
-          enumerable: false
-        },
-        elementId: {
-          value: elements.push(element) - 1,
-          writable: false,
-          enumerable: false
-        },
-        monitorValue: {
-          value: monitorValue,
-          writable: false,
-          enumerable: false
-        },
-        replace: {
-          value: Object.setPrototypeOf(this.replace, /* @__PURE__ */ Object.create(null)),
-          writable: false,
-          enumerable: false
-        },
-        toString: {
-          value: Object.setPrototypeOf(
-            this.toString,
-            /* @__PURE__ */ Object.create(null)
-          ),
-          writable: false,
-          enumerable: false
-        },
-        valueOf: {
-          value: Object.setPrototypeOf(this.valueOf, /* @__PURE__ */ Object.create(null)),
-          writable: false,
-          enumerable: false
-        }
-      });
-      return this;
+  function clean(obj) {
+    var _a;
+    if ("prototype" in obj) {
+      obj.prototype = /* @__PURE__ */ Object.create(null);
     }
-    /**
-     * 通过修改replace的方法，绕过blockly的encodeEntities
-     * (有点蠢,但是改的少哈)
-     * @returns 该report的html代码
-     */
-    replace() {
-      return elements[this.elementId].outerHTML;
+    Object.setPrototypeOf(obj, /* @__PURE__ */ Object.create(null));
+    console.log(obj);
+    if (Object.getPrototypeOf(obj).constructor || ((_a = obj == null ? void 0 : obj.prototype) == null ? void 0 : _a.constructor)) {
+      console.warn("clean失败", obj);
     }
-    toString() {
-      return this.monitorValue;
-    }
-    valueOf() {
-      return values[this.valueId];
-    }
-    static [Symbol.hasInstance](inst) {
-      if ((inst == null ? void 0 : inst.constructor) === _HTMLReport) {
-        return true;
-      }
-      return false;
+    return obj;
+  }
+  var HTMLReport = class {
+    constructor(element, value, monitorValue) {
+      const htmlText = element instanceof HTMLElement ? element.innerHTML : element;
+      const report = {
+        replace: clean(() => htmlText),
+        valueOf: clean(() => value),
+        toString: clean(() => monitorValue)
+      };
+      Object.assign(this, report);
+      clean(Object.getPrototypeOf(this));
     }
   };
-  Object.setPrototypeOf(HTMLReport, /* @__PURE__ */ Object.create(null));
-  Object.setPrototypeOf(HTMLReport[Symbol.hasInstance], /* @__PURE__ */ Object.create(null));
+  clean(HTMLReport);
   function patch(runtime2) {
     if (runtime2.visualReport.spinePatched) {
       return;
@@ -36901,7 +36858,7 @@ void main () {
     runtime2.requestUpdateMonitor = function(monitor) {
       const value = monitor.get("value");
       if (value instanceof HTMLReport) {
-        originUpdate.call(this, monitor.set("value", value.monitorValue));
+        originUpdate.call(this, monitor.set("value", value.toString()));
       } else {
         originUpdate.call(this, monitor);
       }
@@ -36912,11 +36869,11 @@ void main () {
   function patchLog(func) {
     return function(...dat) {
       const args = dat.map((arg) => {
-        if (arg instanceof HTMLReport) {
+        if (arg && arg instanceof HTMLReport) {
           return Object.assign(
-            new String(arg.monitorValue.replaceAll("\n", "  ")),
+            new String(arg.toString().replaceAll("\n", "  ")),
             {
-              value: values[arg.valueId]
+              value: arg.valueOf()
             }
           );
         }

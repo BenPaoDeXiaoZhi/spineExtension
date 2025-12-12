@@ -1,84 +1,68 @@
-let elements: HTMLElement[] = [];
-let values: any[] = [];
-export class HTMLReport {
-    readonly elementId: number;
-    readonly monitorValue: string;
-    readonly valueId: number;
-    constructor(
-        element: HTMLElement,
-        value: any,
-        monitorValue: string = element.innerText
-    ) {
-        Object.setPrototypeOf(Object.getPrototypeOf(this), Object.create(null));
-        Object.defineProperties(this, {
-            valueId: {
-                value: values.push(value) - 1,
-                writable: false,
-                enumerable: false,
-            },
-            elementId: {
-                value: elements.push(element) - 1,
-                writable: false,
-                enumerable: false,
-            },
-            monitorValue: {
-                value: monitorValue,
-                writable: false,
-                enumerable: false,
-            },
-            replace: {
-                value: Object.setPrototypeOf(this.replace, Object.create(null)),
-                writable: false,
-                enumerable: false,
-            },
-            toString: {
-                value: Object.setPrototypeOf(
-                    this.toString,
-                    Object.create(null)
-                ),
-                writable: false,
-                enumerable: false,
-            },
-            valueOf: {
-                value: Object.setPrototypeOf(this.valueOf, Object.create(null)),
-                writable: false,
-                enumerable: false,
-            },
-        });
-        return this;
-    }
+export interface IHTMLReport<T = any> {
     /**
-     * 通过修改replace的方法，绕过blockly的encodeEntities
-     * (有点蠢,但是改的少哈)
-     * @returns 该report的html代码
+     * used by blockly report
+     * @returns a html string
      */
-    replace() {
-        return elements[this.elementId].outerHTML;
+    replace(): string;
+
+    /**
+     * used by extensions
+     * @returns origin value
+     */
+    valueOf(): T;
+
+    /**
+     * used by monitor
+     * @returns a text used in monitor
+     */
+    toString(): string;
+}
+
+/**
+ * cleans an function's prototype
+ */
+export function clean<T extends object>(obj: T): T {
+    if ('prototype' in obj) {
+        obj.prototype = Object.create(null);
     }
-    toString() {
-        return this.monitorValue;
+    Object.setPrototypeOf(obj, Object.create(null));
+    console.log(obj);
+    if (
+        Object.getPrototypeOf(obj).constructor ||
+        (obj as any)?.prototype?.constructor
+    ) {
+        console.warn('clean失败', obj);
     }
-    valueOf() {
-        return values[this.valueId];
-    }
-    static [Symbol.hasInstance](inst: any) {
-        if (inst?.constructor === HTMLReport) {
-            return true;
-        }
-        return false;
+    return obj;
+}
+
+export class HTMLReport<T> {
+    constructor(element: HTMLElement | string, value: T, monitorValue: string) {
+        const htmlText =
+            element instanceof HTMLElement ? element.innerHTML : element;
+        const report: IHTMLReport<T> = {
+            replace: clean(() => htmlText),
+            valueOf: clean(() => value),
+            toString: clean(() => monitorValue),
+        };
+        Object.assign(this, report);
+        clean(Object.getPrototypeOf(this));
     }
 }
-Object.setPrototypeOf(HTMLReport, Object.create(null));
-Object.setPrototypeOf(HTMLReport[Symbol.hasInstance], Object.create(null));
+clean(HTMLReport.prototype.constructor);
+// class 太难搞了...
 
-export function patch(runtime) {
+export function patch(runtime: any) {
     if (runtime.visualReport.spinePatched) {
         return;
     }
     runtime.visualReport.spinePatched = true;
     const originReport: (id: string, value: string) => any =
         runtime.visualReport;
-    runtime.visualReport = function (id: string, value: string | HTMLReport) {
+    runtime.visualReport = function (
+        id: string,
+        value: string | IHTMLReport<any>
+    ) {
         if (value instanceof HTMLReport) {
             const Runtime = this.constructor;
             this.emit(Runtime.VISUAL_REPORT, { id, value }); //不进行tostring
@@ -88,15 +72,15 @@ export function patch(runtime) {
     };
 
     const originUpdate: (
-        monitor: Map<'id' | 'value', string | HTMLReport>
+        monitor: Map<'id' | 'value', string | IHTMLReport>
     ) => any = runtime.requestUpdateMonitor;
 
     runtime.requestUpdateMonitor = function (
-        monitor: Map<'id' | 'value', string | HTMLReport>
+        monitor: Map<'id' | 'value', string | IHTMLReport>
     ) {
         const value = monitor.get('value');
         if (value instanceof HTMLReport) {
-            originUpdate.call(this, monitor.set('value', value.monitorValue));
+            originUpdate.call(this, monitor.set('value', value.toString()));
         } else {
             originUpdate.call(this, monitor);
         }
@@ -108,12 +92,12 @@ export function patch(runtime) {
 }
 function patchLog(func: (...dat) => any) {
     return function (...dat) {
-        const args = dat.map((arg) => {
-            if (arg instanceof HTMLReport) {
+        const args = dat.map((arg: string | IHTMLReport) => {
+            if (arg && arg instanceof HTMLReport) {
                 return Object.assign(
-                    new String(arg.monitorValue.replaceAll('\n', '  ')),
+                    new String(arg.toString().replaceAll('\n', '  ')),
                     {
-                        value: values[arg.valueId],
+                        value: arg.valueOf(),
                     }
                 );
             }

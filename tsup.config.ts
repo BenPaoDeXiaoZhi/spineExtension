@@ -52,6 +52,7 @@ export default defineConfig((tsupOptions) => {
             extension: 'src/index.ts',
             index: 'src/dev/index.ts',
             component: 'src/dev/file.ts',
+            report: 'src/dev/htmlReport.ts',
         },
         splitting: false,
         sourcemap: false,
