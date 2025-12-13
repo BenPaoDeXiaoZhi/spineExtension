@@ -6,7 +6,7 @@ import { Skeleton } from '40webgl';
 function domWithType(
     type: maybeFunc<string>,
     color: maybeFunc<string>,
-    restChildren: HTMLElement[] = []
+    restChildren: maybeFunc<HTMLElement[]> = []
 ) {
     const container = document.createElement('div');
     let children: HTMLElement[] = [];
@@ -16,7 +16,7 @@ function domWithType(
     reportTypeDom.innerText = resoveMaybeFunc(type);
     reportTypeDom.style.color = resoveMaybeFunc(color);
     children.push(reportTypeDom);
-    children = children.concat(restChildren);
+    children = children.concat(resoveMaybeFunc(restChildren));
     children.forEach((dom, idx) => {
         container.appendChild(dom);
         if (idx !== children.length - 1) {
@@ -33,27 +33,22 @@ export class SpineSkinReport extends HTMLReport<SpineSkin> {
         name: string
     ) {
         const idDom = document.createElement('span');
-        idDom.innerText = translate('spineAnimation.SpineSkinReport.id', {
-            id: skin.id,
-        });
 
         const versionDom = document.createElement('span');
-        versionDom.innerText = translate(
-            'spineAnimation.SpineSkinReport.version',
-            { version: skin.manager.version }
-        );
 
         const nameDom = document.createElement('span');
-        nameDom.innerText = translate(
-            'spineAnimation.SpineSkinReport.nameText',
-            { name }
-        );
+
         super(
             () =>
                 domWithType(
                     () => translate('spineAnimation.SpineSkinReport.type'),
                     'blue',
-                    [idDom, versionDom, nameDom]
+                    () => {
+                        idDom.innerText = translate('spineAnimation.SpineSkinReport.id', {id: skin.id });
+                        versionDom.innerText = translate('spineAnimation.SpineSkinReport.version',{ version: skin.manager.version });
+                        nameDom.innerText = translate('spineAnimation.SpineSkinReport.nameText',{ name });
+                        return [idDom,versionDom,nameDom];
+                    }
                 ),
             skin,
             () =>
