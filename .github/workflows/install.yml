@@ -1,6 +1,6 @@
 # This is a basic workflow that is manually triggered
 
-name: npm install workflow
+name: npm workflow
 permissions:
   contents: "write"
 
@@ -10,9 +10,9 @@ on:
   workflow_dispatch:
     # Inputs the workflow accepts.
     inputs:
-      name:
+      command:
         # Friendly description to be shown in the UI instead of 'name'
-        description: 'pkg name'
+        description: 'command'
         # Default value if no value is explicitly provided
         default: ''
         # Input has to be provided for the workflow to run
@@ -38,7 +38,7 @@ jobs:
         node-version: 22.x
     - name: install
       run: | 
-        npm install ${{ inputs.name }}
+        npm ${{ inputs.command }}
         git config user.name "GitHub install Actions Bot"
         git config user.email "<>"
         git add .
