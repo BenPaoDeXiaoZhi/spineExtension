@@ -63,7 +63,7 @@ export class SpineSkinReport extends HTMLReport<SpineSkin> {
 export class SpineSkeletonReport<T extends Skeleton> extends HTMLReport<T> {
     constructor(skeleton: T, translate: (id: Id) => string, name: string) {
         super(
-            () => domWithType('spine骨架', 'green'),
+            () => domWithType(translate.bind(null,'spineAnimation.SpineSkeletonReport.type'), 'green'),
             skeleton,
             () =>
                 `(spine骨架) 名称为${name}, 共有${skeleton.bones.length}个骨骼`
