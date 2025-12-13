@@ -34,7 +34,6 @@ export default defineConfig((tsupOptions) => {
         });
     }
     const dat: Options = {
-        tsc: true,
         banner: {
             get js() {
                 if (tsupOptions.watch) {
