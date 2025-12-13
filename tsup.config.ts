@@ -61,6 +61,7 @@ export default defineConfig((tsupOptions) => {
         loader: {
             '.css': 'text',
             '.svg': 'text',
+            '.png': 'dataurl',
         },
         publicDir: './public',
         esbuildOptions(options) {

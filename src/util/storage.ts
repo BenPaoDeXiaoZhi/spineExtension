@@ -1,7 +1,7 @@
 import type ScratchStorage from 'scratch-storage';
-import mainStyle from './style.asset';
+import mainStyle from './storage/style.asset.css';
 // @ts-ignore: allow importing svg without a module declaration
-import closeSvg from './close.svg';
+import closeSvg from './storage/close.svg';
 
 export class scratchStroageUI {
     storage: ScratchStorage;

@@ -1,5 +1,5 @@
 /* deploy by Github CI/CD
- - Deploy time: 2025/12/12 21:06:42
+ - Deploy time: 2025/12/13 15:28:41
  - Commit id: undefined
  - Repository: undefined
  - Actor: undefined*/
@@ -10,7 +10,7 @@
   // src/util/storage/close.svg
   var close_default = '<svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">\r\n    <path d="M17.657 6.112L6.343 17.426m0-11.314l11.314 11.314" stroke="#566276" stroke-width="2" stroke-linecap="round"\r\n        stroke-linejoin="round"></path>\r\n</svg>';
 
-  // src/util/storage/index.ts
+  // src/util/storage.ts
   var Container = class extends HTMLElement {
     constructor() {
       super();

@@ -12,3 +12,5 @@ export function getTranslate(runtime: any) {
         );
     };
 }
+
+export { zh_cn, en };

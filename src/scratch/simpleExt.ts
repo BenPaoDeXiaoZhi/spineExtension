@@ -15,6 +15,7 @@ export interface extInfo {
     id: string;
     color1?: string;
     color2?: string;
+    blockIconURI?: string;
     name: string;
     blocks: BlockInfo[];
     menus?: { [menuId: string]: MenuInfo };
@@ -28,6 +29,7 @@ export interface BlockInfo {
     branchCount?: number;
     terminal?: boolean;
     blockAllThreads?: boolean;
+    tooltip?: string;
     arguments?: {
         [argName: string]: {
             type: ArgumentTypeValues;

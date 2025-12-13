@@ -38,6 +38,7 @@ export class SpineSkin extends Skin implements RenderWebGL.Skin {
     skeleton: any;
     animationState: any;
     tk: any;
+    name: string;
 
     constructor(
         id: number,
@@ -45,7 +46,8 @@ export class SpineSkin extends Skin implements RenderWebGL.Skin {
         manager: SpineManager,
         skeleton: any,
         animationState: any,
-        tk: any
+        tk: any,
+        name: string
     ) {
         super(id);
         this.gl = renderer.gl;
@@ -54,6 +56,7 @@ export class SpineSkin extends Skin implements RenderWebGL.Skin {
         this.skeleton = skeleton;
         this.tk = tk;
         this.animationState = animationState;
+        this.name = name;
 
         this._texture = this.gl.createTexture();
         this.size = [640, 360];

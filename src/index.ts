@@ -1,5 +1,5 @@
-import { registerExt } from './scratch/register';
-import { getTranslate, Id } from './l18n/translate';
+import { registerExtDetail } from './scratch/register';
+import { getTranslate, Id, zh_cn, en } from './i18n/translate';
 import { SimpleExt } from './scratch/simpleExt';
 import type { extInfo, MenuItems } from './scratch/simpleExt';
 const { BlockType, ArgumentType, runtime } = Scratch;
@@ -8,9 +8,13 @@ import { scratchStroageUI } from './util/storage';
 import { SpineSkin, patchSpineSkin } from './spineSkin';
 import spineVersions from './spine/spineVersions';
 import { Spine40Manager, Spine42Manager } from './spineManager';
-import { patch, HTMLReport, IHTMLReport } from './util/htmlReport';
-import { Skeleton } from '40webgl';
+import { patch, HTMLReport } from './util/htmlReport';
+import { SpineSkinReport, SpineSkeletonReport } from './util/spineReports';
+import icon from '../assets/icon.png';
+import insetIcon from '../assets/insetIcon.png';
+
 type Utility = VM.BlockUtility;
+
 type SpineManagers = {
     '4.0webgl': Spine40Manager;
     '4.2webgl': Spine42Manager;
@@ -60,14 +64,16 @@ class SpineConfig {
     }
 }
 
-class ext extends SimpleExt {
+const NS = 'spineAnimation' as const;
+
+class SpineExtension extends SimpleExt {
     translate: (id: Id, args?: object) => string;
     runtime: VM.Runtime;
     managers: SpineManagers;
     renderer: RenderWebGL;
     constructor(runtime: VM.Runtime) {
         console.log(runtime);
-        super('spineAnimation', 'foo');
+        super(NS, 'foo');
         this.runtime = runtime;
         console.log(this);
         this.translate = getTranslate(runtime);
@@ -78,7 +84,13 @@ class ext extends SimpleExt {
             '4.0webgl': new Spine40Manager(this.renderer),
             '4.2webgl': new Spine42Manager(this.renderer),
         };
+    }
+
+    getInfo(): extInfo {
         this.info.name = this.translate('spineAnimation.extensionName');
+        this.info.blockIconURI = insetIcon;
+        this.info.color1 = '#272D39';
+        this.info.color2 = '#20272F';
         this.info.blocks = [
             {
                 opcode: this.setSkinSkeleton.name,
@@ -111,6 +123,16 @@ class ext extends SimpleExt {
                 },
             },
             {
+                opcode: this.getSkeletonInSkin.name,
+                text: '获取skin[SKIN]中的骨架',
+                blockType: BlockType.REPORTER,
+                arguments: {
+                    SKIN: {
+                        type: null,
+                    },
+                },
+            },
+            {
                 func: this.initUI.name,
                 blockType: BlockType.BUTTON,
                 text: 'abcd',
@@ -126,6 +148,7 @@ class ext extends SimpleExt {
                 acceptReporters: true,
             },
         };
+        return this.info;
     }
 
     spriteMenu(): MenuItems {
@@ -163,17 +186,17 @@ class ext extends SimpleExt {
         return menuItems;
     }
     setSkinSkeleton(
-        arg: { TARGET_NAME: string; SKELETON: string | IHTMLReport },
+        arg: { TARGET_NAME: string; SKELETON: number | HTMLReport },
         util: Utility
     ) {
         const { TARGET_NAME, SKELETON } = arg;
 
         console.log(SKELETON);
         let skinId: any;
-        if (SKELETON instanceof HTMLReport) {
-            skinId = SKELETON.valueOf().skinId;
+        if (SKELETON instanceof SpineSkinReport) {
+            skinId = SKELETON.valueOf().id;
         } else {
-            skinId = Number(SKELETON);
+            skinId = Number(SKELETON.toString());
         }
         if (isNaN(skinId)) {
             console.error('请输入数字或有效的skeleton数据');
@@ -224,25 +247,60 @@ class ext extends SimpleExt {
             manager,
             skeleton,
             animationState,
-            new spineVersions[version].TimeKeeper()
+            new spineVersions[version].TimeKeeper(),
+            NAME
         ));
         console.log(newSkin);
-        const info = `名称为${NAME},<br>版本为${version},<br>skinId为${skinId}的骨骼`;
-        const container = document.createElement('div');
-        container.innerHTML = info;
-        return new HTMLReport(
-            container,
-            Object.setPrototypeOf(
-                { skinId, skeleton, animationState, skel, atlas, version },
-                Object.create(null)
-            ),
-            info.replaceAll('<br>', '\n')
-        );
+        return new SpineSkinReport(newSkin, this.translate, NAME);
     }
     initUI() {
         const s = new scratchStroageUI(this.runtime.storage, 'spineAnimation');
         s.createUI();
         console.log(s);
     }
+
+    getSkeletonInSkin(arg: { SKIN: any | SpineSkinReport }) {
+        const { SKIN } = arg;
+        if (SKIN instanceof SpineSkinReport) {
+            const skin = SKIN.valueOf();
+            return new SpineSkeletonReport(
+                skin.skeleton,
+                this.translate,
+                skin.name
+            );
+        }
+        console.error('请输入有效的spine skin');
+        return '';
+    }
 }
-registerExt(new ext(runtime));
+registerExtDetail(SpineExtension, {
+    info: {
+        name: 'spineAnimation.name',
+        description: 'spineAnimation.desc',
+        extensionId: NS,
+        collaboratorList: [
+            {
+                collaborator: '孟夫子驾到@ccw',
+                collaboratorURL:
+                    'https://www.ccw.site/student/63c2807d669fa967f17f5559',
+            },
+            {
+                collaborator: '乌龙茶速递@ccw',
+                collaboratorURL:
+                    'https://www.ccw.site/student/68dd004586bbc77f84e309ac',
+            },
+        ],
+        iconURL: icon,
+        insetIconURL: insetIcon,
+    },
+    l10n: {
+        'zh-cn': {
+            'spineAnimation.name': zh_cn['spineAnimation.extensionName'],
+            'spineAnimation.desc': zh_cn['spineAnimation.description'],
+        },
+        en: {
+            'spineAnimation.name': en['spineAnimation.extensionName'],
+            'spineAnimation.desc': en['spineAnimation.description'],
+        },
+    },
+});

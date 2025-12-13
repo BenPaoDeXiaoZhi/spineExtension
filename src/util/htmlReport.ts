@@ -1,23 +1,3 @@
-export interface IHTMLReport<T = any> {
-    /**
-     * used by blockly report
-     * @returns a html string
-     */
-    replace(): string;
-
-    /**
-     * used by extensions
-     * @returns origin value
-     */
-    valueOf(): T;
-
-    /**
-     * used by monitor
-     * @returns a text used in monitor
-     */
-    toString(): string;
-}
-
 /**
  * cleans an function's prototype
  */
@@ -26,7 +6,6 @@ export function clean<T extends object>(obj: T): T {
         obj.prototype = Object.create(null);
     }
     Object.setPrototypeOf(obj, Object.create(null));
-    console.log(obj);
     if (
         Object.getPrototypeOf(obj).constructor ||
         (obj as any)?.prototype?.constructor
@@ -36,21 +15,50 @@ export function clean<T extends object>(obj: T): T {
     return obj;
 }
 
-export class HTMLReport<T> {
-    constructor(element: HTMLElement | string, value: T, monitorValue: string) {
-        const htmlText =
-            element instanceof HTMLElement ? element.innerHTML : element;
-        const report: IHTMLReport<T> = {
-            replace: clean(() => htmlText),
-            valueOf: clean(() => value),
-            toString: clean(() => monitorValue),
-        };
-        Object.assign(this, report);
-        clean(Object.getPrototypeOf(this));
+export type maybeFunc<T> = T | (() => T);
+
+export function resoveMaybeFunc<T>(dat: maybeFunc<T>) {
+    if (dat instanceof Function) {
+        return dat();
+    } else {
+        return dat;
     }
 }
-clean(HTMLReport.prototype.constructor);
-// class 太难搞了...
+
+export class HTMLReport<T = any> {
+    /**
+     * used by blockly report
+     * @returns a html string
+     */
+    replace: () => string;
+
+    /**
+     * used by extensions
+     * @returns origin value
+     */
+    valueOf: () => T;
+
+    /**
+     * used by monitor
+     * @returns a raw text used in monitor
+     */
+    toString: () => string;
+
+    constructor(
+        element: maybeFunc<HTMLElement>,
+        value: maybeFunc<T>,
+        monitorValue: maybeFunc<string>
+    ) {
+        const report: HTMLReport<T> = {
+            //使用闭包防修改
+            replace: clean(() => resoveMaybeFunc(element).innerHTML),
+            valueOf: clean(() => resoveMaybeFunc(value)),
+            toString: clean(() => resoveMaybeFunc(monitorValue)),
+        };
+        Object.assign(this, report);
+        Object.freeze(this);
+    }
+}
 
 export function patch(runtime: any) {
     if (runtime.visualReport.spinePatched) {
@@ -61,7 +69,7 @@ export function patch(runtime: any) {
         runtime.visualReport;
     runtime.visualReport = function (
         id: string,
-        value: string | IHTMLReport<any>
+        value: string | HTMLReport<any>
     ) {
         if (value instanceof HTMLReport) {
             const Runtime = this.constructor;
@@ -72,11 +80,11 @@ export function patch(runtime: any) {
     };
 
     const originUpdate: (
-        monitor: Map<'id' | 'value', string | IHTMLReport>
+        monitor: Map<'id' | 'value', string | HTMLReport>
     ) => any = runtime.requestUpdateMonitor;
 
     runtime.requestUpdateMonitor = function (
-        monitor: Map<'id' | 'value', string | IHTMLReport>
+        monitor: Map<'id' | 'value', string | HTMLReport>
     ) {
         const value = monitor.get('value');
         if (value instanceof HTMLReport) {
@@ -85,21 +93,22 @@ export function patch(runtime: any) {
             originUpdate.call(this, monitor);
         }
     };
-
-    //修改console
-    console.log = patchLog(console.log);
-    console.info = patchLog(console.info);
 }
-function patchLog(func: (...dat) => any) {
+
+//修改console
+export function patchLog() {
+    console.log = patchLogFunc(console.log);
+    console.info = patchLogFunc(console.info);
+}
+
+function patchLogFunc(func: (...dat) => any) {
     return function (...dat) {
-        const args = dat.map((arg: string | IHTMLReport) => {
+        const args = dat.map((arg: string | HTMLReport) => {
             if (arg && arg instanceof HTMLReport) {
-                return Object.assign(
-                    new String(arg.toString().replaceAll('\n', '  ')),
-                    {
-                        value: arg.valueOf(),
-                    }
-                );
+                console.group(arg.toString());
+                func(arg.valueOf());
+                console.groupEnd();
+                return arg.toString();
             }
             return arg;
         });

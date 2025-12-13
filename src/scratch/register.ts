@@ -1,5 +1,35 @@
-import { extInfo } from './simpleExt';
-export function registerExt(ext: { getInfo(): extInfo }) {
+import SimpleExt from './simpleExt';
+
+interface ICollaboratorObj {
+    collaborator: string;
+    collaboratorURL: string;
+}
+
+interface ITempExt {
+    info: {
+        name: string;
+        description: string;
+        extensionId: string;
+        iconURL?: string;
+        insetIconURL?: string;
+        featured?: boolean;
+        disabled?: boolean;
+        collaborator?: string;
+        collaboratorList?: ICollaboratorObj[];
+    };
+    l10n: {
+        'zh-cn': object;
+        en: object;
+    };
+}
+
+type windowWithTemp = typeof window & {
+    tempExt: {
+        Extension: new (runtime: VM.Runtime) => SimpleExt;
+    } & ITempExt;
+};
+
+export function checkExt(ext: SimpleExt) {
     if (!ext || !ext.getInfo) {
         throw new Error('ext.getInfo is not defined');
     }
@@ -44,5 +74,22 @@ export function registerExt(ext: { getInfo(): extInfo }) {
     } finally {
         console.groupEnd();
     }
+}
+export function registerExt(ext: SimpleExt) {
+    checkExt(ext);
     Scratch.extensions.register(ext);
+}
+
+export function registerExtDetail(
+    ext: {
+        new (runtime: VM.Runtime): SimpleExt;
+    },
+    info: ITempExt
+) {
+    (window as windowWithTemp).tempExt = Object.assign(
+        {
+            Extension: ext,
+        },
+        info
+    );
 }
