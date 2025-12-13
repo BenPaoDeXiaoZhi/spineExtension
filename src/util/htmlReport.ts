@@ -17,7 +17,7 @@ export function clean<T extends object>(obj: T): T {
 
 export type maybeFunc<T> = T | (() => T);
 
-export function resoveMaybeFunc<T>(dat: maybeFunc<T>) {
+export function resolveMaybeFunc<T>(dat: maybeFunc<T>) {
     if (dat instanceof Function) {
         return dat();
     } else {
