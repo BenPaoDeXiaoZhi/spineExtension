@@ -1,6 +1,6 @@
  import { SpineSkin } from '../spineSkin';
 import { HTMLReport, maybeFunc, resolveMaybeFunc } from './htmlReport';
-import { Id } from '../i18n/translate';
+import { TranslateFn } from '../i18n/translate';
 import { Skeleton } from '40webgl';
 
 function domWithType(
@@ -29,7 +29,7 @@ function domWithType(
 export class SpineSkinReport extends HTMLReport<SpineSkin> {
     constructor(
         skin: SpineSkin,
-        translate: (id: Id, args?: object) => string,
+        translate: TranslateFn,
         name: string
     ) {
         const idDom = document.createElement('span');
@@ -61,7 +61,7 @@ export class SpineSkinReport extends HTMLReport<SpineSkin> {
 }
 
 export class SpineSkeletonReport<T extends Skeleton> extends HTMLReport<T> {
-    constructor(skeleton: T, translate: (id: Id) => string, name: string) {
+    constructor(skeleton: T, translate: TranslateFn, name: string) {
         super(
             () => domWithType(translate.bind(null,'spineAnimation.SpineSkeletonReport.type'), 'green'),
             skeleton,
