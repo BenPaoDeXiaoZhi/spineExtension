@@ -1,5 +1,7 @@
 import { HTMLReport } from '../util/htmlReport';
-console.log(new HTMLReport('report', { a: 'b' }, 'monitor'));
+const container = document.createElement("div")
+container.innerText="report"
+console.log(new HTMLReport(container, { a: 'b' }, 'monitor'));
 Object.assign(window, {
     HTMLReport,
 });
