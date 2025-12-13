@@ -17,7 +17,7 @@ export function clean<T extends object>(obj: T): T {
 
 export type maybeFunc<T> = T | (() => T);
 
-export function resoveMaybeFunc<T>(dat: maybeFunc<T>) {
+export function resolveMaybeFunc<T>(dat: maybeFunc<T>) {
     if (dat instanceof Function) {
         return dat();
     } else {
@@ -51,9 +51,9 @@ export class HTMLReport<T = any> {
     ) {
         const report: HTMLReport<T> = {
             //使用闭包防修改
-            replace: clean(() => resoveMaybeFunc(element).innerHTML),
-            valueOf: clean(() => resoveMaybeFunc(value)),
-            toString: clean(() => resoveMaybeFunc(monitorValue)),
+            replace: clean(() => resolveMaybeFunc(element).innerHTML),
+            valueOf: clean(() => resolveMaybeFunc(value)),
+            toString: clean(() => resolveMaybeFunc(monitorValue)),
         };
         Object.assign(this, report);
         Object.freeze(this);
