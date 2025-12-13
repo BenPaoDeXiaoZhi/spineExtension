@@ -19,6 +19,7 @@ export default {
     'spineAnimation.SpineSkinReport.nameText': 'Name is {name}',
     'spineAnimation.SpineSkinReport.monitor':
         '(Spine Skin) Id is {id}, Version is {version}, Name is {name}',
+    'spineAnimation.SpineSkeletonReport.type': 'Spine Skeleton',
 } satisfies {
     [K in keyof typeof zh_cn]: string;
 };
