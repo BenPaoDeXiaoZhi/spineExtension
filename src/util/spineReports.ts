@@ -1,4 +1,4 @@
- import { SpineSkin } from '../spineSkin';
+import { SpineSkin } from '../spineSkin';
 import { HTMLReport, maybeFunc, resolveMaybeFunc } from './htmlReport';
 import { TranslateFn } from '../i18n/translate';
 import { Skeleton } from '40webgl';
