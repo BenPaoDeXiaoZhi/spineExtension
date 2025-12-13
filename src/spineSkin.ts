@@ -2,7 +2,7 @@ import RenderWebGL, { AnyWebGLContext } from 'scratch-render';
 import type { SpineManager } from './spineManager';
 
 const Skin = (Scratch.runtime.renderer as unknown as { exports: any }).exports
-    .Skin as typeof RenderWebGL.Skin;
+    .Skin as (typeof RenderWebGL.Skin)&{new(id:number):RenderWebGL.Skin};
 console.log(Skin);
 
 /**
@@ -31,7 +31,7 @@ export function patchSpineSkin(runtime: VM.Runtime) {
     console.log(Object.getPrototypeOf(skin).constructor);
 }
 
-export class SpineSkin extends Skin implements RenderWebGL.Skin {
+export class SpineSkin extends Skin{
     gl: AnyWebGLContext;
     manager: SpineManager;
     _size: [x: number, y: number];
