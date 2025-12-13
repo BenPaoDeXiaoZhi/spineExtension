@@ -1,5 +1,5 @@
-import { SpineSkin } from '../spineSkin';
-import { HTMLReport, maybeFunc, resoveMaybeFunc } from './htmlReport';
+ import { SpineSkin } from '../spineSkin';
+import { HTMLReport, maybeFunc, resolveMaybeFunc } from './htmlReport';
 import { Id } from '../i18n/translate';
 import { Skeleton } from '40webgl';
 
@@ -13,10 +13,10 @@ function domWithType(
 
     const reportTypeDom = document.createElement('span');
     reportTypeDom.style.fontSize = '150%';
-    reportTypeDom.innerText = resoveMaybeFunc(type);
-    reportTypeDom.style.color = resoveMaybeFunc(color);
+    reportTypeDom.innerText = resolveMaybeFunc(type);
+    reportTypeDom.style.color = resolveMaybeFunc(color);
     children.push(reportTypeDom);
-    children = children.concat(resoveMaybeFunc(restChildren));
+    children = children.concat(resolveMaybeFunc(restChildren));
     children.forEach((dom, idx) => {
         container.appendChild(dom);
         if (idx !== children.length - 1) {
@@ -39,24 +39,23 @@ export class SpineSkinReport extends HTMLReport<SpineSkin> {
         const nameDom = document.createElement('span');
 
         super(
-            () =>
-                domWithType(
-                    () => translate('spineAnimation.SpineSkinReport.type'),
-                    'blue',
-                    () => {
-                        idDom.innerText = translate('spineAnimation.SpineSkinReport.id', {id: skin.id });
-                        versionDom.innerText = translate('spineAnimation.SpineSkinReport.version',{ version: skin.manager.version });
-                        nameDom.innerText = translate('spineAnimation.SpineSkinReport.nameText',{ name });
-                        return [idDom,versionDom,nameDom];
-                    }
-                ),
+            domWithType.bind(
+                null,
+                translate.bind(null,'spineAnimation.SpineSkinReport.type'),
+                'blue',
+                () => {
+                    idDom.innerText = translate('spineAnimation.SpineSkinReport.id', {id: skin.id });
+                    versionDom.innerText = translate('spineAnimation.SpineSkinReport.version',{ version: skin.manager.version });
+                    nameDom.innerText = translate('spineAnimation.SpineSkinReport.nameText',{ name });
+                    return [idDom,versionDom,nameDom];
+                }
+            ),
             skin,
-            () =>
-                translate('spineAnimation.SpineSkinReport.monitor', {
-                    id: skin.id,
-                    version: skin.manager.version,
-                    name,
-                })
+            translate.bind(null,'spineAnimation.SpineSkinReport.monitor', {
+                id: skin.id,
+                version: skin.manager.version,
+                name,
+            })
         );
     }
 }
