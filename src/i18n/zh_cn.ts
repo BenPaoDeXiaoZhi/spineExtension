@@ -19,6 +19,7 @@ export default {
     'spineAnimation.SpineSkinReport.nameText': '名称为 {name}',
     'spineAnimation.SpineSkinReport.monitor':
         '(spine皮肤) id为{id}, 版本为{version}, 名称为{name}',
+    'spineAnimation.SpineSkeletonReport.type': 'spine骨骼',
 } as const satisfies {
     [K in i18nKey]: string;
 };
