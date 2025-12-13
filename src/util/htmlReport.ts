@@ -51,9 +51,9 @@ export class HTMLReport<T = any> {
     ) {
         const report: HTMLReport<T> = {
             //使用闭包防修改
-            replace: clean(() => resoveMaybeFunc(element).innerHTML),
-            valueOf: clean(() => resoveMaybeFunc(value)),
-            toString: clean(() => resoveMaybeFunc(monitorValue)),
+            replace: clean(() => resolveMaybeFunc(element).innerHTML),
+            valueOf: clean(() => resolveMaybeFunc(value)),
+            toString: clean(() => resolveMaybeFunc(monitorValue)),
         };
         Object.assign(this, report);
         Object.freeze(this);
