@@ -19,6 +19,8 @@ function render(
   animationState.apply(skeleton);
   spineRenderer.begin();
   spineRenderer.drawSkeleton(skeleton);
+  const [x,y,width,height]=skeleton.getBoundsRect()
+  spineRenderer.rect(x,y,width,height)
   spineRenderer.end();
   requestAnimationFrame(() =>
     render(skeleton, tk, animationState, spineRenderer)
@@ -70,9 +72,7 @@ for (let i of ["Azusa", "CH0070", "Airi"]) {
     skeleton.setToSetupPose();
     skeleton.updateWorldTransform(spine.Physics.update);
     console.log(skeleton.getBoundsRect());
-    canvas.width = skeleton.getBoundsRect().width;
-    canvas.height = skeleton.getBoundsRect().height;
-    skeleton.y = -skeleton.getBoundsRect().height / 2;
+    skeleton.y = -canvas.height / 2;
     animationState.setAnimation(0, "Idle_01", true);
     (window as any).skeleton = skeleton;
     (window as any).animationState = animationState;
