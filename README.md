@@ -4,7 +4,7 @@
 ***
 ### 亮点
 1. 特殊的数据存储方式
-  - 通过[HTMLReport](src/utils/HTMLReport.ts)存储骨骼数据，更便于观察！
+  - 通过[HTMLReport](src/util/htmlReport.ts)存储骨骼数据，更便于观察！
 2. 扩展Gandi原版的Spine实现
   - 修改Gandi的部分原版功能，使渲染过程更加快捷
 ### 开发进展
