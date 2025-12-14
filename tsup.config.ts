@@ -79,6 +79,7 @@ export default defineConfig((tsupOptions) => {
             }
         },
         esbuildPlugins: [minifySpinePlugin],
+        treeshake: true,
     };
     return dat;
 });

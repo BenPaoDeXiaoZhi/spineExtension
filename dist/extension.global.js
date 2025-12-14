@@ -1,9 +1,12 @@
-/* deploy by Github CI/CD
- - Deploy time: 2025/12/14 11:36:40
- - Commit id: undefined
- - Repository: undefined
- - Actor: undefined*/
-(() => {
+(function () {
+  'use strict';
+
+  /* deploy by Github CI/CD
+   - Deploy time: 2025/12/14 11:39:17
+   - Commit id: undefined
+   - Repository: undefined
+   - Actor: undefined*/
+
   // src/scratch/register.ts
   function registerExtDetail(ext, info) {
     window.tempExt = Object.assign(
@@ -726,4 +729,5 @@
       }
     }
   });
+
 })();

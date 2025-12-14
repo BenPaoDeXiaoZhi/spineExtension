@@ -1,9 +1,12 @@
-/* deploy by Github CI/CD
- - Deploy time: 2025/12/14 11:36:40
- - Commit id: undefined
- - Repository: undefined
- - Actor: undefined*/
-(() => {
+(function () {
+  'use strict';
+
+  /* deploy by Github CI/CD
+   - Deploy time: 2025/12/14 11:39:17
+   - Commit id: undefined
+   - Repository: undefined
+   - Actor: undefined*/
+
   // src/util/htmlReport.ts
   function clean(obj) {
     var _a;
@@ -58,4 +61,5 @@
   Object.assign(window, {
     HTMLReport
   });
+
 })();
