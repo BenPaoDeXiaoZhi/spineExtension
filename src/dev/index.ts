@@ -19,8 +19,8 @@ function render(
   animationState.apply(skeleton);
   spineRenderer.begin();
   spineRenderer.drawSkeleton(skeleton);
-  const [x,y,width,height]=skeleton.getBoundsRect()
-  spineRenderer.rect(false,x,y,width,height)
+  const {x,y,width,height}=skeleton.getBoundsRect();
+  spineRenderer.rect(false,x,y,width,height);
   spineRenderer.end();
   requestAnimationFrame(() =>
     render(skeleton, tk, animationState, spineRenderer)
