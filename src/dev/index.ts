@@ -1,4 +1,4 @@
-import { AnimationState, SceneRenderer, Skeleton, TimeKeeper } from "42webgl";
+import { AnimationState, SceneRenderer, Skeleton, TimeKeeper, Color } from "42webgl";
 import type Spine from "../spine/4.2/spine-webgl";
 import spineVersions from "../spine/spineVersions";
 
@@ -20,7 +20,7 @@ function render(
   spineRenderer.begin();
   spineRenderer.drawSkeleton(skeleton);
   const {x,y,width,height}=skeleton.getBoundsRect();
-  spineRenderer.rect(true,x,y,5,5);
+  spineRenderer.rect(true,x,y,5,5,new Color(0,1,0,0));
   spineRenderer.end();
   requestAnimationFrame(() =>
     render(skeleton, tk, animationState, spineRenderer)
