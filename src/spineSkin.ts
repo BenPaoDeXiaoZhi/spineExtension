@@ -71,16 +71,21 @@ export class SpineSkin extends Skin{
     getTexture(scale: [number, number]) {
         return this._texture;
     }
-    updateTransform(drawable,scale){
-        console.log(drawable,scale);
+    updateTransform(drawable){
+        console.log(drawable);
         this.updatePosition(drawable._position);
+        this.updateScale(drawable._scale)
     }
     updatePosition([x,y]:[x:number,y:number]){
         this.skeleton.x = x;
         this.skeleton.y = y;
     }
+    updateScale([x,y]:[x:number,y:number]){
+        this.skeleton.scaleX = x;
+        this.skeleton.scaleY = y;
+    }
     render(drawable,scale) {
-        this.updateTransform(drawable,scale);
+        this.updateTransform(drawable);
         this.manager.drawSkeleton(this.skeleton, this.tk, this.animationState);
         this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA); //reset blendfunc
         requestAnimationFrame(() => this.emit((Skin as any).Events.WasAltered)); //request next frame
