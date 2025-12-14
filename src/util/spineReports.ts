@@ -19,39 +19,54 @@ function domWithType(
     children = children.concat(resolveMaybeFunc(restChildren));
     children.forEach((dom, idx) => {
         container.appendChild(dom);
-        if (idx !== children.length - 1) {
-            container.appendChild(document.createElement('br'));
-        }
     });
     return container;
 }
 
-export class SpineSkinReport extends HTMLReport<SpineSkin> {
-    constructor(skin: SpineSkin, translate: TranslateFn, name: string) {
-        const idDom = document.createElement('span');
-        const versionDom = document.createElement('span');
-        const nameDom = document.createElement('span');
-
+export class ObjectKVReport<
+    V,
+    T extends { [K: string]: string } = {}
+> extends HTMLReport<V> {
+    constructor(
+        type: maybeFunc<string>,
+        color: maybeFunc<string>,
+        obj: maybeFunc<T>,
+        value: V,
+        monitor: maybeFunc<string>
+    ) {
         function render() {
-            idDom.innerText = translate('SpineSkinReport.id', {
-                id: skin.id,
-            });
-            versionDom.innerText = translate('SpineSkinReport.version', {
-                version: skin.manager.version,
-            });
-            nameDom.innerText = translate('SpineSkinReport.nameText', {
-                name,
-            });
-            return [idDom, versionDom, nameDom];
+            const children: HTMLElement[] = [];
+            const rawObj = resolveMaybeFunc(obj);
+            for (const i in rawObj) {
+                const KVDom = document.createElement('div');
+                const keyDom = document.createElement('span');
+                keyDom.innerText = i;
+                const valueDom = document.createElement('span');
+                valueDom.innerText = rawObj[i];
+                KVDom.appendChild(keyDom);
+                KVDom.appendChild(valueDom);
+                children.push(KVDom);
+            }
+            const container = domWithType(type, color, children);
+            return container;
         }
+        super(render, value, monitor);
+    }
+}
 
+export class SpineSkinReport extends ObjectKVReport<SpineSkin> {
+    constructor(skin: SpineSkin, translate: TranslateFn, name: string) {
+        function render() {
+            return {
+                [translate('SpineSkinReport.id')]: skin.id,
+                [translate('SpineSkinReport.version')]: skin.manager.version,
+                [translate('SpineSkinReport.nameText')]: name,
+            };
+        }
         super(
-            () =>
-                domWithType(
-                    () => translate('SpineSkinReport.type'),
-                    'blue',
-                    render
-                ),
+            () => translate('SpineSkinReport.type'),
+            'blue',
+            render,
             skin,
             () =>
                 translate('SpineSkinReport.monitor', {
@@ -63,14 +78,19 @@ export class SpineSkinReport extends HTMLReport<SpineSkin> {
     }
 }
 
-export class SpineSkeletonReport<T extends Skeleton> extends HTMLReport<T> {
+export class SpineSkeletonReport<T extends Skeleton> extends ObjectKVReport<T> {
     constructor(skeleton: T, translate: TranslateFn, name: string) {
+        function render() {
+            return {
+                [translate('SpineSkeletonReport.nameText')]: name,
+                [translate('SpineSkeletonReport.boneNum')]:
+                    skeleton.bones.length,
+            };
+        }
         super(
-            () =>
-                domWithType(
-                    () => translate('SpineSkeletonReport.type'),
-                    'green'
-                ),
+            () => translate('SpineSkeletonReport.type'),
+            'green',
+            render,
             skeleton,
             () =>
                 `(spine骨架) 名称为${name}, 共有${skeleton.bones.length}个骨骼`

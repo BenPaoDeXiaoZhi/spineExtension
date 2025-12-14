@@ -1,8 +1,8 @@
 import { registerExtDetail } from './scratch/register';
-import { getTranslate, Id, zh_cn, en } from './i18n/translate';
+import { getTranslate, zh_cn, en, TranslateFn } from './i18n/translate';
 import { SimpleExt } from './scratch/simpleExt';
 import type { extInfo, MenuItems } from './scratch/simpleExt';
-const { BlockType, ArgumentType, runtime } = Scratch;
+const { BlockType, ArgumentType} = Scratch;
 import type VM from 'scratch-vm';
 import { scratchStroageUI } from './util/storage';
 import { SpineSkin, patchSpineSkin } from './spineSkin';
@@ -67,7 +67,7 @@ class SpineConfig {
 const NS = 'spineAnimation' as const;
 
 class SpineExtension extends SimpleExt {
-    translate: (id: Id, args?: object) => string;
+    translate: TranslateFn;
     runtime: VM.Runtime;
     managers: SpineManagers;
     renderer: RenderWebGL;
@@ -124,7 +124,7 @@ class SpineExtension extends SimpleExt {
             },
             {
                 opcode: this.getSkeletonInSkin.name,
-                text: '获取skin[SKIN]中的骨架',
+                text: this.translate('getSkeletonInSkin.text'),
                 blockType: BlockType.REPORTER,
                 arguments: {
                     SKIN: {
@@ -152,7 +152,7 @@ class SpineExtension extends SimpleExt {
     }
 
     spriteMenu(): MenuItems {
-        const items = [
+        const items:MenuItems = [
             {
                 text: this.translate('spriteMenu.currentTarget'),
                 value: '__this__',
@@ -199,7 +199,7 @@ class SpineExtension extends SimpleExt {
             skinId = Number(SKELETON.toString());
         }
         if (isNaN(skinId)) {
-            console.error('请输入数字或有效的skeleton数据');
+            console.error(this.translate('setSkinSkeleton.skeletonIdError'));
             return;
         }
         let target: VM.RenderedTarget;
@@ -210,7 +210,7 @@ class SpineExtension extends SimpleExt {
                 (t) => t.isSprite() && t.getName() === TARGET_NAME
             );
             if (!target) {
-                console.warn(`找不到名为${TARGET_NAME}的角色`);
+                console.warn(this.translate('setSkinSkeleton.characterNotFound',{name:TARGET_NAME}));
             }
         }
         const drawableId = target.drawableID;
@@ -267,7 +267,7 @@ class SpineExtension extends SimpleExt {
                 skin.name
             );
         }
-        console.error('请输入有效的spine skin');
+        console.error(this.translate('getSkeletonInSkin.skinError'));
         return '';
     }
 }

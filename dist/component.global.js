@@ -1,8 +1,6 @@
-(function(){'use strict';/* deploy by Github CI/CD
- - Deploy time: 2025/12/14 11:58:25
- - Commit id: undefined
- - Repository: undefined
- - Actor: undefined*/
+(function(){'use strict';/* deploy by dev
+ - Deploy time: 2025/12/14 13:01:35
+*/
 var l=`.bg {\r
     width: 100%;\r
     height: 100%;\r
