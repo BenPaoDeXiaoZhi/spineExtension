@@ -15,7 +15,7 @@ try {
         // Create pages, interact with UI elements, assert values
         const context = await browser.newContext();
         let fdat = fs.readFileSync('./dist/extension.global.js', 'utf8');
-        console.log(fdat);
+        console.log(fdat.slice(0,100)+"...");
         await context.addCookies([
             {
                 name: 'token',
