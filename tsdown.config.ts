@@ -1,8 +1,20 @@
 import { defineConfig } from 'tsdown'
 
 export default defineConfig({
-  entry: {
-    main: 'src/index.ts',
-    utils: 'src/utils.ts',
-  },
+    entry: {
+        extension: 'src/index.ts',
+        index: 'src/dev/index.ts',
+        component: 'src/dev/file.ts',
+        report: 'src/dev/htmlReport.ts',
+    },
+    splitting: false,
+    sourcemap: false,
+    clean: true,
+    format: 'iife',
+    loader: {
+        '.css': 'text',
+        '.svg': 'text',
+        '.png': 'dataurl',
+    },
+    publicDir: './public',
 })
