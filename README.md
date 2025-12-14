@@ -1,7 +1,6 @@
 # ✨Spine Extension For Gandi✨  
-***
-## 为**Gandi**编辑器量身定做的Spine运行时扩展  
-## 类型安全，功能可扩展
+### 为**Gandi**编辑器量身定做的Spine运行时扩展  
+### 类型安全，功能可扩展
 ***
 ### 亮点
 1. 特殊的数据存储方式
@@ -31,5 +30,5 @@
 > - [ ] i18n
 ## 鸣谢
 EsotericSoftware的[Spine Webgl runtime](https://zh.esotericsoftware.com/git/spine-runtimes/tree/spine-ts)  
-UI设计、测试、杂项、部分异常的修复：[乌龙茶速递@ccw![乌龙茶速递](https://m.ccw.site/user_projects_assets/dc5394d2-c5c5-4d69-b924-effaae5c4543.png)](https://www.ccw.site/student/68dd004586bbc77f84e309ac)
+UI设计、测试、杂项、部分异常的修复：[乌龙茶速递@ccw ![乌龙茶速递](https://m.ccw.site/user_projects_assets/dc5394d2-c5c5-4d69-b924-effaae5c4543.png)](https://www.ccw.site/student/68dd004586bbc77f84e309ac)  
 项目灵感，renderer部分的支持：HCN
