@@ -20,7 +20,7 @@ function render(
   spineRenderer.begin();
   spineRenderer.drawSkeleton(skeleton);
   const {x,y,width,height}=skeleton.getBoundsRect();
-  spineRenderer.rect(true,x,y,5,5,new Color(0,1,0,0));
+  spineRenderer.rect(true,500,500,5,5,new Color(0,1,0,0));
   spineRenderer.end();
   requestAnimationFrame(() =>
     render(skeleton, tk, animationState, spineRenderer)
