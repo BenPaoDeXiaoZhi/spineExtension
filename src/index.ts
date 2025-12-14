@@ -4,7 +4,7 @@ import { SimpleExt } from './scratch/simpleExt';
 import type { extInfo, MenuItems } from './scratch/simpleExt';
 const { BlockType, ArgumentType } = Scratch;
 import type VM from 'scratch-vm';
-import { scratchStroageUI } from './util/storage';
+import { scratchStorageUI } from './util/storage';
 import { SpineSkin, patchSpineSkin } from './spineSkin';
 import spineVersions from './spine/spineVersions';
 import { Spine40Manager, Spine42Manager } from './spineManager';
@@ -260,7 +260,7 @@ class SpineExtension extends SimpleExt {
         return new SpineSkinReport(newSkin, this.translate, NAME);
     }
     initUI() {
-        const s = new scratchStroageUI(this.runtime.storage, 'spineAnimation');
+        const s = new scratchStorageUI(this.runtime.storage, 'spineAnimation');
         s.createUI();
         console.log(s);
     }

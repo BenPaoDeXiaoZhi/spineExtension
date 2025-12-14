@@ -3,5 +3,33 @@
     "i18n-ally.localesPaths": [
         "src/i18n"
     ],
-    "i18n-ally.enabledParsers": ["js", "ts"]
+    "i18n-ally.enabledParsers": [
+        "js",
+        "ts"
+    ],
+    "cSpell.language": "en, zh",
+    "cSpell.enabledFileTypes": {
+        "ts": true,
+        "js": true
+    },
+    "cSpell.ignorePaths": [
+        "package-lock.json",
+        "node_modules",
+        "vscode-extension",
+        ".git/{info,lfs,logs,refs,objects}/**",
+        ".git/{index,*refs,*HEAD}",
+        ".vscode",
+        ".vscode-insiders",
+        "./dist",
+        "../src/spine/**"
+    ],
+    "cSpell.userWords": [
+        "drawables",
+        "Hina",
+        "Azusa",
+        "Airi",
+        "dataurl",
+        "Gandi",
+        "blendFunc"
+    ]
 }

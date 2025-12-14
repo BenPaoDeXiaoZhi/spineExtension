@@ -3,7 +3,7 @@ import mainStyle from './storage/style.asset.css';
 // @ts-ignore: allow importing svg without a module declaration
 import closeSvg from './storage/close.svg';
 
-export class scratchStroageUI {
+export class scratchStorageUI {
     storage: ScratchStorage;
     extId: string;
 
