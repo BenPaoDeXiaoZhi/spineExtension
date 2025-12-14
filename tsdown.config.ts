@@ -7,7 +7,6 @@ export default defineConfig({
         component: 'src/dev/file.ts',
         report: 'src/dev/htmlReport.ts',
     },
-    splitting: false,
     sourcemap: false,
     clean: true,
     format: 'iife',
@@ -16,5 +15,5 @@ export default defineConfig({
         '.svg': 'text',
         '.png': 'dataurl',
     },
-    publicDir: './public',
+    copy: './public',
 })
