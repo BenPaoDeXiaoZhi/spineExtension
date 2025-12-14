@@ -11,7 +11,8 @@
     "build": "tsc --noEmit && tsup",
     "pwi": "npx playwright install --with-deps chromium",
     "deploy": "node deploy.js",
-    "dev": "tsup --watch"
+    "dev": "tsup --watch",
+    "tsdown":"tsdown"
   },
   "dependencies": {
     "40webgl": "npm:@esotericsoftware/spine-webgl@4.0",
