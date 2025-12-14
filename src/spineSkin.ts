@@ -81,8 +81,8 @@ export class SpineSkin extends Skin{
         this.skeleton.y = y;
     }
     updateScale([x,y]:[x:number,y:number]){
-        this.skeleton.scaleX = x;
-        this.skeleton.scaleY = y;
+        this.skeleton.scaleX = x/100;
+        this.skeleton.scaleY = y/100;
     }
     render(drawable,scale) {
         this.updateTransform(drawable);
