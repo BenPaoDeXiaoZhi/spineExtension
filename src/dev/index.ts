@@ -3,6 +3,7 @@ import type Spine from "../spine/4.2/spine-webgl";
 import spineVersions from "../spine/spineVersions";
 
 window as unknown;
+const root=prompt("root:","https://l2d-pro.schale.qzz.io/")
 
 const spine = spineVersions["4.2webgl"];
 console.log(spine);
@@ -38,8 +39,8 @@ for (let i of ["Azusa", "CH0070", "Airi"]) {
 
   const spineRenderer = new spine.SceneRenderer(canvas, ctx, false);
   const assetMgr = new spine.AssetManager(ctx);
-  const atlasUrl = `https://l2d-pro.schale.qzz.io/${i.toLowerCase()}_home/${i}_home.atlas`,
-    skelUrl = `https://l2d-pro.schale.qzz.io/${i.toLowerCase()}_home/${i}_home.skel`;
+  const atlasUrl = `${root}${i.toLowerCase()}_home/${i}_home.atlas`,
+    skelUrl = `${root}${i.toLowerCase()}_home/${i}_home.skel`;
   assetMgr.loadBinary(skelUrl);
   assetMgr.loadTextureAtlas(atlasUrl);
   console.log(`loading data for ${i}`);
