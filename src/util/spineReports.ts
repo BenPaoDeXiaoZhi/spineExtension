@@ -27,35 +27,38 @@ function domWithType(
 }
 
 export class SpineSkinReport extends HTMLReport<SpineSkin> {
-    constructor(
-        skin: SpineSkin,
-        translate: TranslateFn,
-        name: string
-    ) {
+    constructor(skin: SpineSkin, translate: TranslateFn, name: string) {
         const idDom = document.createElement('span');
-
         const versionDom = document.createElement('span');
-
         const nameDom = document.createElement('span');
 
-        super(
-            domWithType.bind(
-                null,
-                translate.bind(null,'spineAnimation.SpineSkinReport.type'),
-                'blue',
-                () => {
-                    idDom.innerText = translate('spineAnimation.SpineSkinReport.id', {id: skin.id });
-                    versionDom.innerText = translate('spineAnimation.SpineSkinReport.version',{ version: skin.manager.version });
-                    nameDom.innerText = translate('spineAnimation.SpineSkinReport.nameText',{ name });
-                    return [idDom,versionDom,nameDom];
-                }
-            ),
-            skin,
-            translate.bind(null,'spineAnimation.SpineSkinReport.monitor', {
+        function render() {
+            idDom.innerText = translate('SpineSkinReport.id', {
                 id: skin.id,
+            });
+            versionDom.innerText = translate('SpineSkinReport.version', {
                 version: skin.manager.version,
+            });
+            nameDom.innerText = translate('SpineSkinReport.nameText', {
                 name,
-            })
+            });
+            return [idDom, versionDom, nameDom];
+        }
+
+        super(
+            () =>
+                domWithType(
+                    () => translate('SpineSkinReport.type'),
+                    'blue',
+                    render
+                ),
+            skin,
+            () =>
+                translate('SpineSkinReport.monitor', {
+                    id: skin.id,
+                    version: skin.manager.version,
+                    name,
+                })
         );
     }
 }
@@ -63,7 +66,11 @@ export class SpineSkinReport extends HTMLReport<SpineSkin> {
 export class SpineSkeletonReport<T extends Skeleton> extends HTMLReport<T> {
     constructor(skeleton: T, translate: TranslateFn, name: string) {
         super(
-            () => domWithType(translate.bind(null,'spineAnimation.SpineSkeletonReport.type'), 'green'),
+            () =>
+                domWithType(
+                    () => translate('SpineSkeletonReport.type'),
+                    'green'
+                ),
             skeleton,
             () =>
                 `(spine骨架) 名称为${name}, 共有${skeleton.bones.length}个骨骼`

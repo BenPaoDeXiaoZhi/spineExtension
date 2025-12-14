@@ -1,32 +1,31 @@
 {
-  "name": "spineextension",
-  "version": "1.0.0",
-  "description": "",
-  "license": "ISC",
-  "author": "",
-  "type": "module",
-  "main": "src/index.ts",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc --noEmit && tsup",
-    "pwi": "npx playwright install --with-deps chromium",
-    "deploy": "node deploy.js",
-    "dev": "tsup --watch",
-    "tsdown":"tsdown"
-  },
-  "dependencies": {
-    "40webgl": "npm:@esotericsoftware/spine-webgl@4.0",
-    "42webgl": "npm:@esotericsoftware/spine-webgl@4.2",
-    "4webgl": "npm:@esotericsoftware/spine-webgl@4.2",
-    "pixi.js": "^8.14.0",
-    "playwright": "^1.56.1",
-    "tsup": "^8.5.0",
-    "typescript": "^5.9.3"
-  },
-  "devDependencies": {
-    "@turbowarp/types": "^0.0.13",
-    "@types/ws": "^8.18.1",
-    "tsdown": "^0.17.3",
-    "ws": "^8.18.3"
-  }
+    "name": "spineextension",
+    "version": "1.0.0",
+    "description": "",
+    "license": "ISC",
+    "author": "",
+    "type": "module",
+    "main": "src/index.ts",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "tsup",
+        "pwi": "npx playwright install --with-deps chromium",
+        "deploy": "node deploy.js",
+        "dev": "tsup --watch"
+    },
+    "dependencies": {
+        "40webgl": "npm:@esotericsoftware/spine-webgl@4.0",
+        "42webgl": "npm:@esotericsoftware/spine-webgl@4.2",
+        "4webgl": "npm:@esotericsoftware/spine-webgl@4.2",
+        "pixi.js": "^8.14.0",
+        "playwright": "^1.56.1",
+        "tsup": "^8.5.0",
+        "typescript": "^5.9.3"
+    },
+    "devDependencies": {
+        "@turbowarp/types": "^0.0.13",
+        "@types/node": "^25.0.2",
+        "@types/ws": "^8.18.1",
+        "ws": "^8.18.3"
+    }
 }

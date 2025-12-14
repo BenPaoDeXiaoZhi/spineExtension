@@ -87,14 +87,14 @@ class SpineExtension extends SimpleExt {
     }
 
     getInfo(): extInfo {
-        this.info.name = this.translate('spineAnimation.extensionName');
+        this.info.name = this.translate('extensionName');
         this.info.blockIconURI = insetIcon;
         this.info.color1 = '#272D39';
         this.info.color2 = '#20272F';
         this.info.blocks = [
             {
                 opcode: this.setSkinSkeleton.name,
-                text: this.translate('spineAnimation.setSkinSkeleton.text'),
+                text: this.translate('setSkinSkeleton.text'),
                 blockType: BlockType.COMMAND,
                 arguments: {
                     TARGET_NAME: {
@@ -109,7 +109,7 @@ class SpineExtension extends SimpleExt {
             },
             {
                 opcode: this.loadSkeleton.name,
-                text: this.translate('spineAnimation.loadSkeleton.text'),
+                text: this.translate('loadSkeleton.text'),
                 blockType: BlockType.REPORTER,
                 arguments: {
                     CONFIG: {
@@ -154,7 +154,7 @@ class SpineExtension extends SimpleExt {
     spriteMenu(): MenuItems {
         const items = [
             {
-                text: this.translate('spineAnimation.spriteMenu.currentTarget'),
+                text: this.translate('spriteMenu.currentTarget'),
                 value: '__this__',
             },
         ];
@@ -230,9 +230,7 @@ class SpineExtension extends SimpleExt {
             version: keyof SpineManagers;
         };
         if (!(skel && atlas && version in spineVersions)) {
-            throw new Error(
-                this.translate('spineAnimation.loadSkeleton.configError')
-            );
+            throw new Error(this.translate('loadSkeleton.configError'));
         }
         const manager = this.managers[version];
         const { skeleton, animationState } = await manager.loadSkeleton(
@@ -295,12 +293,12 @@ registerExtDetail(SpineExtension, {
     },
     l10n: {
         'zh-cn': {
-            'spineAnimation.name': zh_cn['spineAnimation.extensionName'],
-            'spineAnimation.desc': zh_cn['spineAnimation.description'],
+            'spineAnimation.name': zh_cn.extensionName,
+            'spineAnimation.desc': zh_cn.description,
         },
         en: {
-            'spineAnimation.name': en['spineAnimation.extensionName'],
-            'spineAnimation.desc': en['spineAnimation.description'],
+            'spineAnimation.name': en.extensionName,
+            'spineAnimation.desc': en.description,
         },
     },
 });

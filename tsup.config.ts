@@ -1,6 +1,7 @@
 import { defineConfig, Options } from 'tsup';
-import { WebSocketServer } from 'ws';
+import { WebSocketServer, WebSocket } from 'ws';
 import { readFileSync } from 'fs';
+import { minifySpinePlugin } from './minify';
 
 function getBanner(env = 'dev', extra = '') {
     const date = new Date();
@@ -19,10 +20,7 @@ ${extra}*/`;
 }
 
 export default defineConfig((tsupOptions) => {
-    /**
-     * @type {Array<WebSocket>}
-     */
-    let clients = [];
+    let clients: WebSocket[] = [];
     if (tsupOptions.watch) {
         console.log('Websocket start');
         const server = new WebSocketServer({ port: 8888 });
@@ -80,6 +78,7 @@ export default defineConfig((tsupOptions) => {
                 console.log('dev Server sent');
             }
         },
+        esbuildPlugins: [minifySpinePlugin],
     };
     return dat;
 });

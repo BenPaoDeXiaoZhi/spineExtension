@@ -1,5 +1,5 @@
 /* deploy by Github CI/CD
- - Deploy time: 2025/12/13 15:28:41
+ - Deploy time: 2025/12/14 11:36:40
  - Commit id: undefined
  - Repository: undefined
  - Actor: undefined*/
@@ -16,7 +16,7 @@
     }
     return obj;
   }
-  function resoveMaybeFunc(dat) {
+  function resolveMaybeFunc(dat) {
     if (dat instanceof Function) {
       return dat();
     } else {
@@ -42,9 +42,9 @@
     constructor(element, value, monitorValue) {
       const report = {
         //使用闭包防修改
-        replace: clean(() => resoveMaybeFunc(element).innerHTML),
-        valueOf: clean(() => resoveMaybeFunc(value)),
-        toString: clean(() => resoveMaybeFunc(monitorValue))
+        replace: clean(() => resolveMaybeFunc(element).innerHTML),
+        valueOf: clean(() => resolveMaybeFunc(value)),
+        toString: clean(() => resolveMaybeFunc(monitorValue))
       };
       Object.assign(this, report);
       Object.freeze(this);
@@ -52,7 +52,9 @@
   };
 
   // src/dev/htmlReport.ts
-  console.log(new HTMLReport("report", { a: "b" }, "monitor"));
+  var container = document.createElement("div");
+  container.innerText = "report";
+  console.log(new HTMLReport(container, { a: "b" }, "monitor"));
   Object.assign(window, {
     HTMLReport
   });
