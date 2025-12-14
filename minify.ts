@@ -8,7 +8,7 @@ const minifySpinePlugin: Plugin = {
                 contents: readFileSync(
                     args.path.replace('spine-webgl.js', 'spine-webgl.min.js')
                 ),
-                loader: 'text',
+                loader: 'js',
             };
         });
     },

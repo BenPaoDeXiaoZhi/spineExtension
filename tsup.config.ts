@@ -80,6 +80,9 @@ export default defineConfig((tsupOptions) => {
         },
         esbuildPlugins: [minifySpinePlugin],
         treeshake: true,
+        get minify() {
+            return !tsupOptions.watch;
+        },
     };
     return dat;
 });
