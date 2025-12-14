@@ -2,7 +2,7 @@ import { registerExtDetail } from './scratch/register';
 import { getTranslate, zh_cn, en, TranslateFn } from './i18n/translate';
 import { SimpleExt } from './scratch/simpleExt';
 import type { extInfo, MenuItems } from './scratch/simpleExt';
-const { BlockType, ArgumentType} = Scratch;
+const { BlockType, ArgumentType } = Scratch;
 import type VM from 'scratch-vm';
 import { scratchStroageUI } from './util/storage';
 import { SpineSkin, patchSpineSkin } from './spineSkin';
@@ -10,8 +10,12 @@ import spineVersions from './spine/spineVersions';
 import { Spine40Manager, Spine42Manager } from './spineManager';
 import { patch, HTMLReport } from './util/htmlReport';
 import { SpineSkinReport, SpineSkeletonReport } from './util/spineReports';
-import icon from '../assets/icon.png';
-import insetIcon from '../assets/insetIcon.png';
+// import icon from '../assets/icon.png';
+// import insetIcon from '../assets/insetIcon.png';
+const insetIcon =
+    'https://m.ccw.site/creator-college/cover/e080227a1e199d9107f2d2b8859a35f0.png';
+const icon =
+    'https://m.ccw.site/creator-college/cover/953085977e001622fd7153eb7c9ad646.png';
 
 type Utility = VM.BlockUtility;
 
@@ -152,7 +156,7 @@ class SpineExtension extends SimpleExt {
     }
 
     spriteMenu(): MenuItems {
-        const items:MenuItems = [
+        const items: MenuItems = [
             {
                 text: this.translate('spriteMenu.currentTarget'),
                 value: '__this__',
@@ -210,7 +214,11 @@ class SpineExtension extends SimpleExt {
                 (t) => t.isSprite() && t.getName() === TARGET_NAME
             );
             if (!target) {
-                console.warn(this.translate('setSkinSkeleton.characterNotFound',{name:TARGET_NAME}));
+                console.warn(
+                    this.translate('setSkinSkeleton.characterNotFound', {
+                        name: TARGET_NAME,
+                    })
+                );
             }
         }
         const drawableId = target.drawableID;
