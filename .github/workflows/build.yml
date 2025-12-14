@@ -27,7 +27,7 @@ jobs:
                   npm ci
                   npm run build
               env:
-                REPO: ${{github.repository}}
+                  REPO: ${{github.repository}}
 
             - name: prepare playwright
               run: npm run pwi
