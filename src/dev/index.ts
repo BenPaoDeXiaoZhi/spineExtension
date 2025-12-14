@@ -3,7 +3,8 @@ import type Spine from "../spine/4.2/spine-webgl";
 import spineVersions from "../spine/spineVersions";
 
 window as unknown;
-const rootDir=prompt("root:","https://l2d-pro.schale.qzz.io/")
+const rootDir=prompt("root:",localStorage["root"] || "https://l2d-pro.schale.qzz.io/")
+localStorage["root"] = rootDir
 
 const spine = spineVersions["4.2webgl"];
 console.log(spine);
