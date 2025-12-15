@@ -22,7 +22,7 @@ function render(
   spineRenderer.begin();
   spineRenderer.drawSkeleton(skeleton);
   const {x,y,width,height}=skeleton.getBoundsRect();
-  spineRenderer.rect(true,500,500,5,5,new Color(0,1,0,1));
+  spineRenderer.rect(true,250,250,50,50,new Color(0,1,0,1));
   spineRenderer.end();
   requestAnimationFrame(() =>
     render(skeleton, tk, animationState, spineRenderer)
@@ -39,6 +39,9 @@ for (let i of ["Azusa", "CH0070", "Airi"]) {
   const tk = new spine.TimeKeeper();
 
   const spineRenderer = new spine.SceneRenderer(canvas, ctx, false);
+  spineRenderer.begin();
+  spineRenderer.rect(true,0,0,250,250,new Color(0,1,0,1));
+  spineRenderer.end();
   const assetMgr = new spine.AssetManager(ctx);
   const atlasUrl = `${rootDir}${i.toLowerCase()}_home/${i}_home.atlas`,
     skelUrl = `${rootDir}${i.toLowerCase()}_home/${i}_home.skel`;
