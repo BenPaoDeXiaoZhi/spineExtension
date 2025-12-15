@@ -78,7 +78,7 @@ for (let i of ["Azusa", "CH0070", "Airi"]) {
     animationState.setAnimation(0, "Idle_01", true);
     (window as any).skeleton = skeleton;
     (window as any).animationState = animationState;
-    console.log(atlasLoader, skeletonLoader, skeleton);
+    console.log(atlasLoader, skeletonLoader, skeleton, spineRenderer);
     requestAnimationFrame(() =>
       render(skeleton, tk, animationState, spineRenderer)
     );
