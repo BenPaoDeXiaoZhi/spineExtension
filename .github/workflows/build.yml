@@ -1,60 +1,61 @@
 name: NodeJS with tsup
 permissions:
-    contents: write
-    pages: write
-    id-token: write
+  contents: write
+  pages: write
+  id-token: write
 
 on:
-    push:
-        branches: ['main']
-        paths:
-            - "src/**"
-            - "public/**"
-            - "assets/**"
-            - ".github/workflows/build.yml"
+  push:
+    branches: ['main']
+    paths:
+      - "src/**"
+      - "public/**"
+      - "assets/**"
+      - ".github/workflows/build.yml"
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
-        strategy:
-            matrix:
-                node-version: [22.x]
+    steps:
+      - uses: actions/checkout@v4
 
-        steps:
-            - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+        node-version: 24.x
 
-            - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v4
-              with:
-                  node-version: ${{ matrix.node-version }}
+      - name: Build
+        run: |
+          npm ci
+          npm run build
+        env:
+          REPO: ${{github.repository}}
 
-            - name: Build
-              run: |
-                  npm ci
-                  npm run build
-              env:
-                  REPO: ${{github.repository}}
-            
-            - name: Setup Pages
-              uses: actions/configure-pages@v5
-            - name: Upload artifact
-              uses: actions/upload-pages-artifact@v3
-              with:
-                # Upload dist
-                path: './dist'
-            - name: Deploy to GitHub Pages
-              id: deployment
-              uses: actions/deploy-pages@v4
+      - name: Commit dist
+        run: |
+          git add .
+          git commit -m "js build"
+          git push
 
-            - name: prepare playwright
-              run: npm run pwi
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload dist
+          path: './dist'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
-            - name: Deploy to ccw
-              run: |
-                  npm run deploy
-                  ls public
-              env:
-                  PROJECT_ID: ${{vars.PROJECT_ID}}
-                  CCW_TOKEN: ${{secrets.CCW_TOKEN}}
+      - name: prepare playwright
+        run: npm run pwi
 
+      - name: Deploy to ccw
+        run: |
+          npm run deploy
+          ls public
+        env:
+          PROJECT_ID: ${{vars.PROJECT_ID}}
+          CCW_TOKEN: ${{secrets.CCW_TOKEN}}
