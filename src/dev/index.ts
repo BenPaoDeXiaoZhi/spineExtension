@@ -23,7 +23,8 @@ function render(
   spineRenderer.begin();
   spineRenderer.drawSkeleton(skeleton);
   const {x,y,width,height}=skeleton.getBoundsRect();
-  spineRenderer.rect(true,x,y,50,50,new Color(0,1,0,1));
+  spineRenderer.rect(true,x,y,width,height,new Color(0,1,0,0.2));
+  spineRenderer.rect(true,skeleton.x,skeleton.y,50,50,new Color(0,0,1,1));
   spineRenderer.end();
   requestAnimationFrame(() =>
     render(skeleton, tk, animationState, spineRenderer)
