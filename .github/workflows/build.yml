@@ -35,7 +35,8 @@ jobs:
       - name: Commit dist
         run: |
           git add .
-          git commit -m "js build"
+          git config --global user.name "Github Action JS Build Bot"
+          git commit -m "JS build"
           git push
 
       - name: Setup Pages
