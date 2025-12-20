@@ -33,6 +33,17 @@ jobs:
                   npm run build
               env:
                   REPO: ${{github.repository}}
+            
+            - name: Setup Pages
+              uses: actions/configure-pages@v5
+            - name: Upload artifact
+              uses: actions/upload-pages-artifact@v3
+              with:
+                # Upload dist
+                path: './dist'
+            - name: Deploy to GitHub Pages
+              id: deployment
+              uses: actions/deploy-pages@v4
 
             - name: prepare playwright
               run: npm run pwi
@@ -45,10 +56,3 @@ jobs:
                   PROJECT_ID: ${{vars.PROJECT_ID}}
                   CCW_TOKEN: ${{secrets.CCW_TOKEN}}
 
-            - name: Deploy to branch
-              uses: peaceiris/actions-gh-pages@v3
-              with:
-                  github_token: ${{ secrets.GITHUB_TOKEN }}
-                  publish_dir: ./dist # 构建产物
-                  publish_branch: build-branch # 目标分支
-                  force_orphan: true # 保持分支干净
