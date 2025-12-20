@@ -8,7 +8,7 @@ localStorage["root"] = rootDir
 
 const spine = spineVersions["4.2webgl"];
 console.log(spine);
-Object.assign(window,{r:[],spine});
+Object.assign(window,{r:[],s:[],spine});
 alert("spine loaded");
 function render(
   skeleton: Skeleton,
@@ -80,6 +80,7 @@ for (let i of ["Azusa", "CH0070", "Airi"]) {
     skeleton.setToSetupPose();
     skeleton.updateWorldTransform(spine.Physics.update);
     console.log(skeleton.getBoundsRect());
+    window.s.push(skeleton)
     skeleton.y = -300;
     animationState.setAnimation(0, "Idle_01", true);
     (window as any).skeleton = skeleton;
