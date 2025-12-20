@@ -1,6 +1,6 @@
 (function(){'use strict';/* deploy by Github CI/CD
- - Deploy time: 2025/12/20 15:17:28
- - Commit id: 7e2bd9efa79c9ffcaf8319642a037fc0c8a1d33b
+ - Deploy time: 2025/12/20 15:27:36
+ - Commit id: bd2be83dd0b7c7b32842d667605d7040d4e46b66
  - Repository: BenPaoDeXiaoZhi/spineExtension
  - Actor: BenPaoDeXiaoZhi*/
 function m(e){var n;return "prototype"in e&&(e.prototype=Object.create(null)),Object.setPrototypeOf(e,Object.create(null)),(Object.getPrototypeOf(e).constructor||(n=e==null?void 0:e.prototype)!=null&&n.constructor)&&console.warn("clean失败",e),e}function o(e){return e instanceof Function?e():e}var r=class{replace;valueOf;toString;constructor(n,s,c){let t={replace:m(()=>o(n).innerHTML),valueOf:m(()=>o(s)),toString:m(()=>o(c))};Object.assign(this,t),Object.freeze(this);}};function v(e,n,s=[]){let c=document.createElement("div"),t=[],i=document.createElement("span");return i.style.fontSize="150%",i.innerText=o(e),i.style.color=o(n),t.push(i),t=t.concat(o(s)),t.forEach((a,l)=>{c.appendChild(a);}),c}var p=class extends r{constructor(n,s,c,t,i){function a(){let l=[],g=o(c);for(let d in g){let u=document.createElement("div"),f=document.createElement("span");f.innerText=d;let T=document.createElement("span");T.innerText=g[d],u.appendChild(f),u.appendChild(T),l.push(u);}return v(n,s,l)}super(a,t,i);}};var y=document.createElement("div");y.innerHTML="<a>report";var S=new r(y,{a:"b"},"monitor");console.log(S);var h=new p(()=>Date.name,"green",()=>({[Date.now()]:"a"}),"hello","monitor");console.log(h);setInterval(()=>{console.log(S.replace()),console.log(h.replace());},1e3);Object.assign(window,{HTMLReport:r,ObjectKVReport:p});})();
