@@ -3,7 +3,7 @@ import type Spine from "../spine/4.2/spine-webgl";
 import spineVersions from "../spine/spineVersions";
 
 window as unknown;
-const rootDir=prompt("root:",localStorage["root"] || "https://l2d-cn.kivotos.qzz.io/")
+const rootDir=prompt("root:",localStorage["root"] || "https://l2d-cn.kivotos.qzz.io/")||""
 localStorage["root"] = rootDir
 
 const spine = spineVersions["4.2webgl"];
@@ -23,7 +23,7 @@ function render(
   spineRenderer.begin();
   spineRenderer.drawSkeleton(skeleton);
   const {x,y,width,height}=skeleton.getBoundsRect();
-  spineRenderer.rect(true,250,250,50,50,new Color(0,1,0,1));
+  spineRenderer.rect(true,x,y,50,50,new Color(0,1,0,1));
   spineRenderer.end();
   requestAnimationFrame(() =>
     render(skeleton, tk, animationState, spineRenderer)
@@ -42,7 +42,7 @@ for (let i of ["Azusa", "CH0070", "Airi"]) {
   const spineRenderer = new spine.SceneRenderer(canvas, ctx, false);
   window.r.push(spineRenderer)
   spineRenderer.begin();
-  spineRenderer.rect(true,0,0,250,250,new Color(0,1,0,1));
+  spineRenderer.rect(true,-500,-500,1000,1000,new Color(1,0,0.5,1));
   spineRenderer.end();
   const assetMgr = new spine.AssetManager(ctx);
   const atlasUrl = `${rootDir}${i.toLowerCase()}_home/${i}_home.atlas`,
@@ -79,7 +79,7 @@ for (let i of ["Azusa", "CH0070", "Airi"]) {
     skeleton.setToSetupPose();
     skeleton.updateWorldTransform(spine.Physics.update);
     console.log(skeleton.getBoundsRect());
-    skeleton.y = -canvas.height / 2;
+    skeleton.y = -300;
     animationState.setAnimation(0, "Idle_01", true);
     (window as any).skeleton = skeleton;
     (window as any).animationState = animationState;
