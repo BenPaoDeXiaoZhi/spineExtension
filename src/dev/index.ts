@@ -5,10 +5,10 @@ import spineVersions from "../spine/spineVersions";
 window as unknown;
 const rootDir=prompt("root:",localStorage["root"] || "https://l2d-cn.kivotos.qzz.io/")
 localStorage["root"] = rootDir
-Object.assign(window,{r:[]})
 
 const spine = spineVersions["4.2webgl"];
 console.log(spine);
+Object.assign(window,{r:[],spine});
 alert("spine loaded");
 function render(
   skeleton: Skeleton,
