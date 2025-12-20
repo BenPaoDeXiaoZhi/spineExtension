@@ -3,8 +3,9 @@ import type Spine from "../spine/4.2/spine-webgl";
 import spineVersions from "../spine/spineVersions";
 
 window as unknown;
-const rootDir=prompt("root:",localStorage["root"] || "https://l2d-pro.schale.qzz.io/")
+const rootDir=prompt("root:",localStorage["root"] || "https://l2d-cn.kivotos.qzz.io/")
 localStorage["root"] = rootDir
+Object.assign(window,{r:[]})
 
 const spine = spineVersions["4.2webgl"];
 console.log(spine);
@@ -39,6 +40,7 @@ for (let i of ["Azusa", "CH0070", "Airi"]) {
   const tk = new spine.TimeKeeper();
 
   const spineRenderer = new spine.SceneRenderer(canvas, ctx, false);
+  window.r.push(spineRenderer)
   spineRenderer.begin();
   spineRenderer.rect(true,0,0,250,250,new Color(0,1,0,1));
   spineRenderer.end();
