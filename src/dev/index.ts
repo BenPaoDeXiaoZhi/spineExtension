@@ -1,93 +1,117 @@
-import { AnimationState, SceneRenderer, Skeleton, TimeKeeper, Color } from "42webgl";
-import type Spine from "../spine/4.2/spine-webgl";
-import spineVersions from "../spine/spineVersions";
+import {
+    AnimationState,
+    SceneRenderer,
+    Skeleton,
+    TimeKeeper,
+    Color,
+} from '42webgl';
+import type Spine from '../spine/4.2/spine-webgl';
+import spineVersions from '../spine/spineVersions';
 
-window as unknown;
-const rootDir=prompt("root:",localStorage["root"] || "https://l2d-cn.kivotos.qzz.io/")||""
-localStorage["root"] = rootDir
+const DEFAULT_ROOT = 'https://l2d-cn.kivotos.qzz.io/';
+const NAME = 'Airi_home';
 
-const spine = spineVersions["4.2webgl"];
+const rootDir =
+    prompt('root:', localStorage.getItem('root') || DEFAULT_ROOT) ||
+    DEFAULT_ROOT;
+localStorage.setItem('root', rootDir);
+
+declare const window: {
+    spine: typeof Spine;
+    s: Spine.Skeleton;
+    as: Spine.AnimationState;
+    r: Spine.SceneRenderer;
+} & Window;
+
+const spine = spineVersions['4.2webgl'];
 console.log(spine);
-Object.assign(window,{r:[],s:[],spine});
-alert("spine loaded");
+window.spine = spine;
+alert('spine loaded');
 function render(
-  skeleton: Skeleton,
-  tk: TimeKeeper,
-  animationState: AnimationState,
-  spineRenderer: SceneRenderer
+    skeleton: Skeleton,
+    tk: TimeKeeper,
+    animationState: AnimationState,
+    spineRenderer: SceneRenderer,
+    mousePos: { x: number; y: number }
 ) {
-  skeleton.updateWorldTransform(spine.Physics.update);
-  tk.update();
-  animationState.update(tk.delta);
-  animationState.apply(skeleton);
-  spineRenderer.begin();
-  spineRenderer.drawSkeleton(skeleton);
-  const {x,y,width,height}=skeleton.getBoundsRect();
-  spineRenderer.rect(true,x,y,width,height,new Color(0,1,0,0.2));
-  spineRenderer.rect(true,skeleton.x,skeleton.y,50,50,new Color(0,0,1,1));
-  spineRenderer.end();
-  requestAnimationFrame(() =>
-    render(skeleton, tk, animationState, spineRenderer)
-  );
+    skeleton.updateWorldTransform(spine.Physics.update);
+    tk.update();
+    animationState.update(tk.delta);
+    animationState.apply(skeleton);
+    spineRenderer.begin();
+    spineRenderer.drawSkeleton(skeleton);
+    const { x, y, width, height } = skeleton.getBoundsRect();
+    spineRenderer.rect(false, x, y, width, height, new Color(0, 1, 0, 1));
+    spineRenderer.line(
+        x,
+        skeleton.y,
+        x + width,
+        skeleton.y,
+        new Color(0, 0, 1, 1)
+    );
+    spineRenderer.line(
+        skeleton.x,
+        y,
+        skeleton.x,
+        y + height,
+        new Color(0, 0, 1, 1)
+    );
+    spineRenderer.end();
+    skeleton.x = mousePos.x;
+    skeleton.y = mousePos.y;
+    requestAnimationFrame(() =>
+        render(skeleton, tk, animationState, spineRenderer, mousePos)
+    );
 }
-for (let i of ["Azusa", "CH0070", "Airi"]) {
-  const root = document.createElement("div");
-  const canvas = document.createElement("canvas");
-  canvas.width = 1000;
-  canvas.height = 1000;
-  const ctx = canvas.getContext("webgl");
-  root.appendChild(canvas);
-  document.body.appendChild(root);
-  const tk = new spine.TimeKeeper();
-
-  const spineRenderer = new spine.SceneRenderer(canvas, ctx, false);
-  window.r.push(spineRenderer)
-  spineRenderer.begin();
-  spineRenderer.rect(true,-500,-500,1000,1000,new Color(1,0,0.5,1));
-  spineRenderer.end();
-  const assetMgr = new spine.AssetManager(ctx);
-  const atlasUrl = `${rootDir}${i.toLowerCase()}_home/${i}_home.atlas`,
-    skelUrl = `${rootDir}${i.toLowerCase()}_home/${i}_home.skel`;
-  assetMgr.loadBinary(skelUrl);
-  assetMgr.loadTextureAtlas(atlasUrl);
-  console.log(`loading data for ${i}`);
-  let animationStateData: Spine.AnimationStateData;
-  let animationState: Spine.AnimationState;
-  let skeleton: Spine.Skeleton;
-  (async function (assetMgr) {
-    await new Promise((resolve, reject) => {
-      function waitLoad() {
-        if (assetMgr.isLoadingComplete()) {
-          resolve(assetMgr);
-        } else {
-          if (assetMgr.hasErrors()) {
-            reject(assetMgr);
-          }
-          requestAnimationFrame(waitLoad);
-        }
-      }
-      requestAnimationFrame(waitLoad);
-    });
-    console.log(assetMgr);
-    const atlasLoader = new spine.AtlasAttachmentLoader(assetMgr.get(atlasUrl));
-    const skeletonLoader = new spine.SkeletonBinary(atlasLoader);
-    const skeletonData = skeletonLoader.readSkeletonData(assetMgr.get(skelUrl));
-    skeleton = new spine.Skeleton(skeletonData);
-    animationStateData = new spine.AnimationStateData(skeleton.data);
-    animationState = new spine.AnimationState(animationStateData);
+const root = document.createElement('div');
+document.body.appendChild(root);
+const canvas = document.createElement('canvas');
+canvas.width = 1000;
+canvas.height = 1000;
+canvas.style.height = '90vh';
+root.appendChild(canvas);
+const mousePosDisplay = document.createElement('span');
+const mousePos = { x: 0, y: 0 };
+root.appendChild(mousePosDisplay);
+const gl = canvas.getContext('webgl2');
+const renderer = new spine.SceneRenderer(canvas, gl);
+window.r = renderer;
+const assetMgr = new spine.AssetManager(gl, rootDir + NAME.toLowerCase() + '/');
+const ATLAS = NAME + '.atlas';
+const SKEL = NAME + '.skel';
+assetMgr.loadTextureAtlas(ATLAS);
+assetMgr.loadBinary(SKEL);
+assetMgr.loadAll().then(() => {
+    const atlasLoader = new spine.AtlasAttachmentLoader(assetMgr.get(ATLAS));
+    const loader = new spine.SkeletonBinary(atlasLoader);
+    const skelData = loader.readSkeletonData(assetMgr.get(SKEL));
+    const skeleton = new spine.Skeleton(skelData);
     skeleton.scaleX = 0.3;
     skeleton.scaleY = 0.3;
-    skeleton.setToSetupPose();
-    skeleton.updateWorldTransform(spine.Physics.update);
-    console.log(skeleton.getBoundsRect());
-    window.s.push(skeleton)
-    skeleton.y = -300;
-    animationState.setAnimation(0, "Idle_01", true);
-    (window as any).skeleton = skeleton;
-    (window as any).animationState = animationState;
-    console.log(atlasLoader, skeletonLoader, skeleton, spineRenderer);
-    requestAnimationFrame(() =>
-      render(skeleton, tk, animationState, spineRenderer)
+    window.s = skeleton;
+    const animationStateData = new spine.AnimationStateData(skelData);
+    const animationState = new spine.AnimationState(animationStateData);
+    window.as = animationState;
+    render(
+        skeleton,
+        new spine.TimeKeeper(),
+        animationState,
+        renderer,
+        mousePos
     );
-  })(assetMgr);
+});
+function updatePos({ x, y }: { x: number; y: number }) {
+    mousePosDisplay.innerText = `X:${x},Y:${y}`;
 }
+canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    Object.assign(mousePos, {
+        x:
+            ((e.clientX - rect.left) / rect.width) * canvas.width -
+            canvas.width / 2,
+        y:
+            canvas.height / 2 -
+            ((e.clientY - rect.top) / rect.height) * canvas.height,
+    });
+    updatePos(mousePos);
+});

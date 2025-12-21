@@ -39,11 +39,17 @@ export abstract class SpineManager {
     abstract sceneRenderer: any;
     version: keyof typeof spineVersions;
     abstract assetManager: any;
+
     constructor(version: keyof typeof spineVersions) {
         this.version = version;
     }
     abstract loadSkeleton(skeletonUrl: string, atlasUrl: string): any;
-    abstract drawSkeleton(skeleton: any, tk: any, animationState: any): any;
+    abstract drawSkeleton(
+        skeleton: any,
+        tk: any,
+        animationState: any,
+        viewport: [w: number, h: number]
+    ): any;
 }
 
 export abstract class Spine4Manager extends SpineManager {
@@ -82,12 +88,16 @@ export class Spine42Manager extends Spine4Manager {
     drawSkeleton(
         skeleton: spine42.Skeleton,
         tk: spine42.TimeKeeper,
-        animationState: spine42.AnimationState
+        animationState: spine42.AnimationState,
+        viewport: [w: number, h: number]
     ) {
         skeleton.updateWorldTransform(spine42.Physics.update); //in 4.2
         tk.update();
         animationState.update(tk.delta);
         animationState.apply(skeleton);
+        const camera = this.sceneRenderer.camera;
+        console.log(camera.viewportWidth, camera.viewportHeight);
+        camera.setViewport(...viewport);
         this.sceneRenderer.begin();
         this.sceneRenderer.drawSkeleton(skeleton);
         this.sceneRenderer.end();
@@ -121,12 +131,15 @@ export class Spine40Manager extends Spine4Manager {
     drawSkeleton(
         skeleton: spine40.Skeleton,
         tk: spine40.TimeKeeper,
-        animationState: spine40.AnimationState
+        animationState: spine40.AnimationState,
+        viewport: [w: number, h: number]
     ) {
         skeleton.updateWorldTransform(); //in 4.0 and 3.8
         tk.update();
         animationState.update(tk.delta);
         animationState.apply(skeleton);
+        const camera = this.sceneRenderer.camera;
+        camera.setViewport(...viewport);
         this.sceneRenderer.begin();
         this.sceneRenderer.drawSkeleton(skeleton);
         this.sceneRenderer.end();

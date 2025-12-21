@@ -2,7 +2,7 @@ import RenderWebGL, { AnyWebGLContext } from 'scratch-render';
 import type { SpineManager } from './spineManager';
 
 const Skin = (Scratch.runtime.renderer as unknown as { exports: any }).exports
-    .Skin as (typeof RenderWebGL.Skin)&{new(id:number):RenderWebGL.Skin};
+    .Skin as typeof RenderWebGL.Skin & { new (id: number): RenderWebGL.Skin };
 console.log(Skin);
 
 /**
@@ -31,7 +31,7 @@ export function patchSpineSkin(runtime: VM.Runtime) {
     console.log(Object.getPrototypeOf(skin).constructor);
 }
 
-export class SpineSkin extends Skin{
+export class SpineSkin extends Skin {
     gl: AnyWebGLContext;
     manager: SpineManager;
     _size: [x: number, y: number];
@@ -39,6 +39,7 @@ export class SpineSkin extends Skin{
     animationState: any;
     tk: any;
     name: string;
+    renderer: RenderWebGL;
 
     constructor(
         id: number,
@@ -51,6 +52,7 @@ export class SpineSkin extends Skin{
     ) {
         super(id);
         this.gl = renderer.gl;
+        this.renderer = renderer;
 
         this.manager = manager;
         this.skeleton = skeleton;
@@ -71,22 +73,26 @@ export class SpineSkin extends Skin{
     getTexture(scale: [number, number]) {
         return this._texture;
     }
-    updateTransform(drawable){
+    updateTransform(drawable: RenderWebGL.Drawable) {
         console.log(drawable);
-        this.updatePosition(drawable._position);
-        this.updateScale(drawable._scale)
+        this.updatePosition(drawable._position as [x: number, y: number]);
+        this.updateScale(drawable._scale as [x: number, y: number]);
     }
-    updatePosition([x,y]:[x:number,y:number]){
+    updatePosition([x, y]: [x: number, y: number]) {
+        console.log(x, y);
         this.skeleton.x = x;
         this.skeleton.y = y;
     }
-    updateScale([x,y]:[x:number,y:number]){
-        this.skeleton.scaleX = x/100;
-        this.skeleton.scaleY = y/100;
+    updateScale([x, y]: [x: number, y: number]) {
+        this.skeleton.scaleX = x / 100;
+        this.skeleton.scaleY = y / 100;
     }
-    render(drawable,scale) {
+    render(drawable: RenderWebGL.Drawable, scale) {
         this.updateTransform(drawable);
-        this.manager.drawSkeleton(this.skeleton, this.tk, this.animationState);
+        this.manager.drawSkeleton(this.skeleton, this.tk, this.animationState, [
+            this.renderer._xRight - this.renderer._xLeft,
+            this.renderer._yTop - this.renderer._yBottom,
+        ]);
         this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA); //reset blendfunc
         requestAnimationFrame(() => this.emit((Skin as any).Events.WasAltered)); //request next frame
     }
