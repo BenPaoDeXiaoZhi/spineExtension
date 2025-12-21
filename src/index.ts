@@ -137,6 +137,10 @@ class SpineExtension extends SimpleExt {
                 },
             },
             {
+                opcode:this.getSthOf.name,
+                text:"获取[TYPE][DATA]的[KEY]"
+            },
+            {
                 func: this.initUI.name,
                 blockType: BlockType.BUTTON,
                 text: 'abcd',
@@ -278,6 +282,8 @@ class SpineExtension extends SimpleExt {
         console.error(this.translate('getSkeletonInSkin.skinError'));
         return '';
     }
+    
+    getSthOf(arg){}
 }
 registerExtDetail(SpineExtension, {
     info: {
