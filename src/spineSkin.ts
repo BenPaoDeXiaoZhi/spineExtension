@@ -87,7 +87,7 @@ export class SpineSkin extends Skin {
         this.skeleton.scaleX = x / 100;
         this.skeleton.scaleY = y / 100;
     }
-    render(drawable: RenderWebGL.Drawable, scale) {
+    render(drawable: RenderWebGL.Drawable) {
         this.updateTransform(drawable);
         this.manager.drawSkeleton(this.skeleton, this.tk, this.animationState, [
             this.renderer._xRight - this.renderer._xLeft,

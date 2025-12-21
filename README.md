@@ -19,7 +19,7 @@
 - [x] 加载骨架文件
 - [ ] mock骨架文件
 - [x] 显示骨架skin
-- [ ] 根据drawable状态调整骨骼变换
+- [x] 根据drawable状态调整骨骼变换
 - [x] 从skin中获取骨架数据
 - [ ] 修改、读取骨骼数据
 - [ ] 应用动画
@@ -29,6 +29,6 @@
 - [x] 配色方案 by [乌龙茶速递@ccw](https://www.ccw.site/student/68dd004586bbc77f84e309ac)
 - [ ] i18n
 ## 鸣谢
-EsotericSoftware的[Spine Webgl runtime](https://zh.esotericsoftware.com/git/spine-runtimes/tree/spine-ts)  
+EsotericSoftware的[Spine WebGl runtime](https://zh.esotericsoftware.com/git/spine-runtimes/tree/spine-ts)  
 UI设计、测试、杂项、部分异常的修复：[乌龙茶速递@ccw ![乌龙茶速递](https://m.ccw.site/user_projects_assets/dc5394d2-c5c5-4d69-b924-effaae5c4543.png)](https://www.ccw.site/student/68dd004586bbc77f84e309ac)  
 项目灵感，renderer部分的支持：HCN
