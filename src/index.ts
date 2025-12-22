@@ -138,7 +138,12 @@ class SpineExtension extends SimpleExt {
             },
             {
                 opcode:this.getSthOf.name,
-                text:"获取[TYPE][DATA]的[KEY]"
+                text:"获取[TYPE][DATA]的[KEY]",
+                arguments: {
+                    DATA: {
+                        type: null,
+                    },
+                },
             },
             {
                 func: this.initUI.name,
@@ -283,7 +288,9 @@ class SpineExtension extends SimpleExt {
         return '';
     }
     
-    getSthOf(arg){}
+    getSthOf(arg){
+        console.log(arg)
+    }
 }
 registerExtDetail(SpineExtension, {
     info: {
