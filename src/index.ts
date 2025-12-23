@@ -138,11 +138,14 @@ class SpineExtension extends SimpleExt {
             },
             {
                 opcode:this.getSthOf.name,
-                text:"获取[TYPE][DATA]的[KEY]",
+                text:"获取[DATA]的[KEY]",
                 arguments: {
                     DATA: {
                         type: null,
                     },
+                    KEY: {
+                        type: ArgumentType.STRING
+                    }
                 },
             },
             {
@@ -276,7 +279,7 @@ class SpineExtension extends SimpleExt {
 
     getSkeletonInSkin(arg: { SKIN: any | SpineSkinReport }) {
         const { SKIN } = arg;
-        if (SKIN instanceof SpineSkinReport) {
+        if (SKIN && SKIN instanceof SpineSkinReport) {
             const skin = SKIN.valueOf();
             return new SpineSkeletonReport(
                 skin.skeleton,
