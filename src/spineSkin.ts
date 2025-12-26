@@ -2,18 +2,13 @@ import RenderWebGL, { AnyWebGLContext } from 'scratch-render';
 import type { SpineManager } from './spineManager';
 import type { GandiRuntime } from '../types/gandi-type';
 
-const Skin = (Scratch.runtime.renderer as unknown as { exports: any }).exports
-    .Skin as typeof RenderWebGL.Skin & { new (id: number): RenderWebGL.Skin };
-console.log(Skin);
+const Skin = Scratch.runtime.renderer.exports.Skin;
 
 /**
  * 重写hasInstance,使scratch renderer在渲染阶段使用spineSkin.render()
  */
 export function patchSpineSkin(runtime: GandiRuntime) {
-    const [id, skin] = runtime.renderer.createSpineSkin() as [
-        number,
-        RenderWebGL.Skin
-    ];
+    const [id, skin] = runtime.renderer.createSpineSkin();
     runtime.renderer._allSkins[id] = undefined;
     runtime.renderer._nextSkinId--;
     Object.defineProperty(
@@ -29,7 +24,6 @@ export function patchSpineSkin(runtime: GandiRuntime) {
             writable: true,
         }
     );
-    console.log(Object.getPrototypeOf(skin).constructor);
 }
 
 export class SpineSkin extends Skin {
@@ -95,6 +89,6 @@ export class SpineSkin extends Skin {
             this.renderer._yTop - this.renderer._yBottom,
         ]);
         this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA); //reset blendfunc
-        requestAnimationFrame(() => this.emit((Skin as any).Events.WasAltered)); //request next frame
+        requestAnimationFrame(() => this.emit(Skin.Events.WasAltered)); //request next frame
     }
 }

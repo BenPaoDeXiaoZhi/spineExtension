@@ -86,6 +86,7 @@ class SpineExtension extends SimpleExt {
         this.renderer = runtime.renderer;
         patchSpineSkin(this.runtime);
         patch(this.runtime);
+        this.setCustomBlock();
         this.managers = {
             '4.0webgl': new Spine40Manager(this.renderer),
             '4.2webgl': new Spine42Manager(this.renderer),
@@ -93,7 +94,22 @@ class SpineExtension extends SimpleExt {
     }
 
     setCustomBlock() {
-        customBlock(this.getSthOf.name, this.runtime.scratchBlocks,function());
+        customBlock(
+            `${NS}_${this.getSthOf.name}`,
+            this.runtime.scratchBlocks,
+            (orig) => {
+                return {
+                    init() {
+                        orig.init.call(this);
+                        if (!this.isInsertionMarker()) {
+                            console.log(this);
+                            const dataInput = this.getInput('DATA');
+                            (dataInput.connection as any).connect_;
+                        }
+                    },
+                };
+            }
+        );
     }
 
     getInfo(): extInfo {

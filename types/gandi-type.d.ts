@@ -3,7 +3,7 @@ import RenderWebGL from 'scratch-render';
 import type Blockly from 'blockly';
 
 type TranslateObj = Record<string, string>;
-export interface GandiRuntime extends Runtime {
+export declare interface GandiRuntime extends Runtime {
     getFormatMessage<ZH extends TranslateObj, EN extends TranslateObj>(config: {
         'zh-cn': ZH;
         en: EN;
@@ -11,8 +11,21 @@ export interface GandiRuntime extends Runtime {
         key: { default: ID },
         args: object
     ) => ZH[ID] & EN[ID];
+    requestUpdateMonitor(monitor: Map<'id' | 'value', any>);
 
     scratchBlocks: typeof Blockly;
     renderer: GandiRenderer;
 }
-export interface GandiRenderer extends RenderWebGL {}
+export interface GandiRenderer extends RenderWebGL {
+    exports: {
+        Skin: typeof GandiSkin;
+    };
+    createSpineSkin(): [number, RenderWebGL.Skin];
+}
+
+export class GandiSkin extends RenderWebGL.Skin {
+    constructor(id: number);
+    static Events: {
+        WasAltered: 'WasAltered';
+    };
+}

@@ -1,3 +1,5 @@
+import { GandiRuntime } from '../../types/gandi-type';
+
 /**
  * cleans an function's prototype
  */
@@ -60,11 +62,7 @@ export class HTMLReport<T = any> {
     }
 }
 
-export function patch(runtime: any) {
-    if (runtime.visualReport.spinePatched) {
-        return;
-    }
-    runtime.visualReport.spinePatched = true;
+export function patch(runtime: GandiRuntime) {
     const originReport: (id: string, value: string) => any =
         runtime.visualReport;
     runtime.visualReport = function (

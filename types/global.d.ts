@@ -1,3 +1,4 @@
+import { GandiRuntime } from './gandi-type';
 declare const BlockType: {
     BOOLEAN: 'boolean';
     BUTTON: 'button';
@@ -10,13 +11,11 @@ declare const BlockType: {
     REPORTER: 'reporter';
     XML: 'xml';
 };
-declare type BlockTypeValues = (typeof BlockType)[keyof typeof BlockType];
 
 declare const TargetType: {
     SPRITE: 'sprite';
     STAGE: 'stage';
 };
-declare type TargetTypeValues = (typeof TargetType)[keyof typeof TargetType];
 
 declare const ArgumentType: {
     ANGLE: 'angle';
@@ -33,15 +32,18 @@ declare const ArgumentType: {
     COSTUME: 'costume';
     SOUND: 'sound';
 };
-declare type ArgumentTypeValues =
-    (typeof ArgumentType)[keyof typeof ArgumentType];
 
-declare const Scratch: {
-    extensions: {
-        register: (ext: any) => void;
+declare global {
+    const Scratch: {
+        extensions: {
+            register: (ext: any) => void;
+        };
+        BlockType: typeof BlockType;
+        TargetType: typeof TargetType;
+        ArgumentType: typeof ArgumentType;
+        runtime: GandiRuntime;
     };
-    BlockType: typeof BlockType;
-    TargetType: typeof TargetType;
-    ArgumentType: typeof ArgumentType;
-    runtime: VM.Runtime;
-};
+    type ArgumentTypeValues = (typeof ArgumentType)[keyof typeof ArgumentType];
+    type TargetTypeValues = (typeof TargetType)[keyof typeof TargetType];
+    type BlockTypeValues = (typeof BlockType)[keyof typeof BlockType];
+}

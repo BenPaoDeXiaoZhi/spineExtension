@@ -1,53 +1,51 @@
-(function(){'use strict';/* deploy by Github CI/CD
- - Deploy time: 2025/12/23 21:41:02
- - Commit id: 6adcef2226e0edc9221ed6b4c242e03ec6c43294
- - Repository: BenPaoDeXiaoZhi/spineExtension
- - Actor: BenPaoDeXiaoZhi*/
-var l=`.bg {
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 540;
-    background-color: #0000004c;
-    user-select: none;
-}
-.modal {
-    margin: 100px auto;
-    width: 580px;
-    background-color: var(--theme-color-300, #2e3644);
-    border: 1px solid var(--theme-color-200, #3e495b);
-    border-radius: 12px;
-    min-height: 100px;
-    user-select: none;
-    position: relative;
-    z-index: 550;
-}
-.header {
-    color: white;
-    display: flex;
-    font-size: 18px;
-    border-bottom: 1px solid var(--theme-color-350, #1d2634);
-    height: 100%;
-    padding: 10px;
-}
-.close {
-    background-color: transparent;
-    border: none;
-    border-radius: 5px;
-    position: absolute;
-    right: 5px;
-    padding: 0;
-    width: 24px;
-    height: 24px;
-    transition: background-color 0.15s ease-out;
-    cursor: pointer;
-}
-.close:hover {
-    background-color: rgba(255, 255, 255, 0.16);
-}
-`;var m=`<svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M17.657 6.112L6.343 17.426m0-11.314l11.314 11.314" stroke="#566276" stroke-width="2" stroke-linecap="round"
-        stroke-linejoin="round"></path>
+(function(){'use strict';/* deploy by dev
+ - Deploy time: 2025/12/26 21:00:55
+*/
+var l=`.bg {\r
+    width: 100%;\r
+    height: 100%;\r
+    position: fixed;\r
+    left: 0;\r
+    top: 0;\r
+    z-index: 540;\r
+    background-color: #0000004c;\r
+    user-select: none;\r
+}\r
+.modal {\r
+    margin: 100px auto;\r
+    width: 580px;\r
+    background-color: var(--theme-color-300, #2e3644);\r
+    border: 1px solid var(--theme-color-200, #3e495b);\r
+    border-radius: 12px;\r
+    min-height: 100px;\r
+    user-select: none;\r
+    position: relative;\r
+    z-index: 550;\r
+}\r
+.header {\r
+    color: white;\r
+    display: flex;\r
+    font-size: 18px;\r
+    border-bottom: 1px solid var(--theme-color-350, #1d2634);\r
+    height: 100%;\r
+    padding: 10px;\r
+}\r
+.close {\r
+    background-color: transparent;\r
+    border: none;\r
+    border-radius: 5px;\r
+    position: absolute;\r
+    right: 5px;\r
+    padding: 0;\r
+    width: 24px;\r
+    height: 24px;\r
+    transition: background-color 0.15s ease-out;\r
+    cursor: pointer;\r
+}\r
+.close:hover {\r
+    background-color: rgba(255, 255, 255, 0.16);\r
+}\r
+`;var m=`<svg width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">\r
+    <path d="M17.657 6.112L6.343 17.426m0-11.314l11.314 11.314" stroke="#566276" stroke-width="2" stroke-linecap="round"\r
+        stroke-linejoin="round"></path>\r
 </svg>`;var n=class extends HTMLElement{constructor(){super();}connectedCallback(){let e=this.attachShadow({mode:"open"}),d=document.createElement("style");d.innerHTML=l;let s=document.createElement("div");s.className="bg";let c=document.createElement("div");c.className="modal";let t=document.createElement("header");t.className="header";let o=document.createElement("div");o.style.width="fit-content",o.style.margin="auto",o.innerText="上传spine文件";let r=document.createElement("button");r.className="close",r.innerHTML=m,r.addEventListener("click",g=>{this.remove();}),t.appendChild(o),t.appendChild(r),c.appendChild(t),s.appendChild(c),e.appendChild(s),e.appendChild(d);}};var a="container-test";customElements.get(a)||customElements.define(a,n);var i=document.createElement("button");i.innerText="open modal";i.addEventListener("click",h=>{let e=document.createElement(a);document.body.appendChild(e);});document.body.appendChild(i);document.body.style.height="100vh";document.body.style.margin="0";})();

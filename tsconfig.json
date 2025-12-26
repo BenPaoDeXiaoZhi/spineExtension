@@ -18,7 +18,8 @@
             "es2021"
         ]
     },
-    "exclude": [
-        "node_modules",
+    "include": [
+        "src",
+        "types"
     ]
 }

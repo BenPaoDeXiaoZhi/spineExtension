@@ -1,4 +1,3 @@
-import { ok } from 'node:assert';
 import { HTMLReport } from '../util/htmlReport';
 import { ObjectKVReport } from '../util/spineReports';
 
