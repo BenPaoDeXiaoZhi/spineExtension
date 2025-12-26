@@ -10,6 +10,8 @@ import spineVersions from './spine/spineVersions';
 import { Spine40Manager, Spine42Manager } from './spineManager';
 import { patch, HTMLReport } from './util/htmlReport';
 import { SpineSkinReport, SpineSkeletonReport } from './util/spineReports';
+import { customBlock } from './util/customBlockly';
+import { GandiRuntime } from '../types/gandi-type';
 // import icon from '../assets/icon.png';
 // import insetIcon from '../assets/insetIcon.png';
 const insetIcon =
@@ -72,10 +74,10 @@ const NS = 'spineAnimation' as const;
 
 class SpineExtension extends SimpleExt {
     translate: TranslateFn;
-    runtime: VM.Runtime;
+    runtime: GandiRuntime;
     managers: SpineManagers;
     renderer: RenderWebGL;
-    constructor(runtime: VM.Runtime) {
+    constructor(runtime: GandiRuntime) {
         console.log(runtime);
         super(NS, 'foo');
         this.runtime = runtime;
@@ -88,6 +90,10 @@ class SpineExtension extends SimpleExt {
             '4.0webgl': new Spine40Manager(this.renderer),
             '4.2webgl': new Spine42Manager(this.renderer),
         };
+    }
+
+    setCustomBlock() {
+        customBlock(this.getSthOf.name, this.runtime.scratchBlocks,function());
     }
 
     getInfo(): extInfo {
@@ -137,15 +143,16 @@ class SpineExtension extends SimpleExt {
                 },
             },
             {
-                opcode:this.getSthOf.name,
-                text:"获取[DATA]的[KEY]",
+                opcode: this.getSthOf.name,
+                text: '获取[DATA]的[KEY]',
+                blockType: BlockType.REPORTER,
                 arguments: {
                     DATA: {
                         type: null,
                     },
                     KEY: {
-                        type: ArgumentType.STRING
-                    }
+                        type: ArgumentType.STRING,
+                    },
                 },
             },
             {
@@ -290,9 +297,9 @@ class SpineExtension extends SimpleExt {
         console.error(this.translate('getSkeletonInSkin.skinError'));
         return '';
     }
-    
-    getSthOf(arg){
-        console.log(arg)
+
+    getSthOf(arg) {
+        console.log(arg);
     }
 }
 registerExtDetail(SpineExtension, {

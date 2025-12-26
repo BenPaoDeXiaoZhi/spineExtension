@@ -1,5 +1,6 @@
 import RenderWebGL, { AnyWebGLContext } from 'scratch-render';
 import type { SpineManager } from './spineManager';
+import type { GandiRuntime } from '../types/gandi-type';
 
 const Skin = (Scratch.runtime.renderer as unknown as { exports: any }).exports
     .Skin as typeof RenderWebGL.Skin & { new (id: number): RenderWebGL.Skin };
@@ -8,8 +9,8 @@ console.log(Skin);
 /**
  * 重写hasInstance,使scratch renderer在渲染阶段使用spineSkin.render()
  */
-export function patchSpineSkin(runtime: VM.Runtime) {
-    const [id, skin] = (runtime.renderer as any).createSpineSkin() as [
+export function patchSpineSkin(runtime: GandiRuntime) {
+    const [id, skin] = runtime.renderer.createSpineSkin() as [
         number,
         RenderWebGL.Skin
     ];

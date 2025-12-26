@@ -1,6 +1,13 @@
-export function customBlock(id:string,blockly,config:any){
-    Object.defineProperty(blockly.Blocks,id,{
-        set(){}
-        get(){return config}
-    })
+import type { BlockSvg, Blocks } from 'blockly';
+export function customBlock(
+    id: string,
+    blockly: any,
+    config: (this: BlockSvg) => BlockSvg
+) {
+    Object.defineProperty(blockly.Blocks, id, {
+        set() {},
+        get() {
+            return config;
+        },
+    });
 }
