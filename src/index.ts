@@ -12,6 +12,7 @@ import { patch, HTMLReport } from './util/htmlReport';
 import { SpineSkinReport, SpineSkeletonReport } from './util/spineReports';
 import { customBlock } from './util/customBlockly';
 import { GandiRuntime } from '../types/gandi-type';
+import { Connection } from 'blockly';
 // import icon from '../assets/icon.png';
 // import insetIcon from '../assets/insetIcon.png';
 const insetIcon =
@@ -94,17 +95,44 @@ class SpineExtension extends SimpleExt {
     }
 
     setCustomBlock() {
+        const ext = this;
+        const Blockly = ext.runtime.scratchBlocks;
         customBlock(
-            `${NS}_${this.getSthOf.name}`,
+            `${NS}_${ext.getSthOf.name}`,
             this.runtime.scratchBlocks,
             (orig) => {
                 return {
                     init() {
                         orig.init.call(this);
+
+                        const keyInput = this.appendDummyInput('KEY');
+                        let getOptions = () => [['foo', 'FOO']];
+                        keyInput.appendField(
+                            new Blockly.FieldDropdown(getOptions)
+                        );
+                        if (!this.dispose) {
+                            // vendor里有个奇葩的写法,不补全方法
+                            return;
+                        }
+
                         if (!this.isInsertionMarker()) {
                             console.log(this);
                             const dataInput = this.getInput('DATA');
-                            (dataInput.connection as any).connect_;
+                            const origConnect_ = (dataInput.connection as any)
+                                .connect_;
+                            (dataInput.connection as any).connect_ = function (
+                                otherConn: Connection
+                            ) {
+                                const opcode = otherConn.getSourceBlock().type;
+                                console.log(opcode);
+                                if (opcode.startsWith(NS)) {
+                                    switch (opcode) {
+                                        case `${NS}_${ext.getSkeletonInSkin.name}`:
+                                            break;
+                                    }
+                                }
+                                return origConnect_.call(this, otherConn);
+                            };
                         }
                     },
                 };
@@ -160,14 +188,11 @@ class SpineExtension extends SimpleExt {
             },
             {
                 opcode: this.getSthOf.name,
-                text: '获取[DATA]的[KEY]',
+                text: '获取[DATA]的',
                 blockType: BlockType.REPORTER,
                 arguments: {
                     DATA: {
                         type: null,
-                    },
-                    KEY: {
-                        type: ArgumentType.STRING,
                     },
                 },
             },
