@@ -1,6 +1,6 @@
 (function(){'use strict';/* deploy by Github CI/CD
- - Deploy time: 2025/12/27 15:18:34
- - Commit id: 549a6a4ae646235da9678239d328c9c7331617cd
+ - Deploy time: 2025/12/27 15:22:44
+ - Commit id: 4b8bdaf427ecc8775b9c65a5a4df7970b8f2126e
  - Repository: BenPaoDeXiaoZhi/spineExtension
  - Actor: BenPaoDeXiaoZhi*/
 var l=`.bg {
