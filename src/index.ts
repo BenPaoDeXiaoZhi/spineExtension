@@ -108,7 +108,8 @@ class SpineExtension extends SimpleExt {
                     init() {
                         orig.init.call(this);
                         console.log('getSth', this);
-                        const keyInput = this.appendDummyInput('KEY');
+                        const keyInput = this.appendDummyInput();
+                        const menu = keyInput.appendField(Blockly.FieldDropdown([["Foo","Bar"]]),"KEY")
                     },
                 };
             }
