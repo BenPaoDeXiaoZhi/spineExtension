@@ -1,3 +1,4 @@
+export function setupCustomBlocks(ext,NS){
 const ext = this;
 const Blockly = ext.runtime.scratchBlocks;
 customBlock(`${NS}_${ext.getSthOf.name}`, Blockly, function (orig) {
@@ -29,3 +30,4 @@ customBlock(`${NS}_${ext.getSthOf.name}`, Blockly, function (orig) {
         },
     };
 });
+}
