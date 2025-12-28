@@ -2,7 +2,6 @@ import { registerExtDetail } from './scratch/register';
 import { getTranslate, zh_cn, en, TranslateFn } from './i18n/translate';
 import { SimpleExt } from './scratch/simpleExt';
 import type { extInfo, MenuItems } from './scratch/simpleExt';
-const { BlockType, ArgumentType } = Scratch;
 import type VM from 'scratch-vm';
 import { scratchStorageUI } from './util/storage';
 import { SpineSkin, patchSpineSkin } from './spineSkin';
@@ -12,14 +11,13 @@ import { patch, HTMLReport } from './util/htmlReport';
 import { SpineSkinReport, SpineSkeletonReport } from './util/spineReports';
 import { customBlock, registerConnectionCallback } from './util/customBlockly';
 import { GandiRuntime } from '../types/gandi-type';
-import { Connection, BlockSvg, FieldDropdown } from 'blockly';
-// import icon from '../assets/icon.png';
-// import insetIcon from '../assets/insetIcon.png';
+import { BlockSvg, FieldDropdown } from 'blockly';
 const insetIcon =
     'https://m.ccw.site/creator-college/cover/e080227a1e199d9107f2d2b8859a35f0.png';
 const icon =
     'https://m.ccw.site/creator-college/cover/953085977e001622fd7153eb7c9ad646.png';
 
+const { BlockType, ArgumentType } = Scratch;
 type Utility = VM.BlockUtility;
 
 type SpineManagers = {
@@ -94,27 +92,7 @@ class SpineExtension extends SimpleExt {
         };
     }
 
-    setCustomBlock() {
-        const ext = this;
-        const Blockly = ext.runtime.scratchBlocks;
-        type MenuBlock = {
-            dropDownField: FieldDropdown;
-        } & BlockSvg;
-        customBlock(
-            `${NS}_${ext.getSthOf.name}`,
-            this.runtime.scratchBlocks,
-            function (orig) {
-                return {
-                    init() {
-                        orig.init.call(this);
-                        console.log('getSth', this);
-                        const keyInput = this.appendDummyInput();
-                        const menu = keyInput.appendField(new Blockly.FieldDropdown([["Foo","Bar"]]),"KEY")
-                    },
-                };
-            }
-        );
-    }
+    setCustomBlock() {}
 
     getInfo(): extInfo {
         this.info.name = this.translate('extensionName');
@@ -319,6 +297,7 @@ class SpineExtension extends SimpleExt {
         console.log(arg);
     }
 }
+
 registerExtDetail(SpineExtension, {
     info: {
         name: 'spineAnimation.name',

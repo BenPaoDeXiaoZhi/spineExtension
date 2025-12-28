@@ -1,7 +1,12 @@
-import { Connection, type BlockSvg, type Blocks } from 'blockly';
+import {
+    Connection,
+    type BlockSvg,
+    type Blocks,
+    type default as Blockly,
+} from 'blockly';
 export function customBlock(
     id: string,
-    blockly: any,
+    blockly: typeof Blockly,
     config: (originConfig: { init(): any }) => {
         init(this: BlockSvg): BlockSvg | any;
     }
@@ -32,7 +37,7 @@ export function registerConnectionCallback(
 ) {
     const origConnect = (connection as any).connect_;
     (connection as any).connect_ = function (otherConn: Connection) {
-        callback(origConnect);
+        callback(otherConn);
         origConnect.call(this, otherConn);
     };
 }
