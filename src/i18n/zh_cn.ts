@@ -15,6 +15,12 @@ export default {
 
     'getSkeletonInSkin.text': '获取skin[SKIN]中的骨架',
     'getSkeletonInSkin.skinError': '请输入有效的spine skin',
+
+    'getSthOf.text': '获取[DATA]的',
+    'getSthMenu.skin.name': '皮肤的名称',
+    'getSthMenu.skin.x': '皮肤的骨架x偏移',
+    'getSthMenu.skin.y': '皮肤的骨架y偏移',
+    'getSthMenu.skeleton.bones': '骨架的全部骨骼',
     // Menu
     'spriteMenu.currentTarget': '当前角色',
     // Utils

@@ -1,7 +1,7 @@
 import { SpineSkin } from '../spineSkin';
 import { HTMLReport, maybeFunc, resolveMaybeFunc } from './htmlReport';
 import { TranslateFn } from '../i18n/translate';
-import { Skeleton } from '40webgl';
+import spineVersions, { Skeleton } from '../spine/spineVersions';
 
 function domWithType(
     type: maybeFunc<string>,
@@ -55,12 +55,12 @@ export class ObjectKVReport<
 }
 
 export class SpineSkinReport extends ObjectKVReport<SpineSkin> {
-    constructor(skin: SpineSkin, translate: TranslateFn, name: string) {
+    constructor(skin: SpineSkin, translate: TranslateFn) {
         function render() {
             return {
                 [translate('SpineSkinReport.id')]: skin.id,
                 [translate('SpineSkinReport.version')]: skin.manager.version,
-                [translate('SpineSkinReport.nameText')]: name,
+                [translate('SpineSkinReport.nameText')]: skin.name,
             };
         }
         super(
@@ -78,7 +78,9 @@ export class SpineSkinReport extends ObjectKVReport<SpineSkin> {
     }
 }
 
-export class SpineSkeletonReport<T extends Skeleton> extends ObjectKVReport<T> {
+export class SpineSkeletonReport<
+    T extends Skeleton<keyof typeof spineVersions>
+> extends ObjectKVReport<T> {
     constructor(skeleton: T, translate: TranslateFn, name: string) {
         function render() {
             return {

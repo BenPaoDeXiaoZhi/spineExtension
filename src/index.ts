@@ -5,13 +5,14 @@ import type { extInfo, MenuItems } from './scratch/simpleExt';
 import type VM from 'scratch-vm';
 import { scratchStorageUI } from './util/storage';
 import { SpineSkin, patchSpineSkin } from './spineSkin';
-import spineVersions from './spine/spineVersions';
+import spineVersions, { Skeleton } from './spine/spineVersions';
 import { Spine40Manager, Spine42Manager } from './spineManager';
 import { patch, HTMLReport } from './util/htmlReport';
 import { SpineSkinReport, SpineSkeletonReport } from './util/spineReports';
-import { customBlock, registerConnectionCallback } from './util/customBlockly';
+import { setupCustomBlocks } from './util/customBlock';
+import { GetSthMenuItems } from './util/customBlocks/getSth';
 import { GandiRuntime } from '../types/gandi-type';
-import { BlockSvg, FieldDropdown } from 'blockly';
+
 const insetIcon =
     'https://m.ccw.site/creator-college/cover/e080227a1e199d9107f2d2b8859a35f0.png';
 const icon =
@@ -92,7 +93,9 @@ class SpineExtension extends SimpleExt {
         };
     }
 
-    setCustomBlock() {}
+    setCustomBlock() {
+        setupCustomBlocks(this, NS);
+    }
 
     getInfo(): extInfo {
         this.info.name = this.translate('extensionName');
@@ -142,7 +145,7 @@ class SpineExtension extends SimpleExt {
             },
             {
                 opcode: this.getSthOf.name,
-                text: '获取[DATA]的',
+                text: this.translate('getSthOf.text'),
                 blockType: BlockType.REPORTER,
                 arguments: {
                     DATA: {
@@ -271,7 +274,7 @@ class SpineExtension extends SimpleExt {
             NAME
         ));
         console.log(newSkin);
-        return new SpineSkinReport(newSkin, this.translate, NAME);
+        return new SpineSkinReport(newSkin, this.translate);
     }
     initUI() {
         const s = new scratchStorageUI(this.runtime.storage, 'spineAnimation');
@@ -293,8 +296,46 @@ class SpineExtension extends SimpleExt {
         return '';
     }
 
-    getSthOf(arg) {
+    getSthOf(arg: {
+        KEY: GetSthMenuItems;
+        DATA:
+            | SpineSkinReport
+            | SpineSkeletonReport<Skeleton<keyof typeof spineVersions>>;
+    }): string {
         console.log(arg);
+        const { KEY, DATA } = arg;
+        if (DATA instanceof SpineSkeletonReport) {
+            if (!KEY.startsWith('skeleton')) {
+                console.error('类型错误');
+                return '';
+            }
+            const skeleton = DATA.valueOf();
+            switch (KEY) {
+                case 'skeleton.bones':
+                    const names: string[] = [];
+                    for (const bone of skeleton.bones) {
+                        names.push(bone.data.name);
+                    }
+                    return JSON.stringify(names);
+            }
+        }
+        if (DATA instanceof SpineSkinReport) {
+            if (!KEY.startsWith('skin')) {
+                console.error('类型错误');
+                return '';
+            }
+            const skin = DATA.valueOf();
+            switch (KEY) {
+                case 'skin.name':
+                    return skin.name;
+                case 'skin.x': // skeleton的坐标过于底层，没有获取意义
+                    return String(skin.skeletonRelativePos[0]);
+                case 'skin.y':
+                    return String(skin.skeletonRelativePos[1]);
+            }
+        }
+        console.error('类型错误');
+        return '';
     }
 }
 
@@ -329,3 +370,5 @@ registerExtDetail(SpineExtension, {
         },
     },
 });
+
+export type Ext = SpineExtension;

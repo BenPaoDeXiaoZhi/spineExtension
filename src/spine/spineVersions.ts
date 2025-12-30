@@ -7,6 +7,7 @@ const spineVersions = {
     '4.0webgl': spine40webgl,
     '4.2webgl': spine42webgl,
 };
+
 export type Skeleton<V extends keyof typeof spineVersions> = {
     '4.2webgl': spine42webgl.Skeleton;
     '4.0webgl': spine40webgl.Skeleton;

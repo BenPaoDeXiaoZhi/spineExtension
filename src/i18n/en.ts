@@ -15,6 +15,12 @@ export default {
 
     'getSkeletonInSkin.text': 'Get the skeleton in Skin [SKIN]',
     'getSkeletonInSkin.skinError': 'Please input valid Spine skin',
+
+    'getSthOf.text': "Get [DATA]'s ",
+    'getSthMenu.skin.name': 'Name of Skin',
+    'getSthMenu.skin.x': 'relative x pos of Skin',
+    'getSthMenu.skin.y': 'relative y pos of Skin',
+    'getSthMenu.skeleton.bones': 'all names of bones in Skeleton',
     // Menu
     'spriteMenu.currentTarget': 'Current target',
     // Utils

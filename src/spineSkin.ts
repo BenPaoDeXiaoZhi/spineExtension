@@ -1,6 +1,7 @@
 import RenderWebGL, { AnyWebGLContext } from 'scratch-render';
 import type { SpineManager } from './spineManager';
 import type { GandiRuntime } from '../types/gandi-type';
+import spineVersions, { Skeleton } from './spine/spineVersions';
 
 const Skin = Scratch.runtime.renderer.exports.Skin;
 
@@ -30,7 +31,8 @@ export class SpineSkin extends Skin {
     gl: AnyWebGLContext;
     manager: SpineManager;
     _size: [x: number, y: number];
-    skeleton: any;
+    skeletonRelativePos: [x: number, y: number];
+    skeleton: Skeleton<keyof typeof spineVersions>;
     animationState: any;
     tk: any;
     name: string;
@@ -57,6 +59,7 @@ export class SpineSkin extends Skin {
 
         this._texture = this.gl.createTexture();
         this.size = [640, 360];
+        this.skeletonRelativePos = [0, 0];
         this._rotationCenter = [320, 180];
     }
     set size(size: [number, number]) {
@@ -69,18 +72,20 @@ export class SpineSkin extends Skin {
         return this._texture;
     }
     updateTransform(drawable: RenderWebGL.Drawable) {
-        console.log(drawable);
         this.updatePosition(drawable._position as [x: number, y: number]);
         this.updateScale(drawable._scale as [x: number, y: number]);
+        this.updateDirection(drawable._direction);
     }
     updatePosition([x, y]: [x: number, y: number]) {
-        console.log(x, y);
-        this.skeleton.x = x;
-        this.skeleton.y = y;
+        this.skeleton.x = x + this.skeletonRelativePos[0];
+        this.skeleton.y = y + this.skeletonRelativePos[1];
     }
     updateScale([x, y]: [x: number, y: number]) {
         this.skeleton.scaleX = x / 100;
         this.skeleton.scaleY = y / 100;
+    }
+    updateDirection(direction: number) {
+        this.skeleton.getRootBone().rotation = direction - 90;
     }
     render(drawable: RenderWebGL.Drawable) {
         this.updateTransform(drawable);

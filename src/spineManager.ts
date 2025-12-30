@@ -96,7 +96,6 @@ export class Spine42Manager extends Spine4Manager {
         animationState.update(tk.delta);
         animationState.apply(skeleton);
         const camera = this.sceneRenderer.camera;
-        console.log(camera.viewportWidth, camera.viewportHeight);
         camera.setViewport(...viewport);
         this.sceneRenderer.begin();
         this.sceneRenderer.drawSkeleton(skeleton);
