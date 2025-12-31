@@ -13,6 +13,8 @@ export default {
     'setSkinSkeleton.skeletonIdError': '请输入数字或有效的skeleton数据',
     'setSkinSkeleton.characterNotFound': '找不到名为{name}的角色',
 
+    'setRelativePos.text': '设置skin[SKIN]的骨架偏移为[POS]',
+
     'getSkeletonInSkin.text': '获取skin[SKIN]中的骨架',
     'getSkeletonInSkin.skinError': '请输入有效的spine skin',
 
@@ -21,6 +23,7 @@ export default {
     'getSthMenu.skin.x': '皮肤的骨架x偏移',
     'getSthMenu.skin.y': '皮肤的骨架y偏移',
     'getSthMenu.skeleton.bones': '骨架的全部骨骼',
+    'getSthMenu.skeleton.animations': '骨架的全部动画',
     // Menu
     'spriteMenu.currentTarget': '当前角色',
     // Utils
@@ -34,4 +37,6 @@ export default {
     'SpineSkeletonReport.type': 'spine骨架',
     'SpineSkeletonReport.nameText': '名称为 ',
     'SpineSkeletonReport.boneNum': '骨骼总数为 ',
+    'SpineSkeletonReport.monitor':
+        '(spine骨架) 名称为{name}, 骨骼总数为{boneNum}',
 } as const;

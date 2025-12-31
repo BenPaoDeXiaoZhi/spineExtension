@@ -72,7 +72,7 @@ export class SpineSkinReport extends ObjectKVReport<SpineSkin> {
                 translate('SpineSkinReport.monitor', {
                     id: skin.id,
                     version: skin.manager.version,
-                    name,
+                    name: skin.name,
                 })
         );
     }
@@ -95,7 +95,10 @@ export class SpineSkeletonReport<
             render,
             skeleton,
             () =>
-                `(spine骨架) 名称为${name}, 共有${skeleton.bones.length}个骨骼`
+                translate('SpineSkeletonReport.monitor', {
+                    name,
+                    boneNum: skeleton.bones.length,
+                })
         );
     }
 }

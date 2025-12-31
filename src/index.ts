@@ -19,6 +19,7 @@ const icon =
     'https://m.ccw.site/creator-college/cover/953085977e001622fd7153eb7c9ad646.png';
 
 const { BlockType, ArgumentType } = Scratch;
+const MAX_PROXY_DEPTH = 5;
 type Utility = VM.BlockUtility;
 
 type SpineManagers = {
@@ -72,21 +73,58 @@ class SpineConfig {
 
 const NS = 'spineAnimation' as const;
 
+function createADSProxy(target: object, depth: number = 0) {
+    if (depth >= MAX_PROXY_DEPTH) {
+        return `[DEPTH EXCEEDED!](${typeof target})`;
+    }
+    try {
+        const proxy = new Proxy(target, {
+            setPrototypeOf() {
+                // ads会修改原型,造成问题
+                return true;
+            },
+            getPrototypeOf(target) {
+                return null;
+            },
+            get(target, key) {
+                if (target[key] instanceof Function) {
+                    return null;
+                }
+                if (!(key in target)) {
+                    return undefined;
+                }
+                if (target[key] instanceof Object) {
+                    let value = target[key];
+                    if ('toJSON' in value) {
+                        value = value.toJSON();
+                    }
+                    return createADSProxy(value, depth + 1);
+                }
+                return target[key];
+            },
+        });
+        return proxy;
+    } catch (e) {
+        console.warn(e, target);
+        return null;
+    }
+}
+
 class SpineExtension extends SimpleExt {
     translate: TranslateFn;
     runtime: GandiRuntime;
     managers: SpineManagers;
     renderer: RenderWebGL;
     constructor(runtime: GandiRuntime) {
-        console.log(runtime);
         super(NS, 'foo');
         this.runtime = runtime;
-        console.log(this);
         this.translate = getTranslate(runtime);
         this.renderer = runtime.renderer;
         patchSpineSkin(this.runtime);
         patch(this.runtime);
         this.setCustomBlock();
+        this.patchADS();
+        this.runtime.on('EXTENSION_ADDED', this.patchADS.bind(this));
         this.managers = {
             '4.0webgl': new Spine40Manager(this.renderer),
             '4.2webgl': new Spine42Manager(this.renderer),
@@ -97,12 +135,56 @@ class SpineExtension extends SimpleExt {
         setupCustomBlocks(this, NS);
     }
 
+    /**
+     * patch 高级数据结构
+     */
+    patchADS() {
+        console.log(arguments);
+        type SafeObject = {
+            getActualObject: (value: object) => object;
+            orig_?: SafeObject;
+        };
+        if (!('SafeObject' in this.runtime)) {
+            return;
+        }
+        const SafeObject = this.runtime.SafeObject as SafeObject;
+        if ('orig_' in SafeObject) {
+            // 如果之前patch过,进行修复
+            SafeObject.getActualObject = SafeObject.orig_.getActualObject;
+        }
+        console.log(SafeObject);
+        const orig = SafeObject.getActualObject;
+        SafeObject.orig_ = { getActualObject: orig };
+        SafeObject.getActualObject = function (value) {
+            if (value instanceof HTMLReport) {
+                return createADSProxy(value.valueOf());
+            } else {
+                return orig.call(this, value);
+            }
+        };
+    }
+
     getInfo(): extInfo {
         this.info.name = this.translate('extensionName');
         this.info.blockIconURI = insetIcon;
         this.info.color1 = '#272D39';
         this.info.color2 = '#20272F';
         this.info.blocks = [
+            {
+                opcode: this.loadSkeleton.name,
+                text: this.translate('loadSkeleton.text'),
+                blockType: BlockType.REPORTER,
+                arguments: {
+                    CONFIG: {
+                        type: ArgumentType.STRING,
+                        menu: 'skeleton_menu',
+                    },
+                    NAME: {
+                        type: ArgumentType.STRING,
+                        defaultValue: 'hina',
+                    },
+                },
+            },
             {
                 opcode: this.setSkinSkeleton.name,
                 text: this.translate('setSkinSkeleton.text'),
@@ -119,17 +201,16 @@ class SpineExtension extends SimpleExt {
                 },
             },
             {
-                opcode: this.loadSkeleton.name,
-                text: this.translate('loadSkeleton.text'),
-                blockType: BlockType.REPORTER,
+                opcode: this.setRelativePos.name,
+                text: this.translate('setRelativePos.text'),
+                blockType: BlockType.COMMAND,
                 arguments: {
-                    CONFIG: {
-                        type: ArgumentType.STRING,
-                        menu: 'skeleton_menu',
+                    SKIN: {
+                        type: null,
                     },
-                    NAME: {
+                    POS: {
                         type: ArgumentType.STRING,
-                        defaultValue: 'hina',
+                        defaultValue: JSON.stringify([0, 0]),
                     },
                 },
             },
@@ -262,6 +343,7 @@ class SpineExtension extends SimpleExt {
             skel,
             atlas
         );
+        skeleton.data.name = NAME;
         console.log(skeleton, animationState);
         const skinId = this.renderer._nextSkinId++;
         const newSkin = (this.renderer._allSkins[skinId] = new SpineSkin(
@@ -273,9 +355,14 @@ class SpineExtension extends SimpleExt {
             new spineVersions[version].TimeKeeper(),
             NAME
         ));
-        console.log(newSkin);
+        console.log(newSkin.name);
         return new SpineSkinReport(newSkin, this.translate);
     }
+
+    setRelativePos(args) {
+        console.log(args);
+    }
+
     initUI() {
         const s = new scratchStorageUI(this.runtime.storage, 'spineAnimation');
         s.createUI();
@@ -311,12 +398,20 @@ class SpineExtension extends SimpleExt {
             }
             const skeleton = DATA.valueOf();
             switch (KEY) {
-                case 'skeleton.bones':
+                case 'skeleton.bones': {
                     const names: string[] = [];
                     for (const bone of skeleton.bones) {
                         names.push(bone.data.name);
                     }
                     return JSON.stringify(names);
+                }
+                case 'skeleton.animations': {
+                    const names: string[] = [];
+                    for (const animation of skeleton.data.animations) {
+                        names.push(animation.name);
+                    }
+                    return JSON.stringify(names);
+                }
             }
         }
         if (DATA instanceof SpineSkinReport) {

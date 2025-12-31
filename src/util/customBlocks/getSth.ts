@@ -7,6 +7,7 @@ export const getSthMenuItems = [
     'skin.x',
     'skin.y',
     'skeleton.bones',
+    'skeleton.animations',
 ] as const satisfies (`skin.${string}` | `skeleton.${string}`)[];
 
 export type GetSthMenuItems = (typeof getSthMenuItems)[number];
@@ -29,7 +30,6 @@ export function setupGetSth(ext: Ext, NS: string) {
         return {
             init(this: BlockSvg) {
                 orig.init.call(this);
-                console.log('getSth', this);
                 const keyInput = this.appendDummyInput();
                 keyInput.appendField(
                     new Blockly.FieldDropdown(
