@@ -31,7 +31,7 @@ export function setupPos(ext: Ext, NS: string) {
                 dom.style.cursor = 'pointer';
                 dom.setAttribute('stroke', 'darkgray');
                 const field = this;
-                dom.addEventListener('click', (e) => {
+                dom.addEventListener('mouseup', (e) => {
                     console.log(e, field);
                     field.listener.call(field, e);
                 });
