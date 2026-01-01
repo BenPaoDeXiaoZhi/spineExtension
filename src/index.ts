@@ -135,6 +135,9 @@ class SpineExtension extends SimpleExt {
         setupCustomBlocks(this, NS);
     }
 
+    /**
+     * 创建回调函数
+     */
     setupCallback() {
         const callbacks = {
             EXTENSION_ADDED: [this.patchADS.bind(this)],
@@ -154,6 +157,9 @@ class SpineExtension extends SimpleExt {
         this.runtime.on('EXTENSION_DELETED', disposeCallback);
     }
 
+    /**
+     * 扩展卸载回调
+     */
     onDispose(callbacks: { [event: string]: Function[] }) {
         console.log(`%c[EXT Dispose] %c${NS}`, 'color:red', 'color:blue');
         for (const key in callbacks) {
