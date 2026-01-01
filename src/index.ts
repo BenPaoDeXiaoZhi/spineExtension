@@ -124,7 +124,7 @@ class SpineExtension extends SimpleExt {
         patch(this.runtime);
         this.setCustomBlock();
         this.patchADS();
-        this.runtime.on('EXTENSION_ADDED', this.patchADS.bind(this));
+        this.setupCallback();
         this.managers = {
             '4.0webgl': new Spine40Manager(this.renderer),
             '4.2webgl': new Spine42Manager(this.renderer),
@@ -135,11 +135,41 @@ class SpineExtension extends SimpleExt {
         setupCustomBlocks(this, NS);
     }
 
+    setupCallback() {
+        const callbacks = {
+            EXTENSION_ADDED: [this.patchADS.bind(this)],
+        };
+        for (const key in callbacks) {
+            for (const callback of callbacks[key]) {
+                this.runtime.on(key, callback);
+            }
+        }
+        const disposeCallback = (info: extInfo) => {
+            if (info.id === NS || !(`ext_${NS}` in this.runtime)) {
+                // 扩展被卸载时清理listener
+                this.onDispose(callbacks);
+                this.runtime.off('EXTENSION_DELETED', disposeCallback);
+            }
+        };
+        this.runtime.on('EXTENSION_DELETED', disposeCallback);
+    }
+
+    onDispose(callbacks: { [event: string]: Function[] }) {
+        console.log(`%c[EXT Dispose] %c${NS}`, 'color:red', 'color:blue');
+        for (const key in callbacks) {
+            for (const callback of callbacks[key]) {
+                this.runtime.off(key, callback);
+            }
+        }
+    }
+
     /**
      * patch 高级数据结构
      */
-    patchADS() {
-        console.log(arguments);
+    patchADS(data?: { id: string }) {
+        if (data && data.id !== 'moreDataTypes') {
+            return;
+        }
         type SafeObject = {
             getActualObject: (value: object) => object;
             orig_?: SafeObject;

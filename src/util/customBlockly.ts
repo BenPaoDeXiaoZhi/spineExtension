@@ -8,7 +8,10 @@ export function customBlock(
     id: string,
     blockly: typeof Blockly,
     config: (originConfig: { init(): any }) => {
-        init(this: BlockSvg): BlockSvg | any;
+        // init(this: BlockSvg): BlockSvg | any;
+        domToMutation?: (this: BlockSvg, element: HTMLElement) => any;
+        mutationToDom?: (this: BlockSvg) => HTMLElement;
+        [key: string]: (this: BlockSvg, ...args: any) => any;
     }
 ) {
     let origConfig: { init(): any };
