@@ -18,15 +18,16 @@
  - [x] htmlReport
  - [x] spineSkinReport
  - [x] spineSkeletonReport
+ - [ ] spineBoneReport
  - [ ] animationStateReport
 
 #### 🗯️扩展功能
  - [x] 加载骨架文件
- - [ ] mock骨架文件
+ - [ ] mock骨架文件（允许用户不上传文件）
  - [x] 显示骨架skin
- - [x] 根据drawable状态调整骨骼坐标变换
- - [x] 根据drawable状态调整骨骼缩放变换
- - [x] 根据drawable状态调整骨骼旋转变换
+ - [x] 根据drawable状态调整骨架**坐标**变换
+ - [x] 根据drawable状态调整骨家**缩放**变换
+ - [x] 根据drawable状态调整骨架**旋转**变换
  - [x] 从skin中获取骨架数据
  - [ ] 修改、读取骨骼数据
  - [ ] 应用动画
