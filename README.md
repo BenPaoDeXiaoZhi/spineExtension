@@ -1,8 +1,9 @@
 # ✨Spine Extension For Gandi✨  
-### 🟢为**Gandi**编辑器量身定做的Spine运行时扩展  
-### ☑️类型安全，功能可扩展
-***
+🟢为**Gandi**编辑器量身定做的Spine运行时扩展  
+☑️类型安全，功能可扩展
+
 ### ✨亮点
+***
 1. 特殊的数据存储方式  
   通过[HTMLReport](src/util/htmlReport.ts)存储数据，更便于观察！ 
 2. 扩展Gandi原版的Spine实现  
@@ -19,7 +20,6 @@
 - [ ] animationStateReport
 
 ##### 🗯️扩展功能
-***
 - [x] 加载骨架文件
 - [ ] mock骨架文件
 - [x] 显示骨架skin
@@ -31,7 +31,6 @@
 - [ ] 应用动画
 
 ##### 💬扩展信息
-***
 - [x] 大图标 by [乌龙茶速递@ccw](https://www.ccw.site/student/68dd004586bbc77f84e309ac)
 - [x] 小图标
 - [x] 配色方案 by [乌龙茶速递@ccw](https://www.ccw.site/student/68dd004586bbc77f84e309ac)
