@@ -22,7 +22,7 @@ export declare interface GandiRuntime extends Runtime {
 
     scratchBlocks: GandiBlocks;
     renderer: GandiRenderer;
-    on: Runtime['on'] & ((name: string, callback: Function) => void);
+    on: Runtime['on'] & ((name: string, callback: Function) => void); // TODO:gandi特殊事件的补充
     off: Runtime['off'] & ((name: string, callback: Function) => void);
 }
 
