@@ -4,6 +4,7 @@ import type { BlockSvg, Connection } from 'blockly';
 
 export const getSthMenuItems = [
     'skin.name',
+    'skin.skeleton',
     'skin.x',
     'skin.y',
     'skeleton.bones',
