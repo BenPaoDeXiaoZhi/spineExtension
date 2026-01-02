@@ -15,11 +15,12 @@ export default {
 
     'setRelativePos.text': "Set Skin [SKIN] 's relative pos to [POS]",
 
-    'getSkeletonInSkin.text': 'Get the skeleton in Skin [SKIN]',
+    'getSkeletonInSkin.text': 'Get the skeleton in Skin [SKIN]',// Deprected
     'getSkeletonInSkin.skinError': 'Please input valid Spine skin',
 
     'getSthOf.text': "Get [DATA]'s ",
     'getSthMenu.skin.name': 'Name of Skin',
+    'getSthMenu.skin.skeleton': 'Skeleton in Skin',
     'getSthMenu.skin.x': 'relative x pos of Skin',
     'getSthMenu.skin.y': 'relative y pos of Skin',
     'getSthMenu.skeleton.bones': 'all names of bones in Skeleton',
