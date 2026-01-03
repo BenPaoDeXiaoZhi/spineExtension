@@ -1,4 +1,3 @@
-
 import { registerExtDetail } from './scratch/register';
 import { getTranslate, zh_cn, en, TranslateFn } from './i18n/translate';
 import { SimpleExt } from './scratch/simpleExt';
@@ -132,7 +131,14 @@ class SpineExtension extends SimpleExt {
         };
     }
 
+    /**
+     * 注册自定义blockly
+     */
     setCustomBlock() {
+        if(!this.runtime.scratchBlocks){
+            console.log("blockly未暴露，不进行patch")
+            return
+        }
         setupCustomBlocks(this, NS);
     }
 
