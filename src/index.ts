@@ -1,3 +1,4 @@
+
 import { registerExtDetail } from './scratch/register';
 import { getTranslate, zh_cn, en, TranslateFn } from './i18n/translate';
 import { SimpleExt } from './scratch/simpleExt';
@@ -424,7 +425,7 @@ class SpineExtension extends SimpleExt {
         DATA:
             | SpineSkinReport
             | SpineSkeletonReport<Skeleton<keyof typeof spineVersions>>;
-    }): string {
+    }): string|HTMLReport {
         console.log(arg);
         const { KEY, DATA } = arg;
         if (DATA instanceof SpineSkeletonReport) {
@@ -459,6 +460,12 @@ class SpineExtension extends SimpleExt {
             switch (KEY) {
                 case 'skin.name':
                     return skin.name;
+                case 'skin.skeleton':
+                    return new SpineSkeletonReport(
+                        skin.skeleton,
+                        this.translate,
+                        skin.name
+                    );
                 case 'skin.x': // skeleton的坐标过于底层，没有获取意义
                     return String(skin.skeletonRelativePos[0]);
                 case 'skin.y':
