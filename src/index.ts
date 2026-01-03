@@ -252,16 +252,6 @@ class SpineExtension extends SimpleExt {
                 },
             },
             {
-                opcode: this.getSkeletonInSkin.name,
-                text: this.translate('getSkeletonInSkin.text'),
-                blockType: BlockType.REPORTER,
-                arguments: {
-                    SKIN: {
-                        type: null,
-                    },
-                },
-            },
-            {
                 opcode: this.getSthOf.name,
                 text: this.translate('getSthOf.text'),
                 blockType: BlockType.REPORTER,
@@ -324,6 +314,7 @@ class SpineExtension extends SimpleExt {
         });
         return menuItems;
     }
+
     setSkinSkeleton(
         arg: { TARGET_NAME: string; SKELETON: number | HTMLReport },
         util: Utility
@@ -404,20 +395,6 @@ class SpineExtension extends SimpleExt {
         const s = new scratchStorageUI(this.runtime.storage, 'spineAnimation');
         s.createUI();
         console.log(s);
-    }
-
-    getSkeletonInSkin(arg: { SKIN: any | SpineSkinReport }) {
-        const { SKIN } = arg;
-        if (SKIN && SKIN instanceof SpineSkinReport) {
-            const skin = SKIN.valueOf();
-            return new SpineSkeletonReport(
-                skin.skeleton,
-                this.translate,
-                skin.name
-            );
-        }
-        console.error(this.translate('getSkeletonInSkin.skinError'));
-        return '';
     }
 
     getSthOf(arg: {
