@@ -9,20 +9,20 @@ export default {
     'loadSkeleton.text': '加载配置为[CONFIG]的spine骨骼并命名为[NAME]',
     'loadSkeleton.configError': '请输入有效配置',
 
-    'setSkinSkeleton.text': '将角色[TARGET_NAME]的skin设为骨骼[SKELETON]',
+    'setSkinSkeleton.text': '将角色[TARGET_NAME]的skin设为骨架[SKELETON]',
     'setSkinSkeleton.skeletonIdError': '请输入数字或有效的skeleton数据',
     'setSkinSkeleton.characterNotFound': '找不到名为{name}的角色',
 
     'setRelativePos.text': '设置skin[SKIN]的骨架偏移为[POS]',
 
-    'getSkeletonInSkin.text': '获取skin[SKIN]中的骨架', // Deprecated
-    'getSkeletonInSkin.skinError': '请输入有效的spine skin',
-
     'getSthOf.text': '获取[DATA]的',
+    'getSthMenu.none': '无可获取项目',
+    'getSthMenu.needUpdate': '待补充',
     'getSthMenu.skin.name': '皮肤的名称',
     'getSthMenu.skin.skeleton': '皮肤中的骨架',
     'getSthMenu.skin.x': '皮肤的骨架x偏移',
     'getSthMenu.skin.y': '皮肤的骨架y偏移',
+    'getSthMenu.skin.animationState': '皮肤的animationState',
     'getSthMenu.skeleton.bones': '骨架的全部骨骼',
     'getSthMenu.skeleton.animations': '骨架的全部动画',
     // Menu

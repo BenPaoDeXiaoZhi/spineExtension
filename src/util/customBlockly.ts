@@ -4,15 +4,18 @@ import {
     type Blocks,
     type default as Blockly,
 } from 'blockly';
+
+type BlockConfig = {
+    init(this: BlockSvg): BlockSvg | any;
+    domToMutation?: (this: BlockSvg, element: HTMLElement) => any;
+    mutationToDom?: (this: BlockSvg) => HTMLElement;
+    [key: string]: (this: BlockSvg, ...args: any) => any;
+};
+
 export function customBlock(
     id: string,
     blockly: typeof Blockly,
-    config: (originConfig: { init(): any }) => {
-        // init(this: BlockSvg): BlockSvg | any;
-        domToMutation?: (this: BlockSvg, element: HTMLElement) => any;
-        mutationToDom?: (this: BlockSvg) => HTMLElement;
-        [key: string]: (this: BlockSvg, ...args: any) => any;
-    }
+    config: (orig: { init(): any }) => BlockConfig
 ) {
     let origConfig: { init(): any };
     delete blockly.Blocks[id];
