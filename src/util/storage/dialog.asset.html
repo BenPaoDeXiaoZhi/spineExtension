@@ -1,0 +1,66 @@
+<dialog id="dialog">
+    <div style="display: flex;align-items: center;">
+        <header id="header"></header>
+        <div id="close"></div>
+    </div>
+    <div id="uploader">a</div>
+</dialog>
+<style>
+    #dialog::backdrop {
+        background-color: #0000004c;
+    }
+
+    #dialog {
+        margin: 100px auto;
+        width: 580px;
+        background-color: var(--theme-color-300, #2e3644);
+        border: 1px solid var(--theme-color-200, #3e495b);
+        border-radius: 12px;
+        min-height: 150px;
+        user-select: none;
+        position: relative;
+        z-index: 550;
+        padding: 0;
+    }
+
+    #uploader {
+        margin: 20px;
+        border: rgb(128, 199, 226) 3px dashed;
+        border-radius: 10px;
+        height: 100%;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.15s ease-out;
+    }
+
+    #uploader:hover {
+        background-color: rgba(128, 199, 226, 0.2);
+    }
+
+    #header {
+        color: white;
+        display: flex;
+        font-size: 18px;
+        justify-content: center;
+        border-bottom: 1px solid var(--theme-color-350, #1d2634);
+        padding: 10px;
+        width: 100%;
+        position: relative;
+    }
+
+    #close {
+        background-color: transparent;
+        border: none;
+        border-radius: 5px;
+        position: absolute;
+        right: 10px;
+        width: 24px;
+        height: 24px;
+        transition: background-color 0.15s ease-out;
+        cursor: pointer;
+    }
+
+    #close:hover {
+        background-color: rgba(255, 255, 255, 0.16);
+    }
+</style>

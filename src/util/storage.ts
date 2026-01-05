@@ -1,7 +1,6 @@
 import type ScratchStorage from 'scratch-storage';
-import mainStyle from './storage/style.asset.css';
-// @ts-ignore: allow importing svg without a module declaration
-import closeSvg from './storage/close.svg';
+import dialog from './storage/dialog.asset.html';
+import closeSVG from './storage/close.svg';
 
 export class scratchStorageUI {
     storage: ScratchStorage;
@@ -51,34 +50,25 @@ export class scratchStorageUI {
 }
 
 export class Container extends HTMLElement {
+    dialog: HTMLDialogElement;
     constructor() {
         super();
     }
     connectedCallback() {
         const shadow = this.attachShadow({ mode: 'open' });
-        const style = document.createElement('style');
-        style.innerHTML = mainStyle;
-        const container = document.createElement('div');
-        container.className = 'bg';
-        const modal = document.createElement('div');
-        modal.className = 'modal';
-        const header = document.createElement('header');
-        header.className = 'header';
-        const headerText = document.createElement('div');
-        headerText.style.width = 'fit-content';
-        headerText.style.margin = 'auto';
-        headerText.innerText = '上传spine文件';
-        const close = document.createElement('button');
-        close.className = 'close';
-        close.innerHTML = closeSvg;
+        shadow.innerHTML = dialog;
+        this.dialog = shadow.getElementById('dialog') as HTMLDialogElement;
+        const header = shadow.getElementById('header');
+        header.innerText = 'upload';
+        const close = shadow.getElementById('close') as HTMLDivElement;
+        close.innerHTML = closeSVG;
         close.addEventListener('click', (e) => {
+            this.dialog.close();
             this.remove();
         });
-        header.appendChild(headerText);
-        header.appendChild(close);
-        modal.appendChild(header);
-        container.appendChild(modal);
-        shadow.appendChild(container);
-        shadow.appendChild(style);
+    }
+
+    showModal() {
+        this.dialog.showModal();
     }
 }

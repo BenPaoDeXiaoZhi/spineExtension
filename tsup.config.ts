@@ -60,6 +60,7 @@ export default defineConfig((tsupOptions) => {
             '.css': 'text',
             '.svg': 'text',
             '.png': 'dataurl',
+            '.asset.html': 'text',
         },
         publicDir: './public',
         esbuildOptions(options) {
@@ -80,7 +81,7 @@ export default defineConfig((tsupOptions) => {
         },
         esbuildPlugins: [minifySpinePlugin],
         treeshake: true,
-        minify: true,
+        minify: !tsupOptions.watch,
     };
     return dat;
 });
