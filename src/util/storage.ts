@@ -1,6 +1,7 @@
 import type ScratchStorage from 'scratch-storage';
 import dialog from './storage/dialog.asset.html';
 import closeSVG from './storage/close.svg';
+import uploadSVG from './storage/upload.svg';
 
 export class scratchStorageUI {
     storage: ScratchStorage;
@@ -57,18 +58,35 @@ export class Container extends HTMLElement {
     connectedCallback() {
         const shadow = this.attachShadow({ mode: 'open' });
         shadow.innerHTML = dialog;
+
         this.dialog = shadow.getElementById('dialog') as HTMLDialogElement;
+        this.dialog.showModal();
+
         const header = shadow.getElementById('header');
         header.innerText = 'upload';
+
+        const uploader = shadow.getElementById('uploader');
+        uploader.innerHTML = uploadSVG + uploader.innerHTML;
+
+        const uploadTip = shadow.getElementById('uploadTip');
+        uploader.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadTip.innerText = '松手上传';
+        });
+        uploader.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadTip.innerText = '选择或拖动文件上传';
+        });
+        uploader.addEventListener('drop', (e) => {
+            e.preventDefault();
+            console.log(e);
+        });
+
         const close = shadow.getElementById('close') as HTMLDivElement;
         close.innerHTML = closeSVG;
         close.addEventListener('click', (e) => {
             this.dialog.close();
             this.remove();
         });
-    }
-
-    showModal() {
-        this.dialog.showModal();
     }
 }

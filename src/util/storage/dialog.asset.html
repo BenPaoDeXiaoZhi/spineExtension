@@ -1,9 +1,11 @@
 <dialog id="dialog">
-    <div style="display: flex;align-items: center;">
-        <header id="header"></header>
+    <div style="position: relative;">
         <div id="close"></div>
+        <header id="header"></header>
     </div>
-    <div id="uploader">a</div>
+    <div id="uploader">
+        <span id="uploadTip">选择或拖动文件上传</span>
+    </div>
 </dialog>
 <style>
     #dialog::backdrop {
@@ -11,7 +13,6 @@
     }
 
     #dialog {
-        margin: 100px auto;
         width: 580px;
         background-color: var(--theme-color-300, #2e3644);
         border: 1px solid var(--theme-color-200, #3e495b);
@@ -21,6 +22,7 @@
         position: relative;
         z-index: 550;
         padding: 0;
+        color: white;
     }
 
     #uploader {
@@ -28,13 +30,19 @@
         border: rgb(128, 199, 226) 3px dashed;
         border-radius: 10px;
         height: 100%;
-        color: white;
         cursor: pointer;
         transition: background-color 0.15s ease-out;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     #uploader:hover {
         background-color: rgba(128, 199, 226, 0.2);
+    }
+
+    #uploadIcon {
+        position: relative;
     }
 
     #header {
@@ -45,7 +53,7 @@
         border-bottom: 1px solid var(--theme-color-350, #1d2634);
         padding: 10px;
         width: 100%;
-        position: relative;
+        box-sizing: border-box;
     }
 
     #close {
@@ -54,10 +62,13 @@
         border-radius: 5px;
         position: absolute;
         right: 10px;
+        top: 0px;
+        bottom: 0px;
         width: 24px;
         height: 24px;
         transition: background-color 0.15s ease-out;
         cursor: pointer;
+        margin: auto;
     }
 
     #close:hover {

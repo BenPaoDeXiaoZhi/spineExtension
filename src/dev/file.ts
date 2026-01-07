@@ -9,7 +9,6 @@ open.innerText = 'open modal';
 open.addEventListener('click', (e) => {
     const container = document.createElement(NAME) as Container;
     document.body.appendChild(container);
-    container.showModal();
 });
 document.body.appendChild(open);
 document.body.style.height = '100vh';
