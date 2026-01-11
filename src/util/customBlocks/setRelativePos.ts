@@ -75,7 +75,6 @@ export function setupPos(ext: Ext, NS: string) {
                     e: MouseEvent
                 ) {
                     this.toNextFormat();
-                    console.log(this.sourceBlock_);
                     e.stopPropagation();
                 });
                 input.appendField(posSwitch, 'FORMAT');

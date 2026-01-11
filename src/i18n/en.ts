@@ -16,6 +16,8 @@ export default {
     'setRelativePos.text': "Set Skin [SKIN] 's relative pos to [POS]",
 
     'getSthOf.text': "Get [DATA]'s ",
+    typeError: '🚫type error🚫',
+
     'getSthMenu.none': 'NONE',
     'getSthMenu.needUpdate': 'will be updated',
     'getSthMenu.skin.name': 'Name of Skin',
@@ -28,6 +30,8 @@ export default {
     // Menu
     'spriteMenu.currentTarget': 'Current target',
     // Utils
+    'HTMLReport.monitorPrefix': '(⛔No Need to Save⛔)',
+
     'SpineSkinReport.type': 'Spine Skin',
     'SpineSkinReport.id': 'Id is ',
     'SpineSkinReport.version': 'Version is ',
@@ -40,6 +44,9 @@ export default {
     'SpineSkeletonReport.boneNum': 'Total Bone num is ',
     'SpineSkeletonReport.monitor':
         '(Spine Skeleton) Name is {name}, Total Bone num is {boneNum}',
+
+    'SpineAnimationStateReport.trackPlaying':
+        'Track {id} is playing Animation ',
 } as const satisfies {
     [K in keyof typeof zh_cn]: string;
 };

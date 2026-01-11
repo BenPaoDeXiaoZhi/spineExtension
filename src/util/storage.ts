@@ -74,7 +74,10 @@ export class Container extends HTMLElement {
             uploadTip.innerText = '松手上传';
         });
         uploader.addEventListener('dragleave', (e) => {
-            e.preventDefault();
+            if (e.target !== uploader) {
+                return;
+            }
+            console.log(e);
             uploadTip.innerText = '选择或拖动文件上传';
         });
         uploader.addEventListener('drop', (e) => {

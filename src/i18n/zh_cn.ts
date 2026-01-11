@@ -16,6 +16,8 @@ export default {
     'setRelativePos.text': '设置skin[SKIN]的骨架偏移为[POS]',
 
     'getSthOf.text': '获取[DATA]的',
+    typeError: '🚫类型错误🚫',
+
     'getSthMenu.none': '无可获取项目',
     'getSthMenu.needUpdate': '待补充',
     'getSthMenu.skin.name': '皮肤的名称',
@@ -28,6 +30,8 @@ export default {
     // Menu
     'spriteMenu.currentTarget': '当前角色',
     // Utils
+    'HTMLReport.monitorPrefix': '(⛔无需保存⛔)',
+
     'SpineSkinReport.type': 'spine skin',
     'SpineSkinReport.id': 'id为 ',
     'SpineSkinReport.version': '版本为 ',
@@ -40,4 +44,6 @@ export default {
     'SpineSkeletonReport.boneNum': '骨骼总数为 ',
     'SpineSkeletonReport.monitor':
         '(spine骨架) 名称为{name}, 骨骼总数为{boneNum}',
+
+    'SpineAnimationStateReport.trackPlaying': 'Track {id} 正在播放动画 ',
 } as const;

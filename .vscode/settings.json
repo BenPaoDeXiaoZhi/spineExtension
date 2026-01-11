@@ -25,5 +25,12 @@
         "Gandi",
         "blendFunc",
         "blockly"
+    ],
+    "VSCodeCounter.exclude": [
+        "**/.gitignore",
+        "**/.vscode/**",
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/spine/**"
     ]
 }

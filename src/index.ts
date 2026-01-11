@@ -1,77 +1,35 @@
 import { registerExtDetail } from './scratch/register';
-import { getTranslate, zh_cn, en, TranslateFn } from './i18n/translate';
+import { getTranslate, zh_cn, en } from './i18n/translate';
 import { SimpleExt } from './scratch/simpleExt';
 import type { extInfo, MenuItems } from './scratch/simpleExt';
 import type VM from 'scratch-vm';
 import { scratchStorageUI } from './util/storage';
 import { SpineSkin, patchSpineSkin } from './spineSkin';
-import spineVersions, { Skeleton } from './spine/spineVersions';
+import spineVersions, { AnimationState, Skeleton } from './spine/spineVersions';
 import { Spine40Manager, Spine42Manager } from './spineManager';
 import { patch, HTMLReport } from './util/htmlReport';
-import { SpineSkinReport, SpineSkeletonReport } from './util/spineReports';
+import {
+    SpineSkinReport,
+    SpineSkeletonReport,
+    SpineAnimationStateReport,
+} from './util/spineReports';
 import { setupCustomBlocks } from './util/customBlock';
 import { GetSthMenuItems } from './util/customBlocks/getSth';
 import { GandiRuntime } from '../types/gandi-type';
+import { getLogger } from './logSystem';
+import { SpineConfig, SpineManagers } from './spineConfig';
 
 const insetIcon =
     'https://m.ccw.site/creator-college/cover/e080227a1e199d9107f2d2b8859a35f0.png';
 const icon =
     'https://m.ccw.site/creator-college/cover/953085977e001622fd7153eb7c9ad646.png';
-
+const NS = 'spineAnimation' as const;
 const { BlockType, ArgumentType } = Scratch;
 const MAX_PROXY_DEPTH = 5;
-type Utility = VM.BlockUtility;
+const translate = getTranslate();
+let logger = getLogger('console', NS);
 
-type SpineManagers = {
-    '4.0webgl': Spine40Manager;
-    '4.2webgl': Spine42Manager;
-};
-
-class SpineConfig {
-    private _skel: string;
-    private _atlas: string;
-    version: keyof SpineManagers;
-    constructor(config: {
-        skel: string;
-        atlas: string;
-        version: keyof SpineManagers;
-    }) {
-        this.version = config.version;
-        this.skel = config.skel;
-        this.atlas = config.atlas;
-    }
-    set skel(v: string) {
-        if (v.startsWith('http')) {
-            this._skel = v;
-        } else {
-            this._skel = `https://m.ccw.site/user_projects_assets/${v}`;
-        }
-    }
-    get skel() {
-        return this._skel;
-    }
-
-    set atlas(v: string) {
-        if (v.startsWith('http')) {
-            this._atlas = v;
-        } else {
-            this._atlas = `https://m.ccw.site/user_projects_assets/${v}`;
-        }
-    }
-    get atlas() {
-        return this._atlas;
-    }
-
-    toJSON() {
-        return {
-            skel: this.skel,
-            atlas: this.atlas,
-            version: this.version,
-        };
-    }
-}
-
-const NS = 'spineAnimation' as const;
+type Util = VM.BlockUtility;
 
 function createADSProxy(target: object, depth: number = 0) {
     if (depth >= MAX_PROXY_DEPTH) {
@@ -105,20 +63,18 @@ function createADSProxy(target: object, depth: number = 0) {
         });
         return proxy;
     } catch (e) {
-        console.warn(e, target);
+        logger.warn(e, target);
         return null;
     }
 }
 
 class SpineExtension extends SimpleExt {
-    translate: TranslateFn;
     runtime: GandiRuntime;
     managers: SpineManagers;
     renderer: RenderWebGL;
     constructor(runtime: GandiRuntime) {
         super(NS, 'foo');
         this.runtime = runtime;
-        this.translate = getTranslate(runtime);
         this.renderer = runtime.renderer;
         patchSpineSkin(this.runtime);
         patch(this.runtime);
@@ -135,9 +91,9 @@ class SpineExtension extends SimpleExt {
      * 注册自定义blockly
      */
     setCustomBlock() {
-        if(!this.runtime.scratchBlocks){
-            console.log("blockly未暴露，不进行patch")
-            return
+        if (!this.runtime.scratchBlocks) {
+            logger.log('blockly未暴露，不进行patch');
+            return;
         }
         setupCustomBlocks(this, NS);
     }
@@ -168,7 +124,7 @@ class SpineExtension extends SimpleExt {
      * 扩展卸载回调
      */
     onDispose(callbacks: { [event: string]: Function[] }) {
-        console.log(`%c[EXT Dispose] %c${NS}`, 'color:red', 'color:blue');
+        logger.log(`%c[EXT Dispose] %c${NS}`, 'color:red', 'color:blue');
         for (const key in callbacks) {
             for (const callback of callbacks[key]) {
                 this.runtime.off(key, callback);
@@ -195,7 +151,6 @@ class SpineExtension extends SimpleExt {
             // 如果之前patch过,进行修复
             SafeObject.getActualObject = SafeObject.orig_.getActualObject;
         }
-        console.log(SafeObject);
         const orig = SafeObject.getActualObject;
         SafeObject.orig_ = { getActualObject: orig };
         SafeObject.getActualObject = function (value) {
@@ -208,14 +163,14 @@ class SpineExtension extends SimpleExt {
     }
 
     getInfo(): extInfo {
-        this.info.name = this.translate('extensionName');
+        this.info.name = translate('extensionName');
         this.info.blockIconURI = insetIcon;
         this.info.color1 = '#272D39';
         this.info.color2 = '#20272F';
         this.info.blocks = [
             {
                 opcode: this.loadSkeleton.name,
-                text: this.translate('loadSkeleton.text'),
+                text: translate('loadSkeleton.text'),
                 blockType: BlockType.REPORTER,
                 arguments: {
                     CONFIG: {
@@ -230,7 +185,7 @@ class SpineExtension extends SimpleExt {
             },
             {
                 opcode: this.setSkinSkeleton.name,
-                text: this.translate('setSkinSkeleton.text'),
+                text: translate('setSkinSkeleton.text'),
                 blockType: BlockType.COMMAND,
                 arguments: {
                     TARGET_NAME: {
@@ -245,7 +200,7 @@ class SpineExtension extends SimpleExt {
             },
             {
                 opcode: this.setRelativePos.name,
-                text: this.translate('setRelativePos.text'),
+                text: translate('setRelativePos.text'),
                 blockType: BlockType.COMMAND,
                 arguments: {
                     SKIN: {
@@ -259,11 +214,29 @@ class SpineExtension extends SimpleExt {
             },
             {
                 opcode: this.getSthOf.name,
-                text: this.translate('getSthOf.text'),
+                text: translate('getSthOf.text'),
                 blockType: BlockType.REPORTER,
                 arguments: {
                     DATA: {
                         type: null,
+                    },
+                },
+            },
+            {
+                opcode: this.addAnimation.name,
+                text: '向AnimationState[STATE]的[TRACK]添加名为[NAME]的动画',
+                blockType: BlockType.COMMAND,
+                arguments: {
+                    STATE: {
+                        type: null,
+                    },
+                    TRACK: {
+                        type: ArgumentType.NUMBER,
+                        defaultValue: 0,
+                    },
+                    NAME: {
+                        type: ArgumentType.STRING,
+                        defaultValue: 'Idle_01',
                     },
                 },
             },
@@ -289,7 +262,7 @@ class SpineExtension extends SimpleExt {
     spriteMenu(): MenuItems {
         const items: MenuItems = [
             {
-                text: this.translate('spriteMenu.currentTarget'),
+                text: translate('spriteMenu.currentTarget'),
                 value: '__this__',
             },
         ];
@@ -323,11 +296,9 @@ class SpineExtension extends SimpleExt {
 
     setSkinSkeleton(
         arg: { TARGET_NAME: string; SKELETON: number | HTMLReport },
-        util: Utility
+        util: Util
     ) {
         const { TARGET_NAME, SKELETON } = arg;
-
-        console.log(SKELETON);
         let skinId: any;
         if (SKELETON instanceof SpineSkinReport) {
             skinId = SKELETON.valueOf().id;
@@ -335,7 +306,7 @@ class SpineExtension extends SimpleExt {
             skinId = Number(SKELETON.toString());
         }
         if (isNaN(skinId)) {
-            console.error(this.translate('setSkinSkeleton.skeletonIdError'));
+            logger.error(translate('setSkinSkeleton.skeletonIdError'));
             return;
         }
         let target: VM.RenderedTarget;
@@ -346,8 +317,8 @@ class SpineExtension extends SimpleExt {
                 (t) => t.isSprite() && t.getName() === TARGET_NAME
             );
             if (!target) {
-                console.warn(
-                    this.translate('setSkinSkeleton.characterNotFound', {
+                logger.warn(
+                    translate('setSkinSkeleton.characterNotFound', {
                         name: TARGET_NAME,
                     })
                 );
@@ -370,7 +341,7 @@ class SpineExtension extends SimpleExt {
             version: keyof SpineManagers;
         };
         if (!(skel && atlas && version in spineVersions)) {
-            throw new Error(this.translate('loadSkeleton.configError'));
+            throw new Error(translate('loadSkeleton.configError'));
         }
         const manager = this.managers[version];
         const { skeleton, animationState } = await manager.loadSkeleton(
@@ -378,7 +349,6 @@ class SpineExtension extends SimpleExt {
             atlas
         );
         skeleton.data.name = NAME;
-        console.log(skeleton, animationState);
         const skinId = this.renderer._nextSkinId++;
         const newSkin = (this.renderer._allSkins[skinId] = new SpineSkin(
             skinId,
@@ -389,18 +359,18 @@ class SpineExtension extends SimpleExt {
             new spineVersions[version].TimeKeeper(),
             NAME
         ));
-        console.log(newSkin.name);
-        return new SpineSkinReport(newSkin, this.translate);
+        return new SpineSkinReport(newSkin);
     }
 
     setRelativePos(args) {
-        console.log(args);
+        // TODO:设置相对坐标
+        logger.log(args);
     }
 
     initUI() {
         const s = new scratchStorageUI(this.runtime.storage, 'spineAnimation');
         s.createUI();
-        console.log(s);
+        logger.log(s);
     }
 
     getSthOf(arg: {
@@ -408,12 +378,11 @@ class SpineExtension extends SimpleExt {
         DATA:
             | SpineSkinReport
             | SpineSkeletonReport<Skeleton<keyof typeof spineVersions>>;
-    }): string|HTMLReport {
-        console.log(arg);
+    }): string | HTMLReport {
         const { KEY, DATA } = arg;
         if (DATA instanceof SpineSkeletonReport) {
             if (!KEY.startsWith('skeleton')) {
-                console.error('类型错误');
+                logger.error(translate('typeError'));
                 return '';
             }
             const skeleton = DATA.valueOf();
@@ -436,7 +405,7 @@ class SpineExtension extends SimpleExt {
         }
         if (DATA instanceof SpineSkinReport) {
             if (!KEY.startsWith('skin')) {
-                console.error('类型错误');
+                logger.error(translate('typeError'));
                 return '';
             }
             const skin = DATA.valueOf();
@@ -444,19 +413,43 @@ class SpineExtension extends SimpleExt {
                 case 'skin.name':
                     return skin.name;
                 case 'skin.skeleton':
-                    return new SpineSkeletonReport(
-                        skin.skeleton,
-                        this.translate,
-                        skin.name
-                    );
+                    return new SpineSkeletonReport(skin.skeleton, skin.name);
                 case 'skin.x': // skeleton的坐标过于底层，没有获取意义
                     return String(skin.skeletonRelativePos[0]);
                 case 'skin.y':
                     return String(skin.skeletonRelativePos[1]);
+                case 'skin.animationState': {
+                    return new SpineAnimationStateReport(skin.animationState);
+                }
             }
         }
-        console.error('类型错误');
+        logger.error(translate('typeError'));
         return '';
+    }
+
+    addAnimation(args: {
+        STATE: SpineAnimationStateReport<
+            AnimationState<keyof typeof spineVersions>
+        >;
+        TRACK: number;
+        NAME: string;
+    }) {
+        const { STATE, TRACK, NAME } = args;
+        if (!STATE || !(STATE instanceof SpineAnimationStateReport)) {
+            logger.error(translate('typeError'));
+            return;
+        }
+        if (TRACK < 0) {
+            logger.error('无效的track');
+            return;
+        }
+        logger.log(args);
+        const animationState = STATE.valueOf();
+        try {
+            animationState.addAnimation(TRACK, NAME, false, 0);
+        } catch (e) {
+            return String(e);
+        }
     }
 }
 

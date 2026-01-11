@@ -1,7 +1,11 @@
 import { SpineSkin } from '../spineSkin';
 import { HTMLReport, maybeFunc, resolveMaybeFunc } from './htmlReport';
-import { TranslateFn } from '../i18n/translate';
-import spineVersions, { Skeleton } from '../spine/spineVersions';
+import { getTranslate } from '../i18n/translate';
+import spineVersions, {
+    AnimationState,
+    Skeleton,
+} from '../spine/spineVersions';
+const translate = getTranslate();
 
 function domWithType(
     type: maybeFunc<string>,
@@ -55,7 +59,7 @@ export class ObjectKVReport<
 }
 
 export class SpineSkinReport extends ObjectKVReport<SpineSkin> {
-    constructor(skin: SpineSkin, translate: TranslateFn) {
+    constructor(skin: SpineSkin) {
         function render() {
             return {
                 [translate('SpineSkinReport.id')]: skin.id,
@@ -81,7 +85,7 @@ export class SpineSkinReport extends ObjectKVReport<SpineSkin> {
 export class SpineSkeletonReport<
     T extends Skeleton<keyof typeof spineVersions>
 > extends ObjectKVReport<T> {
-    constructor(skeleton: T, translate: TranslateFn, name: string) {
+    constructor(skeleton: T, name: string) {
         function render() {
             return {
                 [translate('SpineSkeletonReport.nameText')]: name,
@@ -99,6 +103,35 @@ export class SpineSkeletonReport<
                     name,
                     boneNum: skeleton.bones.length,
                 })
+        );
+    }
+}
+
+export class SpineAnimationStateReport<
+    T extends AnimationState<keyof typeof spineVersions>
+> extends ObjectKVReport<T> {
+    constructor(animationState: T) {
+        function render() {
+            const tracks = animationState.tracks;
+            const dat = {};
+            for (const i in tracks) {
+                if (!tracks[i]) {
+                    continue;
+                }
+                dat[
+                    translate('SpineAnimationStateReport.trackPlaying', {
+                        id: i,
+                    })
+                ] = tracks[i].animation.name;
+            }
+            return dat;
+        }
+        super(
+            'Spine Animation State',
+            'pink',
+            render,
+            animationState,
+            '(Spine Animation State) ...'
         );
     }
 }

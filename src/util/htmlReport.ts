@@ -1,4 +1,6 @@
 import { GandiRuntime } from '../../types/gandi-type';
+import { getTranslate } from '../i18n/translate';
+const translate = getTranslate();
 
 /**
  * cleans an function's prototype
@@ -46,6 +48,7 @@ export class HTMLReport<T = any> {
      */
     toString: () => string;
 
+    [Symbol.iterator]: () => Generator;
     constructor(
         element: maybeFunc<HTMLElement>,
         value: maybeFunc<T>,
@@ -56,6 +59,10 @@ export class HTMLReport<T = any> {
             replace: clean(() => resolveMaybeFunc(element).innerHTML),
             valueOf: clean(() => resolveMaybeFunc(value)),
             toString: clean(() => resolveMaybeFunc(monitorValue)),
+            [Symbol.iterator]: function* () {
+                yield translate('HTMLReport.monitorPrefix') +
+                    resolveMaybeFunc(monitorValue);
+            },
         };
         Object.assign(this, report);
         Object.freeze(this);
@@ -90,26 +97,5 @@ export function patch(runtime: GandiRuntime) {
         } else {
             originUpdate.call(this, monitor);
         }
-    };
-}
-
-//修改console
-export function patchLog() {
-    console.log = patchLogFunc(console.log);
-    console.info = patchLogFunc(console.info);
-}
-
-function patchLogFunc(func: (...dat) => any) {
-    return function (...dat) {
-        const args = dat.map((arg: string | HTMLReport) => {
-            if (arg && arg instanceof HTMLReport) {
-                console.group(arg.toString());
-                func(arg.valueOf());
-                console.groupEnd();
-                return arg.toString();
-            }
-            return arg;
-        });
-        func.call(this, ...args);
     };
 }

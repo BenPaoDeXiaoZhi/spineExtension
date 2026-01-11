@@ -1,6 +1,8 @@
 import { Ext } from '../..';
 import { customBlock, registerConnectionCallback } from '../customBlockly';
-import { Block, BlockSvg, config, Connection, FieldDropdown } from 'blockly';
+import { Block, BlockSvg, Connection, FieldDropdown } from 'blockly';
+import { getTranslate } from '../../i18n/translate';
+const translate = getTranslate();
 
 export const getSthMenuItems = [
     'skin.name',
@@ -38,7 +40,6 @@ function filterItemsWithBlock(block: Block, ext: Ext, NS: string): string[] {
         case 'skin.animationState':
             return ['needUpdate'];
         default:
-            console.log(keyValue);
             filteredMenus = getSthMenuItems;
             return filteredMenus;
     }
@@ -75,7 +76,7 @@ export function setupGetSth(ext: Ext, NS: string) {
                 const keyInput = this.appendDummyInput();
                 keyInput.appendField(
                     new Blockly.FieldDropdown([
-                        [ext.translate('getSthMenu.none'), 'none'],
+                        [translate('getSthMenu.none'), 'none'],
                     ]),
                     'KEY'
                 );
@@ -96,7 +97,7 @@ export function setupGetSth(ext: Ext, NS: string) {
                             NS
                         );
                         return (filteredMenus as typeof getSthMenuItems).map(
-                            (v) => [ext.translate(`getSthMenu.${v}`) || v, v]
+                            (v) => [translate(`getSthMenu.${v}`) || v, v]
                         );
                     },
                     (v) => {

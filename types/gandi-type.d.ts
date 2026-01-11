@@ -10,6 +10,16 @@ export declare interface GandiBlocks extends origBlockly {
     bindEventWithChecks_: typeof Blockly.browserEvents.conditionalBind;
 }
 
+export declare interface LogSystem {
+    clear(): void;
+    hide(): void;
+    show(): void;
+    info(...args: string[]): void;
+    log(...args: string[]): void;
+    warn(...args: string[]): void;
+    error(...args: string[]): void;
+}
+
 export declare interface GandiRuntime extends Runtime {
     getFormatMessage<ZH extends TranslateObj, EN extends TranslateObj>(config: {
         'zh-cn': ZH;
@@ -24,6 +34,7 @@ export declare interface GandiRuntime extends Runtime {
     renderer: GandiRenderer;
     on: Runtime['on'] & ((name: string, callback: Function) => void); // TODO:gandi特殊事件的补充
     off: Runtime['off'] & ((name: string, callback: Function) => void);
+    logSystem: LogSystem;
 }
 
 export interface GandiRenderer extends RenderWebGL {
