@@ -9,7 +9,7 @@ import type Spine from '../spine/4.2/spine-webgl';
 import spineVersions from '../spine/spineVersions';
 
 const DEFAULT_ROOT = 'https://l2d-cn.kivotos.qzz.io/';
-const NAME = 'Airi_home';
+const NAME = prompt('skel','Airi_home');
 
 const rootDir =
     prompt('root:', localStorage.getItem('root') || DEFAULT_ROOT) ||
