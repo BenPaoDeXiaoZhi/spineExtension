@@ -74,6 +74,11 @@ export class Spine42Manager extends Spine4Manager {
             renderer.canvas,
             renderer.gl
         );
+        this.sceneRenderer.setBlendMode (
+            renderer.gl.SRC_ALPHA,
+            renderer.gl.SRC_ALPHA,
+            renderer.gl.ONE_MINUS_SRC_ALPHA
+        )
     }
     async loadSkeleton(
         skeletonUrl: string,
