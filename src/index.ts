@@ -282,11 +282,11 @@ class SpineExtension extends SimpleExt {
     skeletonMenu(): MenuItems {
         const menuItems: MenuItems = [];
         menuItems.push({
-            text: 'test',
+            text: 'azusa',
             value: JSON.stringify(
                 new SpineConfig({
-                    skel: 'spine/Hina_home.skel',
-                    atlas: 'spine/Hina_home.atlas',
+                    skel: 'spine/Azusa_home.skel',
+                    atlas: 'spine/Azusa_home.atlas',
                     version: '4.2webgl',
                 })
             ),
