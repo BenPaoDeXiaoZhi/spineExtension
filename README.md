@@ -45,7 +45,7 @@
 
  - UI设计、测试、杂项、部分异常的修复：[乌龙茶速递@ccw ![乌龙茶速递](https://m.ccw.site/user_projects_assets/dc5394d2-c5c5-4d69-b924-effaae5c4543.png)](https://www.ccw.site/student/68dd004586bbc77f84e309ac)
 
- - 项目灵感，renderer部分的支持：HCN
+ - 项目灵感，renderer部分的原版支持：HCN
 
 ### 😏杂谈（Q&A）
 ***
