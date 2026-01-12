@@ -19,7 +19,7 @@
  - [x] spineSkinReport
  - [x] spineSkeletonReport
  - [ ] spineBoneReport
- - [ ] animationStateReport
+ - [x] animationStateReport
 
 #### 🗯️扩展功能
  - [x] 加载骨架文件
