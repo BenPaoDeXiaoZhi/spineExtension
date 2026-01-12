@@ -99,7 +99,7 @@ export class Spine42Manager extends Spine4Manager {
         const camera = this.sceneRenderer.camera;
         camera.setViewport(...viewport);
         this.sceneRenderer.begin();
-        this.sceneRenderer.drawSkeleton(skeleton);
+        this.sceneRenderer.drawSkeleton(skeleton, true);
         this.sceneRenderer.end();
     }
 }
