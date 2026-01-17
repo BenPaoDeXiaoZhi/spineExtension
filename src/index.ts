@@ -444,8 +444,9 @@ class SpineExtension extends SimpleExt {
         >;
         TRACK: number;
         NAME: string;
+        LOOP: boolean;
     }) {
-        const { STATE, TRACK, NAME } = args;
+        const { STATE, TRACK, NAME, LOOP } = args;
         console.log(args);
         if (!STATE || !(STATE instanceof SpineAnimationStateReport)) {
             logger.error(translate('typeError'));
@@ -458,7 +459,7 @@ class SpineExtension extends SimpleExt {
         logger.log(args);
         const animationState = STATE.valueOf();
         try {
-            animationState.addAnimation(TRACK, NAME, false, 0);
+            animationState.addAnimation(TRACK, NAME, !!LOOP, 0);
         } catch (e) {
             return String(e);
         }
