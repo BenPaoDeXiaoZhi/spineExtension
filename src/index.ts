@@ -224,7 +224,7 @@ class SpineExtension extends SimpleExt {
             },
             {
                 opcode: this.addAnimation.name,
-                text: '向AnimationState[STATE]的[TRACK]添加名为[NAME]的动画并[LOOP]循环',
+                text: '向AnimationState[STATE]的track[TRACK][ACTION]名为[NAME]的动画并[LOOP]循环',
                 blockType: BlockType.COMMAND,
                 arguments: {
                     STATE: {
@@ -233,6 +233,10 @@ class SpineExtension extends SimpleExt {
                     TRACK: {
                         type: ArgumentType.NUMBER,
                         defaultValue: 0,
+                    },
+                    ACTION:{
+                        type: ArgumentType.STRING,
+                        menu: 'animation_action_menu',
                     },
                     NAME: {
                         type: ArgumentType.STRING,
@@ -259,10 +263,17 @@ class SpineExtension extends SimpleExt {
                 items: this.skeletonMenu.name,
                 acceptReporters: true,
             },
+            animation_action_menu: {
+                items:[
+                    {text: "队列添加", value: "add"},
+                    {text: "立即播放", value: "set"}
+                ],
+                acceptReporters: true,
+            },
             BOOLEAN: {
                 items:[
-                    {text: "进行",  value: true},
-                    {text: "不",  value: false}
+                    {text: "进行", value: true},
+                    {text: "不", value: false}
                 ],
                 acceptReporters: true,
             },
@@ -445,6 +456,7 @@ class SpineExtension extends SimpleExt {
         TRACK: number;
         NAME: string;
         LOOP: boolean;
+        ACTION: "add"|"set"
     }) {
         const { STATE, TRACK, NAME, LOOP } = args;
         console.log(args);
@@ -459,7 +471,12 @@ class SpineExtension extends SimpleExt {
         logger.log(args);
         const animationState = STATE.valueOf();
         try {
-            animationState.addAnimation(TRACK, NAME, !!LOOP, 0);
+            if(ACTION == "add"){
+                animationState.addAnimation(TRACK, NAME, !!LOOP, 0);
+            }
+            else{
+                animationState.setAnimation(TRACK, NAME, !!LOOP, 0);
+            }
         } catch (e) {
             return String(e);
         }
