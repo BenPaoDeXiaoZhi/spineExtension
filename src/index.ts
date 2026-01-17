@@ -458,7 +458,7 @@ class SpineExtension extends SimpleExt {
         LOOP: boolean;
         ACTION: "add"|"set"
     }) {
-        const { STATE, TRACK, NAME, LOOP } = args;
+        const { STATE, TRACK, NAME, LOOP, ACTION } = args;
         console.log(args);
         if (!STATE || !(STATE instanceof SpineAnimationStateReport)) {
             logger.error(translate('typeError'));
