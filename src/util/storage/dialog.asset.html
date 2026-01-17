@@ -8,7 +8,7 @@
         <span id="uploadTip">选择或拖动文件上传</span>
         <input type="file"/>
     </label>
-    <label>
+    <label class="submit">
         upload
         <input type="submit" />
     </label>
@@ -36,9 +36,7 @@
         display: none;
     }
     #form {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        width: 100%;
     }
     #uploader {
         margin: 20px;
@@ -88,5 +86,10 @@
 
     #close:hover {
         background-color: rgba(255, 255, 255, 0.16);
+    }
+    
+    .submit {
+        width: 100%;
+        margin: auto;
     }
 </style>
