@@ -20,7 +20,7 @@ import { getLogger } from './logSystem';
 import { SpineConfig, SpineManagers } from './spineConfig';
 
 const insetIcon =
-    'https://m.ccw.site/creator-college/cover/e080227a1e199d9107f2d2b8859a35f0.png';
+    'https://m.ccw.site/creator-college/cover/5ecb4a0ae781edb9ed8ed3d61d210ad7.svg';
 const icon =
     'https://m.ccw.site/creator-college/cover/953085977e001622fd7153eb7c9ad646.png';
 const NS = 'spineAnimation' as const;
