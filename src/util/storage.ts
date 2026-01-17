@@ -47,6 +47,8 @@ export class scratchStorageUI {
         if (!customElements.get('scratch-storage-ui')) {
             customElements.define('scratch-storage-ui', Container);
         }
+        const dialog=document.createElement('scratch-storage-ui');
+        document.body.appendChild(dialog)
     }
 }
 
