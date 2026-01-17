@@ -3,11 +3,12 @@
         <div id="close"></div>
         <header id="header"></header>
     </div>
-    <form>
+    <form id="form">
     <label id="uploader">
         <span id="uploadTip">选择或拖动文件上传</span>
         <input type="file"/>
     </label>
+    <input type="submit" />
     </form>
 </dialog>
 <style>
@@ -31,7 +32,11 @@
     input {
         display: none;
     }
-
+    #form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
     #uploader {
         margin: 20px;
         border: rgb(128, 199, 226) 3px dashed;
