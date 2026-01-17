@@ -3,9 +3,12 @@
         <div id="close"></div>
         <header id="header"></header>
     </div>
-    <div id="uploader">
+    <form>
+    <label id="uploader">
         <span id="uploadTip">选择或拖动文件上传</span>
-    </div>
+        <input type="file"/>
+    </label>
+    </form>
 </dialog>
 <style>
     #dialog::backdrop {
@@ -23,6 +26,10 @@
         z-index: 550;
         padding: 0;
         color: white;
+    }
+    
+    input {
+        display: none;
     }
 
     #uploader {
