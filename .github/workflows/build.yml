@@ -12,6 +12,7 @@ on:
             - 'public/**'
             - 'assets/**'
             - '.github/workflows/build.yml'
+            - 'deploy.js'
 
 jobs:
     build:
