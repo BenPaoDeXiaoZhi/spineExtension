@@ -4,14 +4,14 @@
         <header id="header"></header>
     </div>
     <form id="form">
-    <label id="uploader">
-        <span id="uploadTip">选择或拖动文件上传</span>
-        <input type="file"/>
-    </label>
-    <label class="submit">
-        upload
-        <input type="submit" />
-    </label>
+        <label id="uploader">
+            <span id="uploadTip">选择或拖动文件上传</span>
+            <input type="file"/>
+        </label>
+        <label class="submit">
+            upload
+            <input type="submit" />
+        </label>
     </form>
 </dialog>
 <style>
@@ -38,6 +38,9 @@
     #form {
         width: 100%;
         padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
     #uploader {
         border: rgb(128, 199, 226) 3px dashed;
