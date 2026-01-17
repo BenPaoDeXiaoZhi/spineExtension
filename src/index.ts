@@ -475,7 +475,7 @@ class SpineExtension extends SimpleExt {
                 animationState.addAnimation(TRACK, NAME, !!LOOP, 0);
             }
             else{
-                animationState.setAnimation(TRACK, NAME, !!LOOP, 0);
+                animationState.setAnimation(TRACK, NAME, !!LOOP);
             }
         } catch (e) {
             return String(e);
