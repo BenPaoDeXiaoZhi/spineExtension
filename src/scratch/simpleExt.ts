@@ -1,7 +1,7 @@
 import VM from 'scratch-vm';
 export interface MenuItem {
     text: string;
-    value: string;
+    value: string|number|boolean;
 }
 
 export type MenuItems = MenuItem[];
