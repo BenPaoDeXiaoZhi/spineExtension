@@ -239,6 +239,7 @@ class SpineExtension extends SimpleExt {
                         defaultValue: 'Idle_01',
                     },
                     LOOP: {
+                        type: ArgumentType.BOOLEAN
                         menu:"BOOLEAN"
                     },
                 },
@@ -260,8 +261,8 @@ class SpineExtension extends SimpleExt {
             },
             BOOLEAN: {
                 items:[
-                    {text: "进行",  value: true},
-                    {text: "不",  value: false}
+                    {text: "进行",  value: "true"},
+                    {text: "不",  value: "false"}
                 ],
                 acceptReporters: true,
             },
