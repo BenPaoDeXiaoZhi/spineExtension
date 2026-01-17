@@ -239,7 +239,7 @@ class SpineExtension extends SimpleExt {
                         defaultValue: 'Idle_01',
                     },
                     LOOP: {
-                        type: ArgumentType.BOOLEAN
+                        type: ArgumentType.BOOLEAN,
                         menu:"BOOLEAN"
                     },
                 },
