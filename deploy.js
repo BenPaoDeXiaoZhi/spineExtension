@@ -73,7 +73,7 @@ try {
                 clearTimeout(tid);
                 setTimeout(async () => {
                     await window.exit();
-                }, 6000);
+                }, 10000);
             }
         }, fdat);
         // Create a new page inside context.
