@@ -244,11 +244,11 @@ class SpineExtension extends SimpleExt {
                     },
                 },
             },
-            {
+            /* {
                 func: this.initUI.name,
                 blockType: BlockType.BUTTON,
                 text: 'abcd',
-            },
+            }, */
         ];
         this.info.menus = {
             sprite_menu: {
