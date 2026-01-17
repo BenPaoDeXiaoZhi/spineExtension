@@ -224,7 +224,7 @@ class SpineExtension extends SimpleExt {
             },
             {
                 opcode: this.addAnimation.name,
-                text: '向AnimationState[STATE]的[TRACK]添加名为[NAME]的动画',
+                text: '向AnimationState[STATE]的[TRACK]添加名为[NAME]的动画并[LOOP]循环',
                 blockType: BlockType.COMMAND,
                 arguments: {
                     STATE: {
@@ -237,6 +237,9 @@ class SpineExtension extends SimpleExt {
                     NAME: {
                         type: ArgumentType.STRING,
                         defaultValue: 'Idle_01',
+                    },
+                    LOOP: {
+                        menu:"BOOLEAN"
                     },
                 },
             },
@@ -253,6 +256,13 @@ class SpineExtension extends SimpleExt {
             },
             skeleton_menu: {
                 items: this.skeletonMenu.name,
+                acceptReporters: true,
+            },
+            BOOLEAN: {
+                items:[
+                    {text: "进行",  value: true},
+                    {text: "不",  value: false}
+                ],
                 acceptReporters: true,
             },
         };
@@ -435,6 +445,7 @@ class SpineExtension extends SimpleExt {
         NAME: string;
     }) {
         const { STATE, TRACK, NAME } = args;
+        console.log(args);
         if (!STATE || !(STATE instanceof SpineAnimationStateReport)) {
             logger.error(translate('typeError'));
             return;
