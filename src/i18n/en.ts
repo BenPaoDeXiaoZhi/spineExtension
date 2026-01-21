@@ -41,8 +41,8 @@ export default {
     'animation_action_menu.add': 'Queue',
     'animation_action_menu.set': 'Set',
 
-    'BOOLEAN.true': '进行',
-    'BOOLEAN.false': '不',
+    'BOOLEAN.true': 'do',
+    'BOOLEAN.false': 'do not',
     // Utils
     'HTMLReport.monitorPrefix': '(⛔No Need to Save⛔)',
 
