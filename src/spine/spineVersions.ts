@@ -8,25 +8,33 @@ const spineVersions = {
     '4.2webgl': spine42webgl,
 };
 
-export type Skeleton<V extends keyof typeof spineVersions> = {
+export type VersionNames = keyof typeof spineVersions;
+
+export type Versions<V extends VersionNames> = {
+    '3.8webgl': typeof spine38webgl;
+    '4.0webgl': typeof spine40webgl;
+    '4.2webgl': typeof spine42webgl;
+}[V];
+
+export type Skeleton<V extends VersionNames = VersionNames> = {
     '4.2webgl': spine42webgl.Skeleton;
     '4.0webgl': spine40webgl.Skeleton;
     '3.8webgl': spine38webgl.Skeleton;
 }[V];
 
-export type AnimationState<V extends keyof typeof spineVersions> = {
+export type AnimationState<V extends VersionNames = VersionNames> = {
     '4.2webgl': spine42webgl.AnimationState;
     '4.0webgl': spine40webgl.AnimationState;
     '3.8webgl': spine38webgl.AnimationState;
 }[V];
 
-export type SceneRenderer<V extends keyof typeof spineVersions> = {
+export type SceneRenderer<V extends VersionNames = VersionNames> = {
     '4.2webgl': spine42webgl.SceneRenderer;
     '4.0webgl': spine40webgl.SceneRenderer;
     '3.8webgl': spine38webgl.SceneRenderer;
 }[V];
 
-export type AssetManager<V extends keyof typeof spineVersions> = {
+export type AssetManager<V extends VersionNames = VersionNames> = {
     '4.2webgl': spine42webgl.AssetManager;
     '4.0webgl': spine40webgl.AssetManager;
     '3.8webgl': spine38webgl.AssetManager;

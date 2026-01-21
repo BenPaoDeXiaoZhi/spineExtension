@@ -5,10 +5,8 @@ const minifySpinePlugin: Plugin = {
     setup(build) {
         build.onLoad({ filter: /spine-webgl.js$/ }, function (args) {
             return {
-                contents: readFileSync(
-                    args.path.replace('spine-webgl.js', 'spine-webgl.min.js')
-                ),
-                loader: 'js',
+                contents: readFileSync(args.path.replace('.js', '.min.js')),
+                loader: 'ts',
             };
         });
     },

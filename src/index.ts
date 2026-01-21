@@ -5,8 +5,12 @@ import type { extInfo, MenuItems } from './scratch/simpleExt';
 import type VM from 'scratch-vm';
 import { scratchStorageUI } from './util/storage';
 import { SpineSkin, patchSpineSkin } from './spineSkin';
-import spineVersions, { AnimationState, Skeleton } from './spine/spineVersions';
-import { Spine40Manager, Spine42Manager } from './spineManager';
+import spineVersions, {
+    AnimationState,
+    Skeleton,
+    VersionNames,
+} from './spine/spineVersions';
+import { SpineManager } from './spineManager';
 import { patch, HTMLReport } from './util/htmlReport';
 import {
     SpineSkinReport,
@@ -17,7 +21,7 @@ import { setupCustomBlocks } from './util/customBlock';
 import { GetSthMenuItems } from './util/customBlocks/getSth';
 import { GandiRuntime } from '../types/gandi-type';
 import { getLogger } from './logSystem';
-import { SpineConfig, SpineManagers } from './spineConfig';
+import { SpineConfig } from './spineConfig';
 
 const insetIcon =
     'https://m.ccw.site/creator-college/cover/5ecb4a0ae781edb9ed8ed3d61d210ad7.svg';
@@ -70,8 +74,12 @@ function createADSProxy(target: object, depth: number = 0) {
 
 class SpineExtension extends SimpleExt {
     runtime: GandiRuntime;
-    managers: SpineManagers;
+    managers: {
+        [K in VersionNames]: SpineManager<K>;
+    };
     renderer: RenderWebGL;
+    enableDebugRender: boolean;
+
     constructor(runtime: GandiRuntime) {
         super(NS, 'foo');
         this.runtime = runtime;
@@ -82,9 +90,11 @@ class SpineExtension extends SimpleExt {
         this.patchADS();
         this.setupCallback();
         this.managers = {
-            '4.0webgl': new Spine40Manager(this.renderer),
-            '4.2webgl': new Spine42Manager(this.renderer),
+            '4.0webgl': new SpineManager('4.0webgl', this.renderer),
+            '4.2webgl': new SpineManager('4.2webgl', this.renderer),
+            '3.8webgl': new SpineManager('3.8webgl', this.renderer),
         };
+        this.enableDebugRender = false;
     }
 
     /**
@@ -163,11 +173,37 @@ class SpineExtension extends SimpleExt {
     }
 
     getInfo(): extInfo {
+        const ext = this;
         this.info.name = translate('extensionName');
         this.info.blockIconURI = insetIcon;
         this.info.color1 = '#272D39';
         this.info.color2 = '#20272F';
         this.info.blocks = [
+            {
+                text: translate('initialize'),
+                blockType: BlockType.LABEL,
+            },
+            {
+                opcode: this.createSpineConfig.name,
+                text: translate('createSpineConfig.text'),
+                blockType: BlockType.REPORTER,
+                arguments: {
+                    SKEL_URL: {
+                        type: ArgumentType.STRING,
+                        defaultValue:
+                            'https://m.ccw.site/user_projects_assets/spine/Hina_home.skel',
+                    },
+                    ATLAS_URL: {
+                        type: ArgumentType.STRING,
+                        defaultValue:
+                            'https://m.ccw.site/user_projects_assets/spine/Hina_home.atlas',
+                    },
+                    VERSION: {
+                        type: ArgumentType.STRING,
+                        menu: 'VERSION',
+                    },
+                },
+            },
             {
                 opcode: this.loadSkeleton.name,
                 text: translate('loadSkeleton.text'),
@@ -199,6 +235,10 @@ class SpineExtension extends SimpleExt {
                 },
             },
             {
+                blockType: BlockType.LABEL,
+                text: translate('data'),
+            },
+            {
                 opcode: this.setRelativePos.name,
                 text: translate('setRelativePos.text'),
                 blockType: BlockType.COMMAND,
@@ -223,8 +263,12 @@ class SpineExtension extends SimpleExt {
                 },
             },
             {
+                blockType: BlockType.LABEL,
+                text: translate('animation'),
+            },
+            {
                 opcode: this.addAnimation.name,
-                text: '向AnimationState[STATE]的track[TRACK][ACTION]名为[NAME]的动画并[LOOP]循环',
+                text: translate('addAnimation.text'),
                 blockType: BlockType.COMMAND,
                 arguments: {
                     STATE: {
@@ -234,7 +278,7 @@ class SpineExtension extends SimpleExt {
                         type: ArgumentType.NUMBER,
                         defaultValue: 0,
                     },
-                    ACTION:{
+                    ACTION: {
                         type: ArgumentType.STRING,
                         menu: 'animation_action_menu',
                     },
@@ -244,9 +288,20 @@ class SpineExtension extends SimpleExt {
                     },
                     LOOP: {
                         type: ArgumentType.STRING,
-                        menu:"BOOLEAN"
+                        menu: 'BOOLEAN',
                     },
                 },
+            },
+            {
+                func: this.switchDebug.name,
+                get text() {
+                    return translate('debugRender', {
+                        action: ext.enableDebugRender
+                            ? translate('disable')
+                            : translate('enable'),
+                    });
+                },
+                blockType: BlockType.BUTTON,
             },
             /* {
                 func: this.initUI.name,
@@ -264,17 +319,30 @@ class SpineExtension extends SimpleExt {
                 acceptReporters: true,
             },
             animation_action_menu: {
-                items:[
-                    {text: "队列添加", value: "add"},
-                    {text: "立即播放", value: "set"}
+                items: [
+                    {
+                        text: translate('animation_action_menu.add'),
+                        value: 'add',
+                    },
+                    {
+                        text: translate('animation_action_menu.set'),
+                        value: 'set',
+                    },
                 ],
                 acceptReporters: true,
             },
             BOOLEAN: {
-                items:[
-                    {text: "进行", value: true},
-                    {text: "不", value: false}
+                items: [
+                    { text: translate('BOOLEAN.true'), value: true },
+                    { text: translate('BOOLEAN.false'), value: false },
                 ],
+                acceptReporters: true,
+            },
+            VERSION: {
+                items: Object.keys(this.managers).map((v) => ({
+                    text: v,
+                    value: v,
+                })),
                 acceptReporters: true,
             },
         };
@@ -301,6 +369,21 @@ class SpineExtension extends SimpleExt {
         return items;
     }
 
+    createSpineConfig(args: {
+        ATLAS_URL: string;
+        SKEL_URL: string;
+        VERSION: VersionNames;
+    }) {
+        const { SKEL_URL, ATLAS_URL, VERSION } = args;
+        return JSON.stringify(
+            new SpineConfig({
+                skel: SKEL_URL,
+                atlas: ATLAS_URL,
+                version: VERSION,
+            }),
+        );
+    }
+
     skeletonMenu(): MenuItems {
         const menuItems: MenuItems = [];
         menuItems.push({
@@ -310,7 +393,7 @@ class SpineExtension extends SimpleExt {
                     skel: 'spine/Azusa_home.skel',
                     atlas: 'spine/Azusa_home.atlas',
                     version: '4.2webgl',
-                })
+                }),
             ),
         });
         return menuItems;
@@ -318,7 +401,7 @@ class SpineExtension extends SimpleExt {
 
     setSkinSkeleton(
         arg: { TARGET_NAME: string; SKELETON: number | HTMLReport },
-        util: Util
+        util: Util,
     ) {
         const { TARGET_NAME, SKELETON } = arg;
         let skinId: any;
@@ -336,13 +419,13 @@ class SpineExtension extends SimpleExt {
             target = util.target;
         } else {
             target = this.runtime.targets.find(
-                (t) => t.isSprite() && t.getName() === TARGET_NAME
+                (t) => t.isSprite() && t.getName() === TARGET_NAME,
             );
             if (!target) {
                 logger.warn(
                     translate('setSkinSkeleton.characterNotFound', {
                         name: TARGET_NAME,
-                    })
+                    }),
                 );
             }
         }
@@ -360,7 +443,7 @@ class SpineExtension extends SimpleExt {
         const { skel, atlas, version } = JSON.parse(CONFIG) as {
             skel: string;
             atlas: string;
-            version: keyof SpineManagers;
+            version: VersionNames;
         };
         if (!(skel && atlas && version in spineVersions)) {
             throw new Error(translate('loadSkeleton.configError'));
@@ -368,7 +451,7 @@ class SpineExtension extends SimpleExt {
         const manager = this.managers[version];
         const { skeleton, animationState } = await manager.loadSkeleton(
             skel,
-            atlas
+            atlas,
         );
         skeleton.data.name = NAME;
         const skinId = this.renderer._nextSkinId++;
@@ -379,7 +462,7 @@ class SpineExtension extends SimpleExt {
             skeleton,
             animationState,
             new spineVersions[version].TimeKeeper(),
-            NAME
+            NAME,
         ));
         return new SpineSkinReport(newSkin);
     }
@@ -449,6 +532,14 @@ class SpineExtension extends SimpleExt {
         return '';
     }
 
+    switchDebug() {
+        this.enableDebugRender = !this.enableDebugRender;
+        for (let manager of Object.values(this.managers)) {
+            manager.debugRender = this.enableDebugRender;
+        }
+        this.runtime.emit('TOOLBOX_EXTENSIONS_NEED_UPDATE');
+    }
+
     addAnimation(args: {
         STATE: SpineAnimationStateReport<
             AnimationState<keyof typeof spineVersions>
@@ -456,7 +547,7 @@ class SpineExtension extends SimpleExt {
         TRACK: number;
         NAME: string;
         LOOP: boolean;
-        ACTION: "add"|"set"
+        ACTION: 'add' | 'set';
     }) {
         const { STATE, TRACK, NAME, LOOP, ACTION } = args;
         console.log(args);
@@ -465,16 +556,14 @@ class SpineExtension extends SimpleExt {
             return;
         }
         if (TRACK < 0) {
-            logger.error('无效的track');
+            logger.error(translate('addAnimation.invalidTrack'));
             return;
         }
-        logger.log(args);
         const animationState = STATE.valueOf();
         try {
-            if(ACTION == "add"){
+            if (ACTION == 'add') {
                 animationState.addAnimation(TRACK, NAME, !!LOOP, 0);
-            }
-            else{
+            } else {
                 animationState.setAnimation(TRACK, NAME, !!LOOP);
             }
         } catch (e) {

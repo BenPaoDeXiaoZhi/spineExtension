@@ -6,6 +6,10 @@ export default {
     extensionName: 'spine骨骼动画',
     description: '在scratch中使用spine骨骼动画!',
     // Blocks
+    initialize: '初始化',
+    'createSpineConfig.text':
+        '创建spine配置,骨骼文件url为[SKEL_URL],图集文件url为[ATLAS_URL],版本为[VERSION]',
+
     'loadSkeleton.text': '加载配置为[CONFIG]的spine骨骼并命名为[NAME]',
     'loadSkeleton.configError': '请输入有效配置',
 
@@ -13,10 +17,10 @@ export default {
     'setSkinSkeleton.skeletonIdError': '请输入数字或有效的skeleton数据',
     'setSkinSkeleton.characterNotFound': '找不到名为{name}的角色',
 
+    data: '数据',
     'setRelativePos.text': '设置skin[SKIN]的骨架偏移为[POS]',
 
     'getSthOf.text': '获取[DATA]的',
-    typeError: '🚫类型错误🚫',
 
     'getSthMenu.none': '无可获取项目',
     'getSthMenu.needUpdate': '待补充',
@@ -27,8 +31,19 @@ export default {
     'getSthMenu.skin.animationState': '皮肤的animationState',
     'getSthMenu.skeleton.bones': '骨架的全部骨骼',
     'getSthMenu.skeleton.animations': '骨架的全部动画',
+
+    animation: '动画',
+    'addAnimation.text':
+        '向AnimationState[STATE]的track[TRACK][ACTION]名为[NAME]的动画并[LOOP]循环',
+    'addAnimation.invalidTrack': '无效的track',
     // Menu
     'spriteMenu.currentTarget': '当前角色',
+
+    'animation_action_menu.add': '队列添加',
+    'animation_action_menu.set': '立即播放',
+
+    'BOOLEAN.true': '进行',
+    'BOOLEAN.false': '不',
     // Utils
     'HTMLReport.monitorPrefix': '(⛔无需保存⛔)',
 
@@ -46,4 +61,8 @@ export default {
         '(spine骨架) 名称为{name}, 骨骼总数为{boneNum}',
 
     'SpineAnimationStateReport.trackPlaying': 'Track {id} 正在播放动画 ',
+    typeError: '🚫类型错误🚫',
+    enable: '启用',
+    disable: '禁用',
+    debugRender: '{action} 调试渲染',
 } as const;

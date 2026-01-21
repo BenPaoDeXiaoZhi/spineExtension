@@ -1,16 +1,13 @@
-import { Spine40Manager, Spine42Manager } from './spineManager';
-export type SpineManagers = {
-    '4.0webgl': Spine40Manager;
-    '4.2webgl': Spine42Manager;
-};
+import { VersionNames } from './spine/spineVersions';
+
 export class SpineConfig {
     private _skel: string;
     private _atlas: string;
-    version: keyof SpineManagers;
+    version: VersionNames;
     constructor(config: {
         skel: string;
         atlas: string;
-        version: keyof SpineManagers;
+        version: VersionNames;
     }) {
         this.version = config.version;
         this.skel = config.skel;

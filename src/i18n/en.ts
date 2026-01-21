@@ -4,6 +4,10 @@ export default {
     extensionName: 'Spine Animation',
     description: 'Use Spine animation in Scratch!',
     // Blocks
+    initialize: 'Initialize',
+    'createSpineConfig.text':
+        'Create Spine Config,Skeleton url:[SKEL_URL],Atlas url:[ATLAS_URL],Version:[VERSION]',
+
     'loadSkeleton.text':
         'Load the spine skeleton with configuration [CONFIG] and name it [NAME]',
     'loadSkeleton.configError': 'Please input correct configs',
@@ -13,11 +17,10 @@ export default {
     'setSkinSkeleton.skeletonIdError': 'Please input valid Skeleton data!',
     'setSkinSkeleton.characterNotFound': 'Cannot find character named {name}',
 
+    data: 'Data',
     'setRelativePos.text': "Set Skin [SKIN] 's relative pos to [POS]",
 
     'getSthOf.text': "Get [DATA]'s ",
-    typeError: '🚫type error🚫',
-
     'getSthMenu.none': 'NONE',
     'getSthMenu.needUpdate': 'will be updated',
     'getSthMenu.skin.name': 'Name of Skin',
@@ -27,8 +30,19 @@ export default {
     'getSthMenu.skin.animationState': 'AnimationState of Skin',
     'getSthMenu.skeleton.bones': 'all names of bones in Skeleton',
     'getSthMenu.skeleton.animations': 'all names of animations in Skeleton',
+
+    animation: 'Animation',
+    'addAnimation.text':
+        'On AnimationState [STATE], track [TRACK], [ACTION] the animation named [NAME] and [LOOP] loop',
+    'addAnimation.invalidTrack': 'Invalid Track!',
     // Menu
     'spriteMenu.currentTarget': 'Current target',
+
+    'animation_action_menu.add': 'Queue',
+    'animation_action_menu.set': 'Set',
+
+    'BOOLEAN.true': '进行',
+    'BOOLEAN.false': '不',
     // Utils
     'HTMLReport.monitorPrefix': '(⛔No Need to Save⛔)',
 
@@ -47,6 +61,10 @@ export default {
 
     'SpineAnimationStateReport.trackPlaying':
         'Track {id} is playing Animation ',
+    typeError: '🚫type error🚫',
+    enable: 'Enable',
+    disable: 'Disable',
+    debugRender: '{action} Debug Render',
 } as const satisfies {
     [K in keyof typeof zh_cn]: string;
 };

@@ -14,7 +14,9 @@ function getBanner(env = 'dev', extra = '') {
         minute: '2-digit',
         second: '2-digit',
     }).format(date);
-    return `/* deploy by ${env}
+    return `
+/* Ciallo～(∠・ω< )⌒★
+ - Deploy by ${env}
  - Deploy time: ${formattedDate}
 ${extra}*/`;
 }
@@ -27,8 +29,13 @@ export default defineConfig((tsupOptions) => {
         server.on('connection', (ws) => {
             clients.push(ws);
             console.log(`new connection ${Date.now()}`);
-            const dat = readFileSync('./dist/extension.global.js').toString();
-            ws.send(dat);
+            let fileDat = '// error';
+            try {
+                fileDat = readFileSync('./dist/extension.global.js').toString();
+            } catch (e) {
+                console.error(e);
+            }
+            ws.send(fileDat);
         });
     }
     const dat: Options = {
@@ -41,7 +48,7 @@ export default defineConfig((tsupOptions) => {
                         'Github CI/CD',
                         ` - Commit id: ${process.env.GITHUB_SHA}
  - Repository: ${process.env.REPO}
- - Actor: ${process.env.GITHUB_ACTOR}`
+ - Actor: ${process.env.GITHUB_ACTOR}`,
                     );
                 }
             },
@@ -69,9 +76,14 @@ export default defineConfig((tsupOptions) => {
         async onSuccess() {
             if (tsupOptions.watch) {
                 if (clients) {
-                    const fileDat = readFileSync(
-                        './dist/extension.global.js'
-                    ).toString();
+                    let fileDat = '// error';
+                    try {
+                        fileDat = readFileSync(
+                            './dist/extension.global.js',
+                        ).toString();
+                    } catch (e) {
+                        console.error(e);
+                    }
                     for (let client of clients) {
                         client.send(fileDat);
                     }

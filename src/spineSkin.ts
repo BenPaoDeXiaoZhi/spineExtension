@@ -1,7 +1,7 @@
 import RenderWebGL, { AnyWebGLContext } from 'scratch-render';
 import type { SpineManager } from './spineManager';
 import type { GandiRuntime } from '../types/gandi-type';
-import spineVersions, { Skeleton } from './spine/spineVersions';
+import spineVersions, { AnimationState, Skeleton } from './spine/spineVersions';
 
 const Skin = Scratch.runtime.renderer.exports.Skin;
 
@@ -23,7 +23,7 @@ export function patchSpineSkin(runtime: GandiRuntime) {
                 return false;
             },
             writable: true,
-        }
+        },
     );
 }
 
@@ -33,7 +33,7 @@ export class SpineSkin extends Skin {
     _size: [x: number, y: number];
     skeletonRelativePos: [x: number, y: number];
     skeleton: Skeleton<keyof typeof spineVersions>;
-    animationState: any;
+    animationState: AnimationState;
     tk: any;
     name: string;
     renderer: RenderWebGL;
@@ -42,10 +42,10 @@ export class SpineSkin extends Skin {
         id: number,
         renderer: RenderWebGL,
         manager: SpineManager,
-        skeleton: any,
-        animationState: any,
+        skeleton: Skeleton,
+        animationState: AnimationState,
         tk: any,
-        name: string
+        name: string,
     ) {
         super(id);
         this.gl = renderer.gl;

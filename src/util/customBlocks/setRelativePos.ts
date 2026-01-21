@@ -1,7 +1,8 @@
 import { customBlock } from '../customBlockly';
 import type { Ext } from '../..';
+import { BlockSvg } from 'blockly';
 
-export const POS_FORMAT = ['[ x ]', '[ y ]', '[x,y]'];
+export const POS_FORMAT = { '[ x ]': 'x:', '[ y ]': 'y:', '[x,y]': 'x,y:' };
 
 export function setupPos(ext: Ext, NS: string) {
     const Blockly = ext.runtime.scratchBlocks;
@@ -11,7 +12,7 @@ export function setupPos(ext: Ext, NS: string) {
         listener: (this: PosFormatSwitch, e: MouseEvent) => any;
         constructor(
             format: string[],
-            onFormatChange: (this: PosFormatSwitch, e: MouseEvent) => any
+            onFormatChange: (this: PosFormatSwitch, e: MouseEvent) => any,
         ) {
             super(format[0]);
             this.listener = onFormatChange;
@@ -35,13 +36,13 @@ export function setupPos(ext: Ext, NS: string) {
                     field,
                     (e: MouseEvent) => {
                         e.stopPropagation();
-                    }
+                    },
                 );
                 Blockly.bindEventWithChecks_(
                     dom,
                     'mouseup',
                     field,
-                    field.listener
+                    field.listener,
                 );
             }
         }
@@ -71,16 +72,22 @@ export function setupPos(ext: Ext, NS: string) {
                 ) {
                     return;
                 }
-                const posSwitch = new PosFormatSwitch(POS_FORMAT, function (
-                    e: MouseEvent
-                ) {
-                    this.toNextFormat();
-                    e.stopPropagation();
-                });
+                const posSwitch = new PosFormatSwitch(
+                    Object.keys(POS_FORMAT),
+                    function (e: MouseEvent) {
+                        this.toNextFormat();
+                        this.sourceBlock_.setFieldValue(
+                            this.getValue(),
+                            'FORMAT',
+                        );
+                        e.stopPropagation();
+                    },
+                );
                 input.appendField(posSwitch, 'FORMAT');
             },
             mutationToDom() {
                 const mutation = document.createElement('mutation');
+                console.log(this);
                 mutation.setAttribute('format', this.getFieldValue('FORMAT'));
                 return mutation;
             },
