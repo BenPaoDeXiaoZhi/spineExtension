@@ -23,6 +23,8 @@ import { GandiRuntime } from '../types/gandi-type';
 import { getLogger } from './logSystem';
 import { SpineConfig } from './spineConfig';
 
+import insetIcon_ from '../assets/insetIcon.png'; // 防止发布后icon消失
+
 const insetIcon =
     'https://m.ccw.site/creator-college/cover/5ecb4a0ae781edb9ed8ed3d61d210ad7.svg';
 const icon =
@@ -590,7 +592,7 @@ registerExtDetail(SpineExtension, {
             },
         ],
         iconURL: icon,
-        insetIconURL: insetIcon,
+        insetIconURL: insetIcon_,
     },
     l10n: {
         'zh-cn': {

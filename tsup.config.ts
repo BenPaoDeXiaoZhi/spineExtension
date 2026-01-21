@@ -68,6 +68,7 @@ export default defineConfig((tsupOptions) => {
             '.svg': 'text',
             '.png': 'dataurl',
             '.asset.html': 'text',
+            '.url': 'dataurl',
         },
         publicDir: './public',
         esbuildOptions(options) {
