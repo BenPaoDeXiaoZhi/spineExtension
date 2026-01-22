@@ -16,6 +16,7 @@ import {
     SpineSkinReport,
     SpineSkeletonReport,
     SpineAnimationStateReport,
+    SpineBoneReport,
 } from './util/spineReports';
 import { setupCustomBlocks } from './util/customBlock';
 import { GetSthMenuItems } from './util/customBlocks/getSth';
