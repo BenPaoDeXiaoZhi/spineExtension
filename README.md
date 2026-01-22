@@ -28,7 +28,7 @@
  - [x] 根据drawable状态调整骨架**坐标**变换
  - [x] 根据drawable状态调整骨家**缩放**变换
  - [x] 根据drawable状态调整骨架**旋转**变换
- - [x] relative pos
+ - [ ] relative pos
  - [x] 从skin中获取骨架数据
  - [ ] 修改、读取骨骼数据
  - [x] 应用动画
