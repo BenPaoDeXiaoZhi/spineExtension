@@ -31,6 +31,7 @@ export default {
     'getSthMenu.skin.animationState': '皮肤的animationState',
     'getSthMenu.skeleton.bones': '骨架的全部骨骼',
     'getSthMenu.skeleton.animations': '骨架的全部动画',
+    'getSthMenu.skeleton.bone': '骨架的骨骼',
 
     animation: '动画',
     'addAnimation.text':

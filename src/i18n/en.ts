@@ -30,6 +30,7 @@ export default {
     'getSthMenu.skin.animationState': 'AnimationState of Skin',
     'getSthMenu.skeleton.bones': 'all names of bones in Skeleton',
     'getSthMenu.skeleton.animations': 'all names of animations in Skeleton',
+    'getSthMenu.skeleton.bone': 'Bone in Skeleton',
 
     animation: 'Animation',
     'addAnimation.text':
