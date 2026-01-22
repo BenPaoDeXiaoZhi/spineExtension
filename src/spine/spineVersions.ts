@@ -22,6 +22,12 @@ export type Skeleton<V extends VersionNames = VersionNames> = {
     '3.8webgl': spine38webgl.Skeleton;
 }[V];
 
+export type Bone<V extends VersionNames = VersionNames> = {
+    '4.2webgl': spine42webgl.Bone;
+    '4.0webgl': spine40webgl.Bone;
+    '3.8webgl': spine38webgl.Bone;
+}[V];
+
 export type AnimationState<V extends VersionNames = VersionNames> = {
     '4.2webgl': spine42webgl.AnimationState;
     '4.0webgl': spine40webgl.AnimationState;
