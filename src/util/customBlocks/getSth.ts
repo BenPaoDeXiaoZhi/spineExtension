@@ -4,29 +4,31 @@ import { Block, BlockSvg, Connection, FieldDropdown } from 'blockly';
 import { getTranslate } from '../../i18n/translate';
 const translate = getTranslate();
 
-export const getSthMenuItems = [
-    'skin.name',
-    'skin.skeleton',
-    'skin.x',
-    'skin.y',
-    'skeleton.bones',
-    'skeleton.animations',
-    'skin.animationState',
-] as const satisfies (`skin.${string}` | `skeleton.${string}`)[];
+export const getSthMenuItems = {
+    'skin.name': 'none',
+    'skin.skeleton': 'skeleton',
+    'skin.x': 'none',
+    'skin.y'; 'none',
+    'skin.animationState': 'animationState',
+    'skeleton.bones': 'none',
+    'skeleton.animations': 'none',
+} as const satisfies {
+    [(`skin.${string}` | `skeleton.${string}`)]: any
+};
 
-export type GetSthMenuItems = (typeof getSthMenuItems)[number];
+export type GetSthMenuItems = keyof typeof getSthMenuItems;
 
 function filterItemsWithBlock(block: Block, ext: Ext, NS: string): string[] {
     if (!block) {
-        return getSthMenuItems;
+        return Object.keys(getSthMenuItems);
     }
     let filteredMenus: GetSthMenuItems[];
     if (block.type !== `${NS}_${ext.getSthOf.name}`) {
-        return getSthMenuItems;
+        return Object.keys(getSthMenuItems);
     }
     const keyValue = block.getFieldValue('KEY') as GetSthMenuItems;
     if (!keyValue) {
-        return getSthMenuItems;
+        return Object.keys(getSthMenuItems);
     }
     switch (keyValue) {
         case 'skin.name':
@@ -36,11 +38,11 @@ function filterItemsWithBlock(block: Block, ext: Ext, NS: string): string[] {
         case 'skeleton.animations':
             return ['none'];
         case 'skin.skeleton':
-            return getSthMenuItems.filter((v) => v.startsWith('skeleton'));
+            return Object.keys(getSthMenuItems).filter((v) => v.startsWith('skeleton'));
         case 'skin.animationState':
             return ['needUpdate'];
         default:
-            filteredMenus = getSthMenuItems;
+            filteredMenus = Object.keys(getSthMenuItems);
             return filteredMenus;
     }
 }
