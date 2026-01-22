@@ -5,46 +5,37 @@ import { getTranslate } from '../../i18n/translate';
 const translate = getTranslate();
 
 export const getSthMenuItems = {
-    'skin.name': 'none',
-    'skin.skeleton': 'skeleton',
-    'skin.x': 'none',
-    'skin.y'; 'none',
-    'skin.animationState': 'animationState',
-    'skeleton.bones': 'none',
-    'skeleton.animations': 'none',
+    'skin.name': {type:'string'},
+    'skin.skeleton': {type:'skeleton'},
+    'skin.x': {type:'number'},
+    'skin.y': {type:'number'},
+    'skin.animationState': {type:'animationState'},
+    'skeleton.bones': {type:'string'},
+    'skeleton.animations': {type:'string'},
 } as const satisfies {
-    [(`skin.${string}` | `skeleton.${string}`)]: any
+    [(`skin.${string}` | `skeleton.${string}`)]: {
+        type: string,
+        args?: any,
+    }
 };
 
 export type GetSthMenuItems = keyof typeof getSthMenuItems;
 
 function filterItemsWithBlock(block: Block, ext: Ext, NS: string): string[] {
+    const items = Object.keys(getSthMenuItems)
     if (!block) {
-        return Object.keys(getSthMenuItems);
+        return items;
     }
     let filteredMenus: GetSthMenuItems[];
     if (block.type !== `${NS}_${ext.getSthOf.name}`) {
-        return Object.keys(getSthMenuItems);
+        return items;
     }
     const keyValue = block.getFieldValue('KEY') as GetSthMenuItems;
-    if (!keyValue) {
-        return Object.keys(getSthMenuItems);
+    if (!keyValue || !(keyValue in getSthMenuItems)) {
+        return items;
     }
-    switch (keyValue) {
-        case 'skin.name':
-        case 'skin.x':
-        case 'skin.y':
-        case 'skeleton.bones':
-        case 'skeleton.animations':
-            return ['none'];
-        case 'skin.skeleton':
-            return Object.keys(getSthMenuItems).filter((v) => v.startsWith('skeleton'));
-        case 'skin.animationState':
-            return ['needUpdate'];
-        default:
-            filteredMenus = Object.keys(getSthMenuItems);
-            return filteredMenus;
-    }
+    const srcType = getSthMenuItems[keyValue]?.type;
+    return items.filter((v)=>v.startsWith(srcType));
 }
 
 function updateMenuText(
