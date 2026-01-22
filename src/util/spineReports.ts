@@ -45,6 +45,7 @@ export class ObjectKVReport<
                 const KVDom = document.createElement('div');
                 const keyDom = document.createElement('span');
                 keyDom.innerText = i;
+                keyDom.style.fontWeight = "bold";
                 const valueDom = document.createElement('span');
                 valueDom.innerText = rawObj[i];
                 KVDom.appendChild(keyDom);
@@ -132,6 +133,25 @@ export class SpineAnimationStateReport<
             render,
             animationState,
             '(Spine Animation State) ...'
+        );
+    }
+}
+
+export class SpineBoneReport<
+    T extends any
+> extends ObjectKVReport<T> {
+    constructor(bone: T) {
+        function render() {
+            return {
+                "名称": bone.data.name,
+            }
+        }
+        super(
+            `${bone.skeleton.data.name}的Spine骨骼`,
+            'yellow',
+            render,
+            bone,
+            `(${bone.skeleton.data.name}的Spine骨骼) 名为${bone.data.name}`
         );
     }
 }
