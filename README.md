@@ -28,9 +28,10 @@
  - [x] 根据drawable状态调整骨架**坐标**变换
  - [x] 根据drawable状态调整骨家**缩放**变换
  - [x] 根据drawable状态调整骨架**旋转**变换
+ - [x] relative pos
  - [x] 从skin中获取骨架数据
  - [ ] 修改、读取骨骼数据
- - [ ] 应用动画
+ - [x] 应用动画
 
 #### 💬扩展信息
  - [x] 大图标 by [乌龙茶速递@ccw](https://www.ccw.site/student/68dd004586bbc77f84e309ac)
