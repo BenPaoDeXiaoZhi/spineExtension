@@ -25,7 +25,7 @@ export const getSthMenuItems = {
         args: [
             {
                 name: 'ID',
-                prefix: '名为',
+                prefix: translate('getSthMenu.skeleton.bone.ID_prefix'),
                 type: 'math_number',
             },
         ],
@@ -186,7 +186,6 @@ export function setupGetSth(ext: Ext, NS: string) {
             },
 
             updateArgs(this: BlockSvg, key?: string) {
-                debugger;
                 this.inputList.forEach((input) => {
                     if (input.name.startsWith('ARG_')) {
                         this.removeInput(input.name);
@@ -212,6 +211,7 @@ export function setupGetSth(ext: Ext, NS: string) {
                 const args = getSthMenuItems[keyValue].args as ArgumentConfig[];
                 args.forEach((v) => {
                     const input = this.appendValueInput(`ARG_${v.name}`);
+                    input.appendField(v.prefix);
                     if (this.isInsertionMarker_) {
                         return;
                     }

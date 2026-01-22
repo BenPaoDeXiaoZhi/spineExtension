@@ -31,6 +31,7 @@ export default {
     'getSthMenu.skeleton.bones': 'all names of bones in Skeleton',
     'getSthMenu.skeleton.animations': 'all names of animations in Skeleton',
     'getSthMenu.skeleton.bone': 'Bone in Skeleton',
+    'getSthMenu.skeleton.bone.ID_prefix': ', Named',
 
     animation: 'Animation',
     'addAnimation.text':

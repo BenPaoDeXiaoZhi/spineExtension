@@ -32,6 +32,7 @@ export default {
     'getSthMenu.skeleton.bones': '骨架的全部骨骼',
     'getSthMenu.skeleton.animations': '骨架的全部动画',
     'getSthMenu.skeleton.bone': '骨架的骨骼',
+    'getSthMenu.skeleton.bone.ID_prefix': ',名为',
 
     animation: '动画',
     'addAnimation.text':
