@@ -1,9 +1,10 @@
 import { SpineSkin } from '../spineSkin';
 import { HTMLReport, maybeFunc, resolveMaybeFunc } from './htmlReport';
 import { getTranslate } from '../i18n/translate';
-import spineVersions, {
+import {
     AnimationState,
     Skeleton,
+    Bone,
 } from '../spine/spineVersions';
 const translate = getTranslate();
 
@@ -84,7 +85,7 @@ export class SpineSkinReport extends ObjectKVReport<SpineSkin> {
 }
 
 export class SpineSkeletonReport<
-    T extends Skeleton<keyof typeof spineVersions>
+    T extends Skeleton
 > extends ObjectKVReport<T> {
     constructor(skeleton: T, name: string) {
         function render() {
@@ -109,7 +110,7 @@ export class SpineSkeletonReport<
 }
 
 export class SpineAnimationStateReport<
-    T extends AnimationState<keyof typeof spineVersions>
+    T extends AnimationState
 > extends ObjectKVReport<T> {
     constructor(animationState: T) {
         function render() {
@@ -138,7 +139,7 @@ export class SpineAnimationStateReport<
 }
 
 export class SpineBoneReport<
-    T extends any
+    T extends Bone
 > extends ObjectKVReport<T> {
     constructor(bone: T) {
         function render() {
