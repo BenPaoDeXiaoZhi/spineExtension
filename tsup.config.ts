@@ -92,7 +92,7 @@ export default defineConfig((tsupOptions) => {
                 console.log('dev Server sent');
             }
         },
-        esbuildPlugins: [minifySpinePlugin],
+        // esbuildPlugins: [minifySpinePlugin],
         treeshake: true,
         minify: !tsupOptions.watch,
     };
