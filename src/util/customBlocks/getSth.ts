@@ -191,29 +191,21 @@ export function setupGetSth(ext: Ext, NS: string) {
             },
 
             updateArgs(this: BlockSvg, key?: string) {
-                debugger;
                 const origMutation = this.mutationToDom().outerHTML;
                 const connectionMap: Map<
                     string,
-                    { type: 'shadow' | 'block'; value?: string | number }
+                    { shadow: boolean; connection: Connection }
                 > = new Map();
                 this.inputList.forEach((input) => {
                     if (input.name.startsWith('ARG_')) {
                         this.removeInput(input.name);
                         const target = input.connection.targetBlock();
                         input.connection.setShadowDom(null);
-                        if (target && target.isShadow()) {
-                            let shadowValue: string | number;
-                            if (target.type == 'text') {
-                                shadowValue = target.getFieldValue('TEXT');
-                            } else {
-                                shadowValue = target.getFieldValue('NUM');
-                            }
+                        if (target) {
                             connectionMap.set(input.name, {
-                                type: 'shadow',
-                                value: shadowValue,
+                                shadow: target.isShadow(),
+                                connection: target.outputConnection,
                             });
-                            target.dispose();
                         }
                         if (input.connection.targetConnection) {
                             input.connection.disconnect();
@@ -221,6 +213,7 @@ export function setupGetSth(ext: Ext, NS: string) {
                         input.dispose();
                     }
                 });
+                debugger;
                 const keyValue =
                     key || (this.getFieldValue('KEY') as GetSthMenuItems);
                 if (!(keyValue in getSthMenuItems)) {
@@ -249,7 +242,15 @@ export function setupGetSth(ext: Ext, NS: string) {
                     if (this.isInsertionMarker_) {
                         return;
                     }
-                    addShadow(input, v.type, Blockly);
+                    if(connectionMap.has(`ARG_${v.name}`)){
+                       const config= connectionMap.get(`ARG_${v.name}`);
+                       if(!config.shadow){
+                           addShadow(input, v.type, Blockly);
+                       }
+                       config.connection.connect(input.connection);
+                    }else{
+                        addShadow(input, v.type, Blockly);
+                    }
                 });
             },
         } as const;
