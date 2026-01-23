@@ -169,6 +169,7 @@ export function setupGetSth(ext: Ext, NS: string) {
                 );
                 keyInput.removeField('KEY');
                 keyInput.appendField(dropdownField, 'KEY');
+                this.updateArgs();
             },
             updateMenu(this: BlockSvg, connection?: Connection) {
                 const dataInput = this.getInput('DATA');
