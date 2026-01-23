@@ -487,6 +487,7 @@ class SpineExtension extends SimpleExt {
             | SpineSkinReport
             | SpineSkeletonReport<Skeleton<keyof typeof spineVersions>>;
     }): string | HTMLReport {
+        logger.log(arg);
         const { KEY, DATA } = arg;
         if (DATA instanceof SpineSkeletonReport) {
             if (!KEY.startsWith('skeleton')) {
@@ -508,6 +509,17 @@ class SpineExtension extends SimpleExt {
                         names.push(animation.name);
                     }
                     return JSON.stringify(names);
+                }
+                case 'skeleton.bone': {
+                    const ARG_ID = String(arg['ARG_ID']);
+                    if (!ARG_ID) {
+                        logger.error(translate('typeError'));
+                    }
+                    const bone = skeleton.findBone(ARG_ID);
+                    if (!bone) {
+                        logger.error(translate('typeError'), 'bone not found');
+                    }
+                    return new SpineBoneReport(bone);
                 }
             }
         }

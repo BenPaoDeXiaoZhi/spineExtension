@@ -8,9 +8,14 @@ import Blockly, {
     Input,
 } from 'blockly';
 import { getTranslate } from '../../i18n/translate';
+import { maybeFunc, resolveMaybeFunc } from '../htmlReport';
 const translate = getTranslate();
 
-export type ArgumentConfig = { name: string; prefix: string; type: ShadowId };
+export type ArgumentConfig = {
+    name: string;
+    prefix: maybeFunc<string>;
+    type: ShadowId;
+};
 export type ShadowId = 'math_number' | 'text';
 export const getSthMenuItems = {
     'skin.name': { type: 'string' },
@@ -25,8 +30,8 @@ export const getSthMenuItems = {
         args: [
             {
                 name: 'ID',
-                prefix: translate('getSthMenu.skeleton.bone.ID_prefix'),
-                type: 'math_number',
+                prefix: () => translate('getSthMenu.skeleton.bone.ID_prefix'),
+                type: 'text',
             },
         ],
     },
@@ -83,28 +88,30 @@ function updateMenuText(
 
 function addShadow(input: Input, type: ShadowId, blockly: typeof Blockly) {
     blockly.Events.disable();
+    const newBlock = blockly.getMainWorkspace().newBlock(type) as BlockSvg;
     try {
-        const block = blockly.getMainWorkspace().newBlock(type) as BlockSvg;
-        block.setShadow(true);
-        block.initSvg();
-        block.render();
-        input.connection.connect(block.outputConnection);
+        newBlock.setShadow(true);
+        newBlock.initSvg();
+        newBlock.render();
     } finally {
         blockly.Events.enable();
     }
+    blockly.Events.fire(new blockly.Events.BlockCreate(newBlock));
+    newBlock.outputConnection.connect(input.connection);
 }
 
 export function setupGetSth(ext: Ext, NS: string) {
     const Blockly = ext.runtime.scratchBlocks;
     customBlock(`${NS}_${ext.getSthOf.name}`, Blockly, function (orig) {
         const config = {
-            mutationToDom(this: BlockSvg) {
+            mutationToDom(this: BlockSvg, key = this.getFieldValue('KEY')) {
                 const mutation = document.createElement('mutation');
-                mutation.setAttribute('key', this.getFieldValue('KEY'));
+                mutation.setAttribute('key', key);
                 return mutation;
             },
             domToMutation(dom: HTMLElement) {
-                (this as GetSthBlock).updateArgs(dom.getAttribute('key'));
+                const block = this as GetSthBlock;
+                requestAnimationFrame(() => block.updateArgs()); // 完全init后修改
             },
             init(this: BlockSvg) {
                 orig.init.call(this);
@@ -137,9 +144,7 @@ export function setupGetSth(ext: Ext, NS: string) {
                         ]);
                     },
                     (v) => {
-                        requestAnimationFrame(() =>
-                            (this as GetSthBlock).updateArgs(),
-                        );
+                        (this as GetSthBlock).updateArgs(v);
                         if (this.outputConnection.targetBlock()) {
                             const targetBlock =
                                 this.outputConnection.targetBlock() as unknown as GetSthBlock;
@@ -186,12 +191,28 @@ export function setupGetSth(ext: Ext, NS: string) {
             },
 
             updateArgs(this: BlockSvg, key?: string) {
+                debugger;
+                const origMutation = this.mutationToDom().outerHTML;
+                const connectionMap: Map<
+                    string,
+                    { type: 'shadow' | 'block'; value?: string | number }
+                > = new Map();
                 this.inputList.forEach((input) => {
                     if (input.name.startsWith('ARG_')) {
                         this.removeInput(input.name);
                         const target = input.connection.targetBlock();
                         input.connection.setShadowDom(null);
                         if (target && target.isShadow()) {
+                            let shadowValue: string | number;
+                            if (target.type == 'text') {
+                                shadowValue = target.getFieldValue('TEXT');
+                            } else {
+                                shadowValue = target.getFieldValue('NUM');
+                            }
+                            connectionMap.set(input.name, {
+                                type: 'shadow',
+                                value: shadowValue,
+                            });
                             target.dispose();
                         }
                         if (input.connection.targetConnection) {
@@ -203,15 +224,28 @@ export function setupGetSth(ext: Ext, NS: string) {
                 const keyValue =
                     key || (this.getFieldValue('KEY') as GetSthMenuItems);
                 if (!(keyValue in getSthMenuItems)) {
+                    // 这一般是错了吧...
                     return;
                 }
+                const newMutation = this.mutationToDom(key).outerHTML;
+                requestAnimationFrame(() =>
+                    Blockly.Events.fire(
+                        new Blockly.Events.BlockChange(
+                            this,
+                            'mutation',
+                            null,
+                            origMutation,
+                            newMutation,
+                        ),
+                    ),
+                );
                 if (!('args' in getSthMenuItems[keyValue])) {
                     return;
                 }
                 const args = getSthMenuItems[keyValue].args as ArgumentConfig[];
                 args.forEach((v) => {
                     const input = this.appendValueInput(`ARG_${v.name}`);
-                    input.appendField(v.prefix);
+                    input.appendField(resolveMaybeFunc(v.prefix));
                     if (this.isInsertionMarker_) {
                         return;
                     }

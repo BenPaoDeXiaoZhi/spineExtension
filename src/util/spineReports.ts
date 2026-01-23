@@ -1,17 +1,13 @@
 import { SpineSkin } from '../spineSkin';
 import { HTMLReport, maybeFunc, resolveMaybeFunc } from './htmlReport';
 import { getTranslate } from '../i18n/translate';
-import {
-    AnimationState,
-    Skeleton,
-    Bone,
-} from '../spine/spineVersions';
+import { AnimationState, Skeleton, Bone } from '../spine/spineVersions';
 const translate = getTranslate();
 
 function domWithType(
     type: maybeFunc<string>,
     color: maybeFunc<string>,
-    restChildren: maybeFunc<HTMLElement[]> = []
+    restChildren: maybeFunc<HTMLElement[]> = [],
 ) {
     const container = document.createElement('div');
     let children: HTMLElement[] = [];
@@ -30,14 +26,14 @@ function domWithType(
 
 export class ObjectKVReport<
     V,
-    T extends { [K: string]: string } = {}
+    T extends { [K: string]: string } = {},
 > extends HTMLReport<V> {
     constructor(
         type: maybeFunc<string>,
         color: maybeFunc<string>,
         obj: maybeFunc<T>,
         value: V,
-        monitor: maybeFunc<string>
+        monitor: maybeFunc<string>,
     ) {
         function render() {
             const children: HTMLElement[] = [];
@@ -46,7 +42,7 @@ export class ObjectKVReport<
                 const KVDom = document.createElement('div');
                 const keyDom = document.createElement('span');
                 keyDom.innerText = i;
-                keyDom.style.fontWeight = "bold";
+                keyDom.style.fontWeight = 'bold';
                 const valueDom = document.createElement('span');
                 valueDom.innerText = rawObj[i];
                 KVDom.appendChild(keyDom);
@@ -79,14 +75,12 @@ export class SpineSkinReport extends ObjectKVReport<SpineSkin> {
                     id: skin.id,
                     version: skin.manager.version,
                     name: skin.name,
-                })
+                }),
         );
     }
 }
 
-export class SpineSkeletonReport<
-    T extends Skeleton
-> extends ObjectKVReport<T> {
+export class SpineSkeletonReport<T extends Skeleton> extends ObjectKVReport<T> {
     constructor(skeleton: T, name: string) {
         function render() {
             return {
@@ -104,13 +98,13 @@ export class SpineSkeletonReport<
                 translate('SpineSkeletonReport.monitor', {
                     name,
                     boneNum: skeleton.bones.length,
-                })
+                }),
         );
     }
 }
 
 export class SpineAnimationStateReport<
-    T extends AnimationState
+    T extends AnimationState,
 > extends ObjectKVReport<T> {
     constructor(animationState: T) {
         function render() {
@@ -133,26 +127,28 @@ export class SpineAnimationStateReport<
             'pink',
             render,
             animationState,
-            '(Spine Animation State) ...'
+            '(Spine Animation State) ...',
         );
     }
 }
 
-export class SpineBoneReport<
-    T extends Bone
-> extends ObjectKVReport<T> {
+export class SpineBoneReport<T extends Bone> extends ObjectKVReport<T> {
     constructor(bone: T) {
+        const skeletonName = bone.skeleton.data.name;
         function render() {
             return {
-                "名称": bone.data.name,
-            }
+                [translate('SpineBoneReport.nameText')]: bone.data.name,
+            };
         }
         super(
-            `${bone.skeleton.data.name}的Spine骨骼`,
-            'yellow',
+            translate('SpineBoneReport.type', { name: skeletonName }),
+            'brown',
             render,
             bone,
-            `(${bone.skeleton.data.name}的Spine骨骼) 名为${bone.data.name}`
+            translate('SpineBoneReport.monitor', {
+                boneName: bone.data.name,
+                name: skeletonName,
+            }),
         );
     }
 }

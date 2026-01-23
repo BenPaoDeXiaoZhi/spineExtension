@@ -63,6 +63,10 @@ export default {
 
     'SpineAnimationStateReport.trackPlaying':
         'Track {id} is playing Animation ',
+
+    'SpineBoneReport.type': "{name}'s Spine Bone",
+    'SpineBoneReport.nameText': 'Bone name is ',
+    'SpineBoneReport.monitor': "({name}'s Spine Bone), Name is {boneName}",
     typeError: '🚫type error🚫',
     enable: 'Enable',
     disable: 'Disable',

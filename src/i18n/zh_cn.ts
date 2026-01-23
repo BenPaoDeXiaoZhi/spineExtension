@@ -63,6 +63,10 @@ export default {
         '(spine骨架) 名称为{name}, 骨骼总数为{boneNum}',
 
     'SpineAnimationStateReport.trackPlaying': 'Track {id} 正在播放动画 ',
+
+    'SpineBoneReport.type': '{name}的Spine骨骼',
+    'SpineBoneReport.nameText': '骨骼名称为 ',
+    'SpineBoneReport.monitor': '({name}的Spine骨骼), 名称为{boneName}',
     typeError: '🚫类型错误🚫',
     enable: '启用',
     disable: '禁用',
