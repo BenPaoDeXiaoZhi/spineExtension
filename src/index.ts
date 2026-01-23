@@ -266,6 +266,20 @@ class SpineExtension extends SimpleExt {
                 },
             },
             {
+                opcode: this.setBonePos.name,
+                blockType: BlockType.COMMAND,
+                text: '设置骨骼[BONE]的世界坐标为[POS]',
+                arguments: {
+                    BONE: {
+                        type: null,
+                    },
+                    POS: {
+                        type: ArgumentType.STRING,
+                        defaultValue: "[0,0]"
+                    },
+                },   
+            },
+            {
                 blockType: BlockType.LABEL,
                 text: translate('animation'),
             },
@@ -545,6 +559,10 @@ class SpineExtension extends SimpleExt {
         }
         logger.error(translate('typeError'));
         return '';
+    }
+
+    setBonePos(args: {BONE: SpineBoneReport, POS: string}){
+        logger.log(args);
     }
 
     switchDebug() {
