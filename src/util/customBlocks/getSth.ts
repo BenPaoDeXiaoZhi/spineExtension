@@ -111,7 +111,7 @@ export function setupGetSth(ext: Ext, NS: string) {
             },
             domToMutation(dom: HTMLElement) {
                 const block = this as GetSthBlock;
-                requestAnimationFrame(() => block.updateArgs()); // 完全init后修改
+                block.updateArgs(dom.getAttribute("key"));
             },
             init(this: BlockSvg) {
                 orig.init.call(this);
