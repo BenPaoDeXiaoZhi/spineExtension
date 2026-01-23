@@ -9,6 +9,7 @@ import spineVersions, {
     AnimationState,
     Skeleton,
     VersionNames,
+    Bone,
 } from './spine/spineVersions';
 import { SpineManager } from './spineManager';
 import { patch, HTMLReport } from './util/htmlReport';
@@ -561,7 +562,7 @@ class SpineExtension extends SimpleExt {
         return '';
     }
 
-    setBonePos(args: {BONE: SpineBoneReport, POS: string}){
+    setBonePos(args: {BONE: SpineBoneReport<Bone>, POS: string}){
         logger.log(args);
     }
 
