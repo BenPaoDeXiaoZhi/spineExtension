@@ -504,7 +504,8 @@ class SpineExtension extends SimpleExt {
         DATA:
             | SpineSkinReport
             | SpineSkeletonReport<Skeleton>
-            | SpineBoneReport<Bone>;
+            | SpineBoneReport<Bone>
+            | SpineAnimationStateReport<AnimationState>;
     }): string | HTMLReport {
         logger.log(arg);
         const { KEY, DATA } = arg;
@@ -571,6 +572,27 @@ class SpineExtension extends SimpleExt {
             switch (KEY) {
                 case 'bone.pos':
                     return JSON.stringify([bone.worldX, bone.worldY]);
+            }
+        }
+        if (DATA instanceof SpineAnimationStateReport) {
+            if (!KEY.startsWith('animationState')) {
+                logger.error(translate('typeError'));
+                return '';
+            }
+            const state = DATA.valueOf();
+            switch (KEY) {
+                case 'animationState.playing':
+                    const ARG_TRACK = Number(arg['ARG_TRACK']);
+                    if (!ARG_TRACK || isNaN(ARG_TRACK)) {
+                        logger.error(translate('typeError'));
+                        return '';
+                    }
+                    const track = state.tracks[ARG_TRACK];
+                    if(!track){
+                        logger.error(translate('typeError'));
+                        return '';
+                    }
+                    return track.animation.name;
             }
         }
         logger.error(translate('typeError'));
