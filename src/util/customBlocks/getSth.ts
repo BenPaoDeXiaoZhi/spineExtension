@@ -36,8 +36,18 @@ export const getSthMenuItems = {
         ],
     },
     'bone.pos': { type: 'string' },
+    'animationState.playing': {
+        type: 'string',
+        args: [
+            {
+                name: 'ID',
+                prefix: 'Track:',
+                type: 'math_number',
+            },
+        ],
+    },
 } as const satisfies {
-    [K in `${'skin' | 'skeleton' | 'bone'}.${string}`]: {
+    [K in `${'skin' | 'skeleton' | 'bone' | 'animationState'}.${string}`]: {
         type: string;
         args?: ArgumentConfig[];
     };
