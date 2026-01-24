@@ -272,14 +272,14 @@ class SpineExtension extends SimpleExt {
                 opcode: this.setBonePos.name,
                 blockType: BlockType.COMMAND,
                 text: '设置骨骼[BONE]的世界坐标为[POS]',
-                tooltip: '[x,0]表示x坐标不变,y坐标改为0',
+                tooltip: '[~,0]表示x坐标不变,y坐标改为0',
                 arguments: {
                     BONE: {
                         type: null,
                     },
                     POS: {
                         type: ArgumentType.STRING,
-                        defaultValue: 'x, 0',
+                        defaultValue: '~, 0',
                     },
                 },
             },
@@ -579,8 +579,8 @@ class SpineExtension extends SimpleExt {
         let pos: string[], x: number, y: number;
         try {
             pos = trimPos(POS).split(',');
-            x = pos[0] == 'x' ? bone.worldX : Number(pos[0]);
-            y = pos[1] == 'x' ? bone.worldY : Number(pos[1]);
+            x = pos[0] == '~' ? bone.worldX : Number(pos[0]);
+            y = pos[1] == '~' ? bone.worldY : Number(pos[1]);
             if (isNaN(x) || isNaN(y)) {
                 throw new Error(`pos (${pos.join(',')}) is invalid`);
             }
