@@ -24,6 +24,7 @@ import { GetSthMenuItems } from './util/customBlocks/getSth';
 import { GandiRuntime } from '../types/gandi-type';
 import { getLogger } from './logSystem';
 import { SpineConfig } from './spineConfig';
+import { trimPos } from './util/pos';
 
 import insetIcon_ from '../assets/insetIcon.png'; // 防止发布后icon消失
 
