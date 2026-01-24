@@ -588,7 +588,7 @@ class SpineExtension extends SimpleExt {
             logger.error(translate('typeError'), e);
         }
         const srcVec = new Vector2(x, y);
-        const dstVec = bone.worldToLocal(srcVec);
+        const dstVec = bone.parent ? bone.parent.worldToLocal(srcVec) : srcVec;
         bone.x = dstVec.x;
         bone.y = dstVec.y;
         bone.updateWorldTransform();
