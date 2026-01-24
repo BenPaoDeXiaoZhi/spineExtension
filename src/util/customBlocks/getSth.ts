@@ -35,8 +35,9 @@ export const getSthMenuItems = {
             },
         ],
     },
+    'bone.pos': { type: 'string' },
 } as const satisfies {
-    [K in `skin.${string}` | `skeleton.${string}`]: {
+    [K in `${'skin' | 'skeleton' | 'bone'}.${string}`]: {
         type: string;
         args?: ArgumentConfig[];
     };
