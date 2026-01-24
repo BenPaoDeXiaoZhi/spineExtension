@@ -34,6 +34,8 @@ export default {
     'getSthMenu.skeleton.bone': '骨架的骨骼',
     'getSthMenu.skeleton.bone.ID_prefix': ',名为',
 
+    'setBonePos.text': '设置骨骼[BONE]的世界坐标为[POS]',
+
     animation: '动画',
     'addAnimation.text':
         '向AnimationState[STATE]的track[TRACK][ACTION]名为[NAME]的动画并[LOOP]循环',
