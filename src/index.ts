@@ -681,8 +681,19 @@ class SpineExtension extends SimpleExt {
         }
     }
 
-    animationCompleted(args): boolean{
+    animationCompleted(args: {
+        STATE: SpineAnimationStateReport<
+            AnimationState
+        >;
+        TRACK: number;
+    }): boolean {
         logger.log(args);
+        const { STATE, TRACK } = args;
+        if (!STATE || !(STATE instanceof SpineAnimationStateReport)) {
+            logger.error(translate('typeError'));
+            return;
+        }
+        const animationState = STATE.valueOf();
         return true;
     }
 }
