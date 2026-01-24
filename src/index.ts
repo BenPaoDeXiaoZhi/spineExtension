@@ -27,6 +27,7 @@ import { SpineConfig } from './spineConfig';
 import { trimPos } from './util/pos';
 
 import insetIcon_ from '../assets/insetIcon.png'; // 防止发布后icon消失
+import { Vector2 } from '42webgl';
 
 const insetIcon = insetIcon_;
 // 'https://m.ccw.site/creator-college/cover/5ecb4a0ae781edb9ed8ed3d61d210ad7.svg';
@@ -271,13 +272,14 @@ class SpineExtension extends SimpleExt {
                 opcode: this.setBonePos.name,
                 blockType: BlockType.COMMAND,
                 text: '设置骨骼[BONE]的世界坐标为[POS]',
+                tooltip: '[x,0]表示x坐标不变,y坐标改为0',
                 arguments: {
                     BONE: {
                         type: null,
                     },
                     POS: {
                         type: ArgumentType.STRING,
-                        defaultValue: "0, 0"
+                        defaultValue: "x, 0"
                     },
                 },   
             },
@@ -574,14 +576,23 @@ class SpineExtension extends SimpleExt {
             return
         }
         const bone = BONE.valueOf();
-        let pos;
+        let pos: string[], x: number, y: number;
         try{
             pos = trimPos(POS).split(",");
+            x = pos[0] == 'x' ? bone.worldX : Number(pos[0]);
+            y = pos[1] == 'x' ? bone.worldY : Number(pos[1]);
+            if(isNaN(x) || isNaN(y)){
+                throw new Error(`pos (${pos.join(',')}) is invalid`)
+            }
         }
         catch(e){
             logger.error(translate('typeError'), e);
         }
-        logger.log(bone, pos);
+        const srcVec = new Vector2(x,y);
+        const dstVec = bone.worldToLocal(srcVec)
+        bone.x = dstVec.x;
+        bone.y = dstVec.y;
+        logger.log(dstVec,bone)
     }
 
     switchDebug() {

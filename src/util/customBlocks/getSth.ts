@@ -214,7 +214,6 @@ export function setupGetSth(ext: Ext, NS: string) {
                         input.dispose();
                     }
                 });
-                debugger;
                 const keyValue =
                     key || (this.getFieldValue('KEY') as GetSthMenuItems);
                 if (!(keyValue in getSthMenuItems)) {
