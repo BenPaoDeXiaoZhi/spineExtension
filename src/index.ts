@@ -583,7 +583,7 @@ class SpineExtension extends SimpleExt {
             switch (KEY) {
                 case 'animationState.playing':
                     const ARG_TRACK = Number(arg['ARG_TRACK']);
-                    if (!ARG_TRACK || isNaN(ARG_TRACK)) {
+                    if (isNaN(ARG_TRACK)) {
                         logger.error(translate('typeError'));
                         return '';
                     }
