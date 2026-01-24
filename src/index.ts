@@ -314,6 +314,20 @@ class SpineExtension extends SimpleExt {
                 },
             },
             {
+                func: this.animationCompleted.name,
+                text: 'AnimationState[STATE]的Track[TRACK]已播放完成',
+                arguments: {
+                    STATE: {
+                        type: null,
+                    },
+                    TRACK: {
+                        type: ArgumentType.NUMBER,
+                        defaultValue: 0,
+                    }
+                },
+                blockType: BlockType.BOOLEAN,
+            },
+            {
                 func: this.switchDebug.name,
                 get text() {
                     return translate('debugRender', {
@@ -665,6 +679,11 @@ class SpineExtension extends SimpleExt {
         } catch (e) {
             return String(e);
         }
+    }
+
+    animationCompleted(args): boolean{
+        logger.log(args);
+        return true;
     }
 }
 
