@@ -35,6 +35,7 @@ export default {
     'getSthMenu.skeleton.bone.ID_prefix': ',名为',
 
     'setBonePos.text': '设置骨骼[BONE]的世界坐标为[POS]',
+    'setBonePos.tip': '[~,0]表示x坐标不变,y坐标改为0',
 
     animation: '动画',
     'addAnimation.text':
