@@ -18,7 +18,7 @@
  - [x] htmlReport
  - [x] spineSkinReport
  - [x] spineSkeletonReport
- - [ ] spineBoneReport
+ - [x] spineBoneReport
  - [x] animationStateReport
 
 #### 🗯️扩展功能
