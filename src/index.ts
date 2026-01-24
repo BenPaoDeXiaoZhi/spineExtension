@@ -503,7 +503,8 @@ class SpineExtension extends SimpleExt {
         KEY: GetSthMenuItems;
         DATA:
             | SpineSkinReport
-            | SpineSkeletonReport<Skeleton<keyof typeof spineVersions>>;
+            | SpineSkeletonReport<Skeleton>
+            | SpineBoneReport<Bone>;
     }): string | HTMLReport {
         logger.log(arg);
         const { KEY, DATA } = arg;
@@ -561,6 +562,17 @@ class SpineExtension extends SimpleExt {
                 }
             }
         }
+        if (DATA instanceof SpineBoneReport) {
+            if (!KEY.startsWith('bone')) {
+                logger.error(translate('typeError'));
+                return '';
+            }
+            const bone = DATA.valueOf();
+            switch (KEY) {
+                case 'bone.pos':
+                    return JSON.stringify([bone.worldX, bone.worldY]);
+            }
+        }
         logger.error(translate('typeError'));
         return '';
     }
@@ -605,7 +617,7 @@ class SpineExtension extends SimpleExt {
 
     addAnimation(args: {
         STATE: SpineAnimationStateReport<
-            AnimationState<keyof typeof spineVersions>
+            AnimationState
         >;
         TRACK: number;
         NAME: string;
