@@ -10,7 +10,7 @@ export function trimChar(src: string, chr: string){
     if(!src.startsWith(chr[0])){
         return src;
     }
-    if(!src.endsWith(chr[0]){
+    if(!src.endsWith(chr[0])){
         throw new Error(
             `${src} starts with ${chr[0]} but don't ends with ${chr[1]}`
         );
