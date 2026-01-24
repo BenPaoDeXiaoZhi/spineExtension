@@ -33,6 +33,8 @@ export default {
     'getSthMenu.skeleton.bone': 'Bone in Skeleton',
     'getSthMenu.skeleton.bone.ID_prefix': ', Named',
 
+    'setBonePos.text': "Set Bone [BONE]'s world pos to [POS]',
+
     animation: 'Animation',
     'addAnimation.text':
         'On AnimationState [STATE], track [TRACK], [ACTION] the animation named [NAME] and [LOOP] loop',
