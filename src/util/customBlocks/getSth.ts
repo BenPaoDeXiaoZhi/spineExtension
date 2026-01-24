@@ -41,7 +41,7 @@ export const getSthMenuItems = {
         args: [
             {
                 name: 'TRACK',
-                prefix: 'Track:',
+                prefix: () => translate('getSthMenu.animationState.playing.TRACK_prefix'),
                 type: 'math_number',
             },
         ],
