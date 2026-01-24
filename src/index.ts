@@ -271,7 +271,7 @@ class SpineExtension extends SimpleExt {
             {
                 opcode: this.setBonePos.name,
                 blockType: BlockType.COMMAND,
-                text: '设置骨骼[BONE]的世界坐标为[POS]',
+                text: translate('setBonePos.text'),
                 tooltip: '[~,0]表示x坐标不变,y坐标改为0',
                 arguments: {
                     BONE: {
