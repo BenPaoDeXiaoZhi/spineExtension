@@ -314,7 +314,7 @@ class SpineExtension extends SimpleExt {
                 },
             },
             {
-                func: this.animationCompleted.name,
+                opcode: this.animationCompleted.name,
                 text: 'AnimationState[STATE]的Track[TRACK]已播放完成',
                 arguments: {
                     STATE: {
