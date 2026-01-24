@@ -33,6 +33,7 @@ export default {
     'getSthMenu.skeleton.animations': '骨架的全部动画',
     'getSthMenu.skeleton.bone': '骨架的骨骼',
     'getSthMenu.skeleton.bone.ID_prefix': ',名为',
+    'getSthMenu.bone.pos': '骨骼世界坐标',
 
     'setBonePos.text': '设置骨骼[BONE]的世界坐标为[POS]',
     'setBonePos.tip': '[~,0]表示x坐标不变,y坐标改为0',
