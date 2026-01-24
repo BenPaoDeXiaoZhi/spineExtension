@@ -573,7 +573,15 @@ class SpineExtension extends SimpleExt {
             logger.error(translate('typeError'));
             return
         }
-        logger.log(args);
+        const bone = BONE.valueOf();
+        let pos;
+        try{
+            pos = trimPos(POS).split(",");
+        }
+        catch(e){
+            logger.error(translate('typeError'), e);
+        }
+        logger.log(bone, pos);
     }
 
     switchDebug() {
