@@ -279,9 +279,9 @@ class SpineExtension extends SimpleExt {
                     },
                     POS: {
                         type: ArgumentType.STRING,
-                        defaultValue: "x, 0"
+                        defaultValue: 'x, 0',
                     },
-                },   
+                },
             },
             {
                 blockType: BlockType.LABEL,
@@ -565,34 +565,34 @@ class SpineExtension extends SimpleExt {
         return '';
     }
 
-    setBonePos(args: {BONE: SpineBoneReport<Bone>, POS: string}): void{
+    setBonePos(args: { BONE: SpineBoneReport<Bone>; POS: string }): void {
         const { BONE, POS } = args;
-        if(!(BONE && BONE instanceof SpineBoneReport)){
+        if (!(BONE && BONE instanceof SpineBoneReport)) {
             logger.error(translate('typeError'));
-            return
+            return;
         }
-        if(!POS){
+        if (!POS) {
             logger.error(translate('typeError'));
-            return
+            return;
         }
         const bone = BONE.valueOf();
         let pos: string[], x: number, y: number;
-        try{
-            pos = trimPos(POS).split(",");
+        try {
+            pos = trimPos(POS).split(',');
             x = pos[0] == 'x' ? bone.worldX : Number(pos[0]);
             y = pos[1] == 'x' ? bone.worldY : Number(pos[1]);
-            if(isNaN(x) || isNaN(y)){
-                throw new Error(`pos (${pos.join(',')}) is invalid`)
+            if (isNaN(x) || isNaN(y)) {
+                throw new Error(`pos (${pos.join(',')}) is invalid`);
             }
-        }
-        catch(e){
+        } catch (e) {
             logger.error(translate('typeError'), e);
         }
-        const srcVec = new Vector2(x,y);
-        const dstVec = bone.worldToLocal(srcVec)
+        const srcVec = new Vector2(x, y);
+        const dstVec = bone.worldToLocal(srcVec);
         bone.x = dstVec.x;
         bone.y = dstVec.y;
-        logger.log(dstVec,bone)
+        bone.updateWorldTransform();
+        logger.log(dstVec, bone);
     }
 
     switchDebug() {
