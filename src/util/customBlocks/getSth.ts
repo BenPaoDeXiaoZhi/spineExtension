@@ -40,7 +40,7 @@ export const getSthMenuItems = {
         type: 'string',
         args: [
             {
-                name: 'ID',
+                name: 'TRACK',
                 prefix: 'Track:',
                 type: 'math_number',
             },
