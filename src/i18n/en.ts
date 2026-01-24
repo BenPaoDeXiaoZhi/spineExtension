@@ -33,7 +33,7 @@ export default {
     'getSthMenu.skeleton.bone': 'Bone in Skeleton',
     'getSthMenu.skeleton.bone.ID_prefix': ', Named',
 
-    'setBonePos.text': "Set Bone [BONE]'s world pos to [POS]',
+    'setBonePos.text': "Set Bone [BONE]'s world pos to [POS]",
     'setBonePos.tip': "[~,0] means don't change x, change y to 0",
 
     animation: 'Animation',
