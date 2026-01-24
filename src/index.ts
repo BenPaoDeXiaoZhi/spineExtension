@@ -276,7 +276,7 @@ class SpineExtension extends SimpleExt {
                     },
                     POS: {
                         type: ArgumentType.STRING,
-                        defaultValue: "[0,0]"
+                        defaultValue: "0, 0"
                     },
                 },   
             },
@@ -562,7 +562,16 @@ class SpineExtension extends SimpleExt {
         return '';
     }
 
-    setBonePos(args: {BONE: SpineBoneReport<Bone>, POS: string}){
+    setBonePos(args: {BONE: SpineBoneReport<Bone>, POS: string}): void{
+        const { BONE, POS } = args;
+        if(!(BONE && BONE instanceof SpineBoneReport)){
+            logger.error(translate('typeError'));
+            return
+        }
+        if(!POS){
+            logger.error(translate('typeError'));
+            return
+        }
         logger.log(args);
     }
 
