@@ -69,12 +69,12 @@ export default {
 
     'SpineAnimationStateReport.trackPlaying':
         'Track {id}' +
-        ' {loop, plural,' +
-            ' =true {is looping}' +
-            ' other {' +
-                ' {complete, plural,' +
-                    ' =true {has done}' +
-                    ' other {is playing}' +
+        ' {loop, select,' +
+            'true {is looping}' +
+            'other {' +
+                ' {complete, select,' +
+                    'true {has done}' +
+                    'other {is playing}' +
                 '}' +
             '}' +
         '}' + 
