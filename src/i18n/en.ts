@@ -78,7 +78,7 @@ export default {
                 '}' +
             '}' +
         '}' + 
-        'animation ',
+        ' animation ',
 
     'SpineBoneReport.type': "{name}'s Spine Bone",
     'SpineBoneReport.nameText': 'Bone name is ',
