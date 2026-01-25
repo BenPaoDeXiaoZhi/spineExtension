@@ -53,7 +53,10 @@ try {
             };
             let vm;
             const tid = setTimeout(
-                () => window.exit(document.body.innerHTML),
+                () => {
+                    console.error("timeout!!");
+                    window.exit(document.body.innerHTML)};
+                }
                 20000
             );
             const orig = Function.prototype.bind;
@@ -75,7 +78,7 @@ try {
                 vm.updateGandiAssetData('extension.js', fdat);
                 clearTimeout(tid);
                 setTimeout(async () => {
-                    console.error("timeout")
+                    console.error("maybe complete")
                     await window.exit();
                 }, 10000);
             }
