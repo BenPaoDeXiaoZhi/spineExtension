@@ -117,6 +117,8 @@ export class SpineAnimationStateReport<
                 dat[
                     translate('SpineAnimationStateReport.trackPlaying', {
                         id: i,
+                        loop: tracks[i].loop,
+                        complete: tracks[i].isComplete(),
                     })
                 ] = tracks[i].animation.name;
             }
