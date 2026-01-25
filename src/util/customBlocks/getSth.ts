@@ -220,7 +220,7 @@ export function setupGetSth(ext: Ext, NS: string) {
                 > = new Map();
                 this.inputList.forEach((input) => {
                     if (input.name.startsWith('ARG_')) {
-                        this.removeInput(input.name);
+                         this.removeInput(input.name);
                         const target = input.connection.targetBlock();
                         input.connection.setShadowDom(null);
                         if (target) {
@@ -280,6 +280,7 @@ export function setupGetSth(ext: Ext, NS: string) {
                         shadow.dispose();
                     }
                 });
+                console.log(this);
             },
         } as const;
         type GetSthBlock = typeof config & BlockSvg;
