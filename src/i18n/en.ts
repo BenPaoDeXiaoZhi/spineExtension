@@ -76,7 +76,7 @@ export default {
                 ' =false {is playing}' +
             '}' +
         '}' + 
-        'animation ',,
+        'animation ',
 
     'SpineBoneReport.type': "{name}'s Spine Bone",
     'SpineBoneReport.nameText': 'Bone name is ',
