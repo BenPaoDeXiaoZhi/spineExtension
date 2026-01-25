@@ -607,6 +607,18 @@ class SpineExtension extends SimpleExt {
                         return '';
                     }
                     return track.animation.name;
+                case 'animationState.loop':
+                   const ARG_TRACK = Number(arg['ARG_TRACK']);
+                    if (isNaN(ARG_TRACK)) {
+                        logger.error(translate('typeError'));
+                        return '';
+                    }
+                    const track = state.tracks[ARG_TRACK];
+                    if(!track){
+                        logger.error(translate('typeError'));
+                        return '';
+                    }
+                    return String(track.loop); 
             }
         }
         logger.error(translate('typeError'));
