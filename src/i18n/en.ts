@@ -34,7 +34,7 @@ export default {
     'getSthMenu.skeleton.bone.ID_prefix': ', Named',
     'getSthMenu.bone.pos': 'Bone World Pos',
     'getSthMenu.animationState.playing': "Name of Animation",
-    'getSthMenu.animationState.playing': "Animation is Loop?",
+    'getSthMenu.animationState.loop': "Animation is Loop?",
      'getSthMenu.animationState.TRACK_prefix': 'In track',
 
     'setBonePos.text': "Set Bone [BONE]'s world pos to [POS]",
