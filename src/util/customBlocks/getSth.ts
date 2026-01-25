@@ -264,13 +264,20 @@ export function setupGetSth(ext: Ext, NS: string) {
                         return;
                     }
                     if(connectionMap.has(`ARG_${v.name}`)){
-                       const config= connectionMap.get(`ARG_${v.name}`);
-                       if(!config.shadow){
-                           addShadow(input, v.type, Blockly);
-                       }
-                       config.connection.connect(input.connection);
+                        const config= connectionMap.get(`ARG_${v.name}`);
+                        if(!config.shadow){
+                            addShadow(input, v.type, Blockly);
+                        }
+                        config.connection.connect(input.connection);
+                        connectionMap.delete(`ARG_${v.name}`)
                     }else{
                         addShadow(input, v.type, Blockly);
+                    }
+                });
+                connectionMap.forEach((cfg)=>{
+                    if(config.isShadow){ // 在新块中不存在的input中的原有shadow应被清除
+                        const shadow = config.connection.getSourceBlock();
+                        shadow.dispose();
                     }
                 });
             },
