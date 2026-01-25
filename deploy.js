@@ -56,7 +56,7 @@ try {
                 () => {
                     console.error("timeout!!");
                     window.exit(document.body.innerHTML);
-                }
+                },
                 20000
             );
             const orig = Function.prototype.bind;
