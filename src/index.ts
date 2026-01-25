@@ -315,7 +315,7 @@ class SpineExtension extends SimpleExt {
             },
             {
                 opcode: this.animationCompleted.name,
-                text: 'AnimationState[STATE]的Track[TRACK]已播放完成',
+                text: 'AnimationState[STATE]的Track[TRACK]已播放完成一次',
                 arguments: {
                     STATE: {
                         type: null,
@@ -690,11 +690,21 @@ class SpineExtension extends SimpleExt {
         logger.log(args);
         const { STATE, TRACK } = args;
         if (!STATE || !(STATE instanceof SpineAnimationStateReport)) {
-            logger.error(translate('typeError'));
+             logger.error(translate('typeError'));
             return;
         }
         const animationState = STATE.valueOf();
-        return true;
+        const trackId = Number(TRACK);
+        if(isNaN(trackId)){
+             logger.error(translate('typeError'));
+            return;
+        }
+        const track = animationState.tracks[trackId];
+        if(!track){
+             logger.error(translate('typeError'));
+            return true;
+        }
+        return track.isComplete();
     }
 }
 
