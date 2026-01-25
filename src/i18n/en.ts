@@ -71,9 +71,11 @@ export default {
         'Track {id}' +
         ' {loop, plural,' +
             ' =true {is looping}' +
-            ' =false {complete, plural,' +
-                ' =true {has done}' +
-                ' =false {is playing}' +
+            ' other {' +
+                ' {complete, plural,' +
+                    ' =true {has done}' +
+                    ' other {is playing}' +
+                '}' +
             '}' +
         '}' + 
         'animation ',
