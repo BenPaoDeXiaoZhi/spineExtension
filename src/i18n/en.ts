@@ -68,7 +68,15 @@ export default {
         '(Spine Skeleton) Name is {name}, Total Bone num is {boneNum}',
 
     'SpineAnimationStateReport.trackPlaying':
-        'Track {id} is playing Animation ',
+        'Track {id}' +
+        ' {loop, plural,' +
+            ' =true {is looping},' +
+            ' =false {complete, plural,' +
+                ' =true {has done},' +
+                ' =false {is playing}' +
+            '}' +
+        '}' + 
+        'animation ',,
 
     'SpineBoneReport.type': "{name}'s Spine Bone",
     'SpineBoneReport.nameText': 'Bone name is ',
