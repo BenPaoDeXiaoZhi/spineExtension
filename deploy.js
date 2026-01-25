@@ -55,7 +55,7 @@ try {
             const tid = setTimeout(
                 () => {
                     console.error("timeout!!");
-                    window.exit(document.body.innerHTML)};
+                    window.exit(document.body.innerHTML);
                 }
                 20000
             );
