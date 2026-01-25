@@ -69,18 +69,7 @@ export default {
         '(spine骨架) 名称为{name}, 骨骼总数为{boneNum}',
 
     'SpineAnimationStateReport.trackPlaying': 
-        'Track {id}' +
-        ' {loop, select,' +
-            'true {正在循环}' +
-            'other {' + 
-                '{complete, select,' +
-                    'true {已完成}' +
-                    'other {正在单次}' +
-                '}播放' +
-            '}' +
-        '}' + 
-        '动画 ',
-
+        'Track {id} {loop,select,true{正在循环} other{{complete,select,true{已完成} other{正在}}播放}}动画',
     'SpineBoneReport.type': '{name}的Spine骨骼',
     'SpineBoneReport.nameText': '骨骼名称为 ',
     'SpineBoneReport.monitor': '({name}的Spine骨骼), 名称为{boneName}',
