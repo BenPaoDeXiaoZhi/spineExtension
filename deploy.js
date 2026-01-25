@@ -63,7 +63,10 @@ try {
                     Function.prototype.bind = orig;
                     window.log('vm trapped');
                     vm.on('PROJECT_LOADED', getAssets);
-                    vm.on('PROJECT_LOAD_FAILED', log);
+                    vm.on('PROJECT_LOAD_FAILED', (e)=>{
+                        log("loadFailed");
+                        log(e);
+                    });
                 }
                 return orig.call(this, self2, ...args);
             };
@@ -72,6 +75,7 @@ try {
                 vm.updateGandiAssetData('extension.js', fdat);
                 clearTimeout(tid);
                 setTimeout(async () => {
+                    console.error("timeout")
                     await window.exit();
                 }, 10000);
             }
