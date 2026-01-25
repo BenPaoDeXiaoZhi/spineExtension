@@ -70,16 +70,16 @@ export default {
 
     'SpineAnimationStateReport.trackPlaying': 
         'Track {id}' +
-        ' {loop, plural,' +
-            ' =true {正在循环}' +
-            ' other {' + 
-                '{complete, plural,' +
-                    ' =true {已完成}' +
-                    ' other {正在单次}' +
-                '}' +
+        ' {loop, select,' +
+            'true {正在循环}' +
+            'other {' + 
+                '{complete, select,' +
+                    'true {已完成}' +
+                    'other {正在单次}' +
+                '}播放' +
             '}' +
         '}' + 
-        '播放动画 ',
+        '动画 ',
 
     'SpineBoneReport.type': '{name}的Spine骨骼',
     'SpineBoneReport.nameText': '骨骼名称为 ',
