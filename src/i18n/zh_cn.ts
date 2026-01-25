@@ -71,10 +71,12 @@ export default {
     'SpineAnimationStateReport.trackPlaying': 
         'Track {id}' +
         ' {loop, plural,' +
-            ' =true {正在循环},' +
-            ' =false {complete, plural,' +
-                ' =true {已完成},' +
-                ' =false {正在单次}' +
+            ' =true {正在循环}' +
+            ' other {' + 
+                '{complete, plural,' +
+                    ' =true {已完成}' +
+                    ' other {正在单次}' +
+                '}' +
             '}' +
         '}' + 
         '播放动画 ',
