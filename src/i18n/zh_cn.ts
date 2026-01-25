@@ -35,7 +35,8 @@ export default {
     'getSthMenu.skeleton.bone.ID_prefix': ',名为',
     'getSthMenu.bone.pos': '骨骼世界坐标',
     'getSthMenu.animationState.playing': 'animationState中的动画名',
-     'getSthMenu.animationState.playing.TRACK_prefix': '在Track',
+    'getSthMenu.animationState.loop': 'animationState中的动画是否循环',
+     'getSthMenu.animationState.TRACK_prefix': '在Track',
 
     'setBonePos.text': '设置骨骼[BONE]的世界坐标为[POS]',
     'setBonePos.tip': '[~,0]表示x坐标不变,y坐标改为0',
