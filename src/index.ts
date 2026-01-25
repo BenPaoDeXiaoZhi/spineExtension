@@ -594,30 +594,20 @@ class SpineExtension extends SimpleExt {
                 return '';
             }
             const state = DATA.valueOf();
+            const ARG_TRACK = Number(arg['ARG_TRACK']);
+            if (isNaN(ARG_TRACK)) {
+                 logger.error(translate('typeError'));
+                return '';
+            }
+            const track = state.tracks[ARG_TRACK];
+            if(!track){
+                 logger.error(translate('typeError'));
+                 return '';
+            }
             switch (KEY) {
                 case 'animationState.playing':
-                    const ARG_TRACK = Number(arg['ARG_TRACK']);
-                    if (isNaN(ARG_TRACK)) {
-                        logger.error(translate('typeError'));
-                        return '';
-                    }
-                    const track = state.tracks[ARG_TRACK];
-                    if(!track){
-                        logger.error(translate('typeError'));
-                        return '';
-                    }
                     return track.animation.name;
                 case 'animationState.loop':
-                   const ARG_TRACK = Number(arg['ARG_TRACK']);
-                    if (isNaN(ARG_TRACK)) {
-                        logger.error(translate('typeError'));
-                        return '';
-                    }
-                    const track = state.tracks[ARG_TRACK];
-                    if(!track){
-                        logger.error(translate('typeError'));
-                        return '';
-                    }
                     return String(track.loop); 
             }
         }
