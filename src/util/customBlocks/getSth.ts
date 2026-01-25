@@ -275,7 +275,7 @@ export function setupGetSth(ext: Ext, NS: string) {
                     }
                 });
                 connectionMap.forEach((cfg)=>{
-                    if(cfg.isShadow){ // 在新块中不存在的input中的原有shadow应被清除
+                    if(cfg.shadow){ // 在新块中不存在的input中的原有shadow应被清除
                         const shadow = cfg.connection.getSourceBlock();
                         shadow.dispose();
                     }
