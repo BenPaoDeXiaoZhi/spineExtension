@@ -120,7 +120,7 @@ function addShadow(input: Input, type: ShadowId, blockly: typeof Blockly) {
         blockly.Events.enable();
     }
     input.connection.setShadowDom(
-        blockly.xml.blockToDom(newBlock)
+        blockly.Xml.blockToDom(newBlock)
     );
     newBlock.dispose();
 }
