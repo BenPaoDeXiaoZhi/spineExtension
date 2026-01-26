@@ -255,13 +255,6 @@ export function setupGetSth(ext: Ext, NS: string) {
                         ),
                     ),
                 );
-                connectionMap.forEach((cfg) => {
-                    if (cfg.shadow) {
-                        // 在新块中不存在的input中的原有shadow应被清除
-                        const shadow = cfg.connection.getSourceBlock();
-                        shadow.dispose();
-                    }
-                });
                 if (!('args' in getSthMenuItems[keyValue])) {
                     return;
                 }
@@ -283,6 +276,15 @@ export function setupGetSth(ext: Ext, NS: string) {
                         addShadow(input, v.type, Blockly);
                     }
                 });
+                connectionMap.forEach((cfg) => {
+                    if (cfg.shadow) {
+                        // 在新块中不存在的input中的原有shadow应被清除
+                        const shadow = cfg.connection.getSourceBlock();
+                        shadow.dispose();
+                    }
+                });
+                const target = ext.runtime.getEditingTarget();
+                console.log(target.blocks._blocks[this.id]);
             },
         } as const;
         type GetSthBlock = typeof config & BlockSvg;
