@@ -122,7 +122,7 @@ function addShadow(input: Input, type: ShadowId, blockly: typeof Blockly) {
     input.connection.setShadowDom(
         blockly.Xml.blockToDom(newBlock) as Element
     );
-    newBlock.dispose();
+    newBlock.outputConnection.connect(input.connection)
 }
 
 export function setupGetSth(ext: Ext, NS: string) {
