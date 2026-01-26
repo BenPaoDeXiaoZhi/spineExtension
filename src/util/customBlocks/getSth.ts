@@ -120,7 +120,7 @@ function addShadow(input: Input, type: ShadowId, blockly: typeof Blockly) {
         blockly.Events.enable();
     }
     blockly.Events.fire(
-        new blockly.Events.BlockCreate(newBlock);
+        new blockly.Events.BlockCreate(newBlock)
     );
     newBlock.outputConnection.connect(input.connection)
 }
