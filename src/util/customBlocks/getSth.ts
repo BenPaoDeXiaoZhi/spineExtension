@@ -119,8 +119,9 @@ function addShadow(input: Input, type: ShadowId, blockly: typeof Blockly) {
     } finally {
         blockly.Events.enable();
     }
-    blockly.Events.fire(new blockly.Events.BlockCreate(newBlock));
-    newBlock.outputConnection.connect(input.connection);
+    input.connection.setShadowDom(
+        blockly.xml.blockToDom(newBlock)
+    );
 }
 
 export function setupGetSth(ext: Ext, NS: string) {
