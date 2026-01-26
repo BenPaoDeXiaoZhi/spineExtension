@@ -119,8 +119,8 @@ function addShadow(input: Input, type: ShadowId, blockly: typeof Blockly) {
     } finally {
         blockly.Events.enable();
     }
-    input.connection.setShadowDom(
-        blockly.Xml.blockToDom(newBlock) as Element
+    blockly.Events.fire(
+        new blockly.Events.BlockCreate(newBlock);
     );
     newBlock.outputConnection.connect(input.connection)
 }
