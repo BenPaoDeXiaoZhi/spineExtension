@@ -20,7 +20,7 @@ export class scratchStorageUI {
         contentType: string = 'text/plain',
         fileName: string,
         extName: string = '',
-        data: string | Uint8Array | Blob | ArrayBuffer
+        data: string | Uint8Array | Blob | ArrayBuffer,
     ) {
         let fileData: ArrayBuffer;
         if (data instanceof String) {
@@ -39,7 +39,7 @@ export class scratchStorageUI {
             { contentType } as unknown as ScratchStorage.Asset,
             extName as unknown as ScratchStorage.DataFormat,
             fileData,
-            fileName
+            fileName,
         );
     }
 
@@ -47,8 +47,8 @@ export class scratchStorageUI {
         if (!customElements.get('scratch-storage-ui')) {
             customElements.define('scratch-storage-ui', Container);
         }
-        const dialog=document.createElement('scratch-storage-ui');
-        document.body.appendChild(dialog)
+        const dialog = document.createElement('scratch-storage-ui');
+        document.body.appendChild(dialog);
     }
 }
 

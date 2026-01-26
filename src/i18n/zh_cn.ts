@@ -36,7 +36,7 @@ export default {
     'getSthMenu.bone.pos': '骨骼世界坐标',
     'getSthMenu.animationState.playing': 'animationState中的动画名',
     'getSthMenu.animationState.loop': 'animationState中的动画是否循环',
-     'getSthMenu.animationState.TRACK_prefix': '在Track',
+    'getSthMenu.animationState.TRACK_prefix': '在Track',
 
     'setBonePos.text': '设置骨骼[BONE]的世界坐标为[POS]',
     'setBonePos.tip': '[~,0]表示x坐标不变,y坐标改为0',
@@ -50,6 +50,9 @@ export default {
 
     'animation_action_menu.add': '队列添加',
     'animation_action_menu.set': '立即播放',
+
+    'animationCompleted.text':
+        'AnimationState[STATE]的Track[TRACK]已完成一次播放',
 
     'BOOLEAN.true': '进行',
     'BOOLEAN.false': '不',
@@ -69,7 +72,7 @@ export default {
     'SpineSkeletonReport.monitor':
         '(spine骨架) 名称为{name}, 骨骼总数为{boneNum}',
 
-    'SpineAnimationStateReport.trackPlaying': 
+    'SpineAnimationStateReport.trackPlaying':
         'Track {id} {loop,select,true{正在循环} other{{complete,select,true{已完成} other{正在}}播放}}动画',
     'SpineBoneReport.type': '{name}的Spine骨骼',
     'SpineBoneReport.nameText': '骨骼名称为 ',

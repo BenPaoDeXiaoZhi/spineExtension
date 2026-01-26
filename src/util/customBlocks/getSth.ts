@@ -41,7 +41,8 @@ export const getSthMenuItems = {
         args: [
             {
                 name: 'TRACK',
-                prefix: () => translate('getSthMenu.animationState.TRACK_prefix'),
+                prefix: () =>
+                    translate('getSthMenu.animationState.TRACK_prefix'),
                 type: 'math_number',
             },
         ],
@@ -51,7 +52,8 @@ export const getSthMenuItems = {
         args: [
             {
                 name: 'TRACK',
-                prefix: () => translate('getSthMenu.animationState.TRACK_prefix'),
+                prefix: () =>
+                    translate('getSthMenu.animationState.TRACK_prefix'),
                 type: 'math_number',
             },
         ],
@@ -132,7 +134,7 @@ export function setupGetSth(ext: Ext, NS: string) {
             },
             domToMutation(dom: HTMLElement) {
                 const block = this as GetSthBlock;
-                block.updateArgs(dom.getAttribute("key"));
+                block.updateArgs(dom.getAttribute('key'));
             },
             init(this: BlockSvg) {
                 orig.init.call(this);
@@ -220,8 +222,8 @@ export function setupGetSth(ext: Ext, NS: string) {
                 > = new Map();
                 this.inputList.forEach((input) => {
                     if (input.name.startsWith('ARG_')) {
-                         this.removeInput(input.name);
                         const target = input.connection.targetBlock();
+                        this.removeInput(input.name);
                         input.connection.setShadowDom(null);
                         if (target) {
                             connectionMap.set(input.name, {
@@ -253,6 +255,13 @@ export function setupGetSth(ext: Ext, NS: string) {
                         ),
                     ),
                 );
+                connectionMap.forEach((cfg) => {
+                    if (cfg.shadow) {
+                        // 在新块中不存在的input中的原有shadow应被清除
+                        const shadow = cfg.connection.getSourceBlock();
+                        shadow.dispose();
+                    }
+                });
                 if (!('args' in getSthMenuItems[keyValue])) {
                     return;
                 }
@@ -263,24 +272,17 @@ export function setupGetSth(ext: Ext, NS: string) {
                     if (this.isInsertionMarker_) {
                         return;
                     }
-                    if(connectionMap.has(`ARG_${v.name}`)){
-                        const config= connectionMap.get(`ARG_${v.name}`);
-                        if(!config.shadow){
+                    if (connectionMap.has(`ARG_${v.name}`)) {
+                        const config = connectionMap.get(`ARG_${v.name}`);
+                        if (!config.shadow) {
                             addShadow(input, v.type, Blockly);
                         }
                         config.connection.connect(input.connection);
-                        connectionMap.delete(`ARG_${v.name}`)
-                    }else{
+                        connectionMap.delete(`ARG_${v.name}`);
+                    } else {
                         addShadow(input, v.type, Blockly);
                     }
                 });
-                connectionMap.forEach((cfg)=>{
-                    if(cfg.shadow){ // 在新块中不存在的input中的原有shadow应被清除
-                        const shadow = cfg.connection.getSourceBlock();
-                        shadow.dispose();
-                    }
-                });
-                console.log(this);
             },
         } as const;
         type GetSthBlock = typeof config & BlockSvg;

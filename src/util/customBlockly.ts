@@ -15,7 +15,7 @@ type BlockConfig = {
 export function customBlock(
     id: string,
     blockly: typeof Blockly,
-    config: (orig: { init(): any }) => BlockConfig
+    config: (orig: { init(): any }) => BlockConfig,
 ) {
     let origConfig: { init(): any };
     delete blockly.Blocks[id];
@@ -39,7 +39,7 @@ export function customBlock(
 
 export function registerConnectionCallback(
     connection: Connection,
-    callback: (otherConn: Connection) => any
+    callback: (otherConn: Connection) => any,
 ) {
     const origConnect = (connection as any).connect_;
     (connection as any).connect_ = function (otherConn: Connection) {

@@ -52,7 +52,7 @@ export class HTMLReport<T = any> {
     constructor(
         element: maybeFunc<HTMLElement>,
         value: maybeFunc<T>,
-        monitorValue: maybeFunc<string>
+        monitorValue: maybeFunc<string>,
     ) {
         const report: HTMLReport<T> = {
             //使用闭包防修改
@@ -74,7 +74,7 @@ export function patch(runtime: GandiRuntime) {
         runtime.visualReport;
     runtime.visualReport = function (
         id: string,
-        value: string | HTMLReport<any>
+        value: string | HTMLReport<any>,
     ) {
         if (value instanceof HTMLReport) {
             const Runtime = this.constructor;
@@ -85,11 +85,11 @@ export function patch(runtime: GandiRuntime) {
     };
 
     const originUpdate: (
-        monitor: Map<'id' | 'value', string | HTMLReport>
+        monitor: Map<'id' | 'value', string | HTMLReport>,
     ) => any = runtime.requestUpdateMonitor;
 
     runtime.requestUpdateMonitor = function (
-        monitor: Map<'id' | 'value', string | HTMLReport>
+        monitor: Map<'id' | 'value', string | HTMLReport>,
     ) {
         const value = monitor.get('value');
         if (value instanceof HTMLReport) {

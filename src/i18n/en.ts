@@ -33,9 +33,9 @@ export default {
     'getSthMenu.skeleton.bone': 'Bone in Skeleton',
     'getSthMenu.skeleton.bone.ID_prefix': ', Named',
     'getSthMenu.bone.pos': 'Bone World Pos',
-    'getSthMenu.animationState.playing': "Name of Animation",
-    'getSthMenu.animationState.loop': "Animation is Loop?",
-     'getSthMenu.animationState.TRACK_prefix': 'In track',
+    'getSthMenu.animationState.playing': 'Name of Animation',
+    'getSthMenu.animationState.loop': 'Animation is Loop?',
+    'getSthMenu.animationState.TRACK_prefix': 'In track',
 
     'setBonePos.text': "Set Bone [BONE]'s world pos to [POS]",
     'setBonePos.tip': "[~,0] means don't change x, change y to 0",
@@ -49,6 +49,9 @@ export default {
 
     'animation_action_menu.add': 'Queue',
     'animation_action_menu.set': 'Set',
+
+    'animationCompleted.text':
+        "AnimationState [STATE]'s Track[TRACK] is completed",
 
     'BOOLEAN.true': 'do',
     'BOOLEAN.false': 'do not',

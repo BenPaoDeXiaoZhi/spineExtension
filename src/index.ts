@@ -38,7 +38,7 @@ const { BlockType, ArgumentType } = Scratch;
 const MAX_PROXY_DEPTH = 5;
 const translate = getTranslate();
 let logger = getLogger('console', NS);
-
+import { getStateAndTrack } from './util/argsParse';
 type Util = VM.BlockUtility;
 
 function createADSProxy(target: object, depth: number = 0) {
@@ -314,8 +314,8 @@ class SpineExtension extends SimpleExt {
                 },
             },
             {
-                opcode: this.animationCompleted.name,
-                text: 'AnimationState[STATE]的Track[TRACK]已播放完成一次',
+                opcode: this.addEmptyAnimation.name,
+                text: '在AnimationState[STATE]的track[TRACK]上[ACTION]空动画,混合时间[MIX]',
                 arguments: {
                     STATE: {
                         type: null,
@@ -323,7 +323,29 @@ class SpineExtension extends SimpleExt {
                     TRACK: {
                         type: ArgumentType.NUMBER,
                         defaultValue: 0,
-                    }
+                    },
+                    ACTION: {
+                        type: ArgumentType.STRING,
+                        menu: 'animation_action_menu',
+                    },
+                    MIX: {
+                        type: ArgumentType.NUMBER,
+                        defaultValue: 0,
+                    },
+                },
+                blockType: BlockType.COMMAND,
+            },
+            {
+                opcode: this.animationCompleted.name,
+                text: translate('animationCompleted.text'),
+                arguments: {
+                    STATE: {
+                        type: null,
+                    },
+                    TRACK: {
+                        type: ArgumentType.NUMBER,
+                        defaultValue: 0,
+                    },
                 },
                 blockType: BlockType.BOOLEAN,
             },
@@ -412,8 +434,8 @@ class SpineExtension extends SimpleExt {
         const { SKEL_URL, ATLAS_URL, VERSION } = args;
         return JSON.stringify(
             new SpineConfig({
-                skel: SKEL_URL,
-                atlas: ATLAS_URL,
+                skel: String(SKEL_URL),
+                atlas: String(ATLAS_URL),
                 version: VERSION,
             }),
         );
@@ -435,17 +457,21 @@ class SpineExtension extends SimpleExt {
     }
 
     setSkinSkeleton(
-        arg: { TARGET_NAME: string; SKELETON: number | HTMLReport },
+        arg: { TARGET_NAME: string; SKELETON: number | SpineSkinReport },
         util: Util,
     ) {
         const { TARGET_NAME, SKELETON } = arg;
         let skinId: any;
+        if (!SKELETON) {
+            logger.error(translate('setSkinSkeleton.skeletonIdError'));
+            return;
+        }
         if (SKELETON instanceof SpineSkinReport) {
             skinId = SKELETON.valueOf().id;
         } else {
             skinId = Number(SKELETON.toString());
         }
-        if (isNaN(skinId)) {
+        if (isNaN(skinId) || skinId < 0) {
             logger.error(translate('setSkinSkeleton.skeletonIdError'));
             return;
         }
@@ -502,9 +528,29 @@ class SpineExtension extends SimpleExt {
         return new SpineSkinReport(newSkin);
     }
 
-    setRelativePos(args) {
-        // TODO:设置相对坐标
-        logger.log(args);
+    setRelativePos(args: { SKIN: SpineSkinReport; POS: string }) {
+        const { SKIN, POS } = args;
+        if (!(SKIN && SKIN instanceof SpineSkinReport)) {
+            logger.error(translate('typeError'), args);
+            return;
+        }
+        if (!(POS && typeof POS == 'string')) {
+            logger.error(translate('typeError'), args);
+            return;
+        }
+        const skin = SKIN.valueOf();
+        let pos: string[], x: number, y: number;
+        try {
+            pos = trimPos(POS).split(',');
+            x = pos[0] == '~' ? skin.skeletonRelativePos[0] : Number(pos[0]);
+            y = pos[1] == '~' ? skin.skeletonRelativePos[1] : Number(pos[1]);
+            if (isNaN(x) || isNaN(y)) {
+                throw new Error(`pos (${POS}) is invalid`);
+            }
+        } catch (e) {
+            logger.error(translate('typeError'), e);
+        }
+        skin.skeletonRelativePos = [x, y];
     }
 
     initUI() {
@@ -596,19 +642,19 @@ class SpineExtension extends SimpleExt {
             const state = DATA.valueOf();
             const ARG_TRACK = Number(arg['ARG_TRACK']);
             if (isNaN(ARG_TRACK)) {
-                 logger.error(translate('typeError'));
+                logger.error(translate('typeError'));
                 return '';
             }
             const track = state.tracks[ARG_TRACK];
-            if(!track){
-                 logger.error(translate('typeError'));
-                 return '';
+            if (!track) {
+                logger.error(translate('typeError'));
+                return '';
             }
             switch (KEY) {
                 case 'animationState.playing':
                     return track.animation.name;
                 case 'animationState.loop':
-                    return String(track.loop); 
+                    return String(track.loop);
             }
         }
         logger.error(translate('typeError'));
@@ -621,7 +667,7 @@ class SpineExtension extends SimpleExt {
             logger.error(translate('typeError'));
             return;
         }
-        if (!POS) {
+        if (!(POS && typeof POS == 'string')) {
             logger.error(translate('typeError'));
             return;
         }
@@ -654,25 +700,15 @@ class SpineExtension extends SimpleExt {
     }
 
     addAnimation(args: {
-        STATE: SpineAnimationStateReport<
-            AnimationState
-        >;
+        STATE: SpineAnimationStateReport<AnimationState>;
         TRACK: number;
         NAME: string;
         LOOP: boolean;
         ACTION: 'add' | 'set';
     }) {
         const { STATE, TRACK, NAME, LOOP, ACTION } = args;
-        if (!STATE || !(STATE instanceof SpineAnimationStateReport)) {
-            logger.error(translate('typeError'));
-            return;
-        }
-        if (TRACK < 0) {
-            logger.error(translate('addAnimation.invalidTrack'));
-            return;
-        }
-        const animationState = STATE.valueOf();
         try {
+            const { animationState } = getStateAndTrack(STATE, TRACK);
             if (ACTION == 'add') {
                 animationState.addAnimation(TRACK, NAME, !!LOOP, 0);
             } else {
@@ -683,30 +719,41 @@ class SpineExtension extends SimpleExt {
         }
     }
 
+    addEmptyAnimation(args: {
+        STATE: SpineAnimationStateReport<AnimationState>;
+        TRACK: number;
+        ACTION: 'add' | 'set';
+        MIX: number;
+    }) {
+        const { STATE, TRACK, ACTION, MIX } = args;
+        try {
+            const { animationState } = getStateAndTrack(STATE, TRACK);
+            if (ACTION == 'add') {
+                animationState.addEmptyAnimation(TRACK, MIX, 0);
+            } else {
+                animationState.setEmptyAnimation(TRACK, MIX);
+            }
+        } catch (e) {
+            logger.error(translate('typeError'), e);
+        }
+    }
+
     animationCompleted(args: {
-        STATE: SpineAnimationStateReport<
-            AnimationState
-        >;
+        STATE: SpineAnimationStateReport<AnimationState>;
         TRACK: number;
     }): boolean {
-        logger.log(args);
         const { STATE, TRACK } = args;
-        if (!STATE || !(STATE instanceof SpineAnimationStateReport)) {
-             logger.error(translate('typeError'));
-            return;
+        try {
+            const { track } = getStateAndTrack(STATE, TRACK);
+            if (!track) {
+                logger.error(translate('typeError'));
+                return true;
+            }
+            return track.isComplete();
+        } catch (e) {
+            logger.error(e);
+            return false;
         }
-        const animationState = STATE.valueOf();
-        const trackId = Number(TRACK);
-        if(isNaN(trackId)){
-             logger.error(translate('typeError'));
-            return;
-        }
-        const track = animationState.tracks[trackId];
-        if(!track){
-             logger.error(translate('typeError'));
-            return true;
-        }
-        return track.isComplete();
     }
 }
 
