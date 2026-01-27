@@ -186,11 +186,12 @@ function reconnect(
         if (input) {
             if (cfg.shadow) {
                 if (input.connection.targetBlock()) {
+                    input.connection.setShadowDom(null); // 防止删除以后shadow再蹦出来
                     input.connection.targetBlock().dispose(); // 原本连接的就是shadow,把新添加的删了
                 }
             }
             cfg.connection.connect(input.connection);
-        } else if (cfg.shadow) {
+        } else if (cfg.shadow) { // input不存在，且原先是shadow
             // 不存在的shadow应被删除, vm中listen的删除不会处理shadow
             const oldShadow = cfg.connection.getSourceBlock();
             if (!(VMBlocks && oldShadow.id in VMBlocks?._blocks)) {
