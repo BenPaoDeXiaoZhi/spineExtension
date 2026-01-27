@@ -1,5 +1,9 @@
 import { Ext } from '../..';
-import { customBlock, registerConnectionCallback } from '../customBlockly';
+import {
+    customBlock,
+    registerConnectionCallback,
+    createVMShadow,
+} from '../customBlockly';
 import Blockly, {
     Block,
     BlockSvg,
@@ -66,6 +70,10 @@ export const getSthMenuItems = {
 };
 
 export type GetSthMenuItems = keyof typeof getSthMenuItems;
+type ConnMap = Map<
+    string,
+    { shadow: boolean; connection: Connection }
+>;
 
 function filterItemsWithBlock(
     block: Block,
@@ -122,7 +130,59 @@ function addShadow(input: Input, type: ShadowId, blockly: typeof Blockly) {
     blockly.Events.fire(
         new blockly.Events.BlockCreate(newBlock)
     );
+    const blockDat = createVMShadow(newBlock);
+    console.log(blockDat);
     newBlock.outputConnection.connect(input.connection)
+    return blockDat;
+}
+
+function removeAllInputs(block: BlockSvg){
+    const connectionMap: ConnMap = new Map();
+    block.inputList.forEach((input) => {
+        if (input.name.startsWith('ARG_')) {
+            const target = input.connection.targetBlock();
+            block.removeInput(input.name);
+            input.connection.setShadowDom(null);
+            if (target) {
+                connectionMap.set(input.name, {
+                    shadow: target.isShadow(), // shadow块在不需要时会被删除
+                    connection: target.outputConnection,
+                });
+            }
+            if (input.connection.targetConnection) {
+                input.connection.disconnect();
+            }
+            input.dispose();
+        }
+    });
+    return connectionMap;
+};
+
+function addArgInputs(block: BlockSvg, key: string){
+    if (!(key in getSthMenuItems)) {
+        // 这一般是错了吧...
+        return;
+    }
+    if (!('args' in getSthMenuItems[keyValue])) {
+        return;
+    }
+    const args = getSthMenuItems[key].args as ArgumentConfig[];
+    args.forEach((v) => {
+        const input = this.appendValueInput(`ARG_${v.name}`);
+        input.appendField(resolveMaybeFunc(v.prefix));
+    });
+}
+
+function reconnect(block: BlockSvg, connectionMap: ConnMap){
+    connectionMap.forEach((cfg, name)=>{
+        const input = this.getInput(`ARG_${name}`);
+        if(input){
+            cfg.connection.connect(input.connection);
+        }
+        else if(cfg.shadow){ // 不存在的shadow应被删除
+            cfg.connection.getSourceBlock().dispose();
+        }
+    });
 }
 
 export function setupGetSth(ext: Ext, NS: string) {
@@ -194,7 +254,7 @@ export function setupGetSth(ext: Ext, NS: string) {
                 );
                 keyInput.removeField('KEY');
                 keyInput.appendField(dropdownField, 'KEY');
-                (this as GetSthBlock).updateArgs();
+                (this as GetSthBlock).updateArgs(this.getFieldValue('KEY') as GetSthMenuItems);
             },
             updateMenu(this: BlockSvg, connection?: Connection) {
                 const dataInput = this.getInput('DATA');
@@ -216,75 +276,10 @@ export function setupGetSth(ext: Ext, NS: string) {
                 requestAnimationFrame(() => parent.updateMenu());
             },
 
-            updateArgs(this: BlockSvg, key?: string) {
-                const origMutation = this.mutationToDom().outerHTML;
-                const connectionMap: Map<
-                    string,
-                    { shadow: boolean; connection: Connection }
-                > = new Map();
-                this.inputList.forEach((input) => {
-                    if (input.name.startsWith('ARG_')) {
-                        const target = input.connection.targetBlock();
-                        this.removeInput(input.name);
-                        input.connection.setShadowDom(null);
-                        if (target) {
-                            connectionMap.set(input.name, {
-                                shadow: target.isShadow(),
-                                connection: target.outputConnection,
-                            });
-                        }
-                        if (input.connection.targetConnection) {
-                            input.connection.disconnect();
-                        }
-                        input.dispose();
-                    }
-                });
-                const keyValue =
-                    key || (this.getFieldValue('KEY') as GetSthMenuItems);
-                if (!(keyValue in getSthMenuItems)) {
-                    // 这一般是错了吧...
-                    return;
-                }
-                const newMutation = this.mutationToDom(key).outerHTML;
-                requestAnimationFrame(() =>
-                    Blockly.Events.fire(
-                        new Blockly.Events.BlockChange(
-                            this,
-                            'mutation',
-                            null,
-                            origMutation,
-                            newMutation,
-                        ),
-                    ),
-                );
-                if (!('args' in getSthMenuItems[keyValue])) {
-                    return;
-                }
-                const args = getSthMenuItems[keyValue].args as ArgumentConfig[];
-                args.forEach((v) => {
-                    const input = this.appendValueInput(`ARG_${v.name}`);
-                    input.appendField(resolveMaybeFunc(v.prefix));
-                    if (this.isInsertionMarker_) {
-                        return;
-                    }
-                    if (connectionMap.has(`ARG_${v.name}`)) {
-                        const config = connectionMap.get(`ARG_${v.name}`);
-                        if (!config.shadow) {
-                            addShadow(input, v.type, Blockly);
-                        }
-                        config.connection.connect(input.connection);
-                        connectionMap.delete(`ARG_${v.name}`);
-                    } else {
-                        addShadow(input, v.type, Blockly);
-                    }
-                });
-                connectionMap.forEach((cfg) => {
-                    if (cfg.shadow) {
-                        // 在新块中不存在的input中的原有shadow应被清除
-                        const shadow = cfg.connection.getSourceBlock();
-                        shadow.dispose();
-                    }
-                });
+            updateArgs(this: BlockSvg, key: string) {
+                const connectionMap = removeAllInputs(this);
+                addArgInputs(block, key);
+                reconnect(block, connectionMap);
                 const target = ext.runtime.getEditingTarget();
                 console.log(target.blocks._blocks[this.id]);
             },
