@@ -281,7 +281,9 @@ export function setupGetSth(ext: Ext, NS: string) {
                 addArgInputs(this, key);
                 reconnect(this, connectionMap);
                 const target = ext.runtime.getEditingTarget();
-                if(!target) return;
+                if(!target){
+                    return;
+                }
                 console.log(target.blocks._blocks[this.id]);
             },
         } as const;
