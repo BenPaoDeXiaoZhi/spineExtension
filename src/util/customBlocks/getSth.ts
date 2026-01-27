@@ -163,7 +163,7 @@ function addArgInputs(block: BlockSvg, key: string){
         // 这一般是错了吧...
         return;
     }
-    if (!('args' in getSthMenuItems[keyValue])) {
+    if (!('args' in getSthMenuItems[key])) {
         return;
     }
     const args = getSthMenuItems[key].args as ArgumentConfig[];
@@ -278,8 +278,8 @@ export function setupGetSth(ext: Ext, NS: string) {
 
             updateArgs(this: BlockSvg, key: string) {
                 const connectionMap = removeAllInputs(this);
-                addArgInputs(block, key);
-                reconnect(block, connectionMap);
+                addArgInputs(this, key);
+                reconnect(this, connectionMap);
                 const target = ext.runtime.getEditingTarget();
                 console.log(target.blocks._blocks[this.id]);
             },
