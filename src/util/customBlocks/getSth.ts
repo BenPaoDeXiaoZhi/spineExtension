@@ -268,6 +268,9 @@ export function setupGetSth(ext: Ext, NS: string) {
              * 从工作区xml恢复块时会用到
              */
             domToMutation(dom: HTMLElement) {
+                if (this.isInsertionMarker_) { // 否则会导致shadow飞出来
+                    return;
+                }
                 updateArgs(
                     this,
                     dom.getAttribute('key') as GetSthMenuItems,
