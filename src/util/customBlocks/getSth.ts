@@ -4,13 +4,8 @@ import {
     registerConnectionCallback,
     createVMShadow,
 } from '../customBlockly';
-import Blockly, {
-    Block,
-    BlockSvg,
-    Connection,
-    FieldDropdown,
-    Input,
-} from 'blockly';
+import type Blockly from 'blockly';
+import { Block, BlockSvg, Connection, FieldDropdown, Input } from 'blockly';
 import { getTranslate } from '../../i18n/translate';
 import { maybeFunc, resolveMaybeFunc } from '../htmlReport';
 const translate = getTranslate();
@@ -70,10 +65,7 @@ export const getSthMenuItems = {
 };
 
 export type GetSthMenuItems = keyof typeof getSthMenuItems;
-type ConnMap = Map<
-    string,
-    { shadow: boolean; connection: Connection }
->;
+type ConnMap = Map<string, { shadow: boolean; connection: Connection }>;
 
 function filterItemsWithBlock(
     block: Block,
@@ -112,8 +104,8 @@ function updateMenuText(
     const originValue = dropdownField.getValue() as GetSthMenuItems;
     const filteredMenus = filterItemsWithBlock(targetBlock, ext, NS);
     if (!filteredMenus.includes(originValue)) {
-        // 如果新值类型不同,使用正确类型
-        dropdownField.setValue(filteredMenus[0]);
+        // 如果新值类型不同,进行警告
+        (dropdownField as any).setText(``);
     }
 }
 
@@ -124,19 +116,15 @@ function addShadow(input: Input, type: ShadowId, blockly: typeof Blockly) {
         newBlock.setShadow(true);
         newBlock.initSvg();
         newBlock.render();
+        newBlock.outputConnection.connect(input.connection);
     } finally {
         blockly.Events.enable();
     }
-    blockly.Events.fire(
-        new blockly.Events.BlockCreate(newBlock)
-    );
     const blockDat = createVMShadow(newBlock);
-    console.log(blockDat);
-    newBlock.outputConnection.connect(input.connection)
     return blockDat;
 }
 
-function removeAllInputs(block: BlockSvg){
+function removeAllInputs(block: BlockSvg, VMBlocks?: VM.Blocks) {
     const connectionMap: ConnMap = new Map();
     block.inputList.forEach((input) => {
         if (input.name.startsWith('ARG_')) {
@@ -153,12 +141,16 @@ function removeAllInputs(block: BlockSvg){
                 input.connection.disconnect();
             }
             input.dispose();
+            if (!(VMBlocks && block.id in VMBlocks?._blocks)) {
+                return;
+            }
+            delete VMBlocks._blocks[block.id].inputs[input.name];
         }
     });
     return connectionMap;
-};
+}
 
-function addArgInputs(block: BlockSvg, key: string){
+function addArgInputs(block: BlockSvg, key: string, VMBlocks?: VM.Blocks) {
     if (!(key in getSthMenuItems)) {
         // 这一般是错了吧...
         return;
@@ -170,33 +162,115 @@ function addArgInputs(block: BlockSvg, key: string){
     args.forEach((v) => {
         const input = block.appendValueInput(`ARG_${v.name}`);
         input.appendField(resolveMaybeFunc(v.prefix));
+        if (!(VMBlocks && block.id in VMBlocks?._blocks)) {
+            return;
+        }
+        VMBlocks._blocks[block.id].inputs[`ARG_${v.name}`] = {
+            name: `ARG_${v.name}`,
+            block: null,
+            shadow: null,
+        };
     });
 }
 
-function reconnect(block: BlockSvg, connectionMap: ConnMap){
-    connectionMap.forEach((cfg, name)=>{
-        const input = this.getInput(`ARG_${name}`);
-        if(input){
+function reconnect(
+    block: BlockSvg,
+    connectionMap: ConnMap,
+    VMBlocks: VM.Blocks,
+) {
+    connectionMap.forEach((cfg, name) => {
+        const input = block.getInput(`ARG_${name}`);
+        if (input) {
+            if (cfg.shadow) {
+                if (input.connection.targetBlock()) {
+                    input.connection.targetBlock().dispose(); // 原本连接的就是shadow,把新添加的删了
+                }
+            }
             cfg.connection.connect(input.connection);
-        }
-        else if(cfg.shadow){ // 不存在的shadow应被删除
-            cfg.connection.getSourceBlock().dispose();
+        } else if (cfg.shadow) {
+            // 不存在的shadow应被删除, vm中listen的删除不会处理shadow
+            const oldShadow = cfg.connection.getSourceBlock();
+            if (!(VMBlocks && oldShadow.id in VMBlocks?._blocks)) {
+                return;
+            }
+            delete VMBlocks._blocks[oldShadow.id];
+            oldShadow.dispose();
         }
     });
+}
+
+function mutationToDom(key: string) {
+    const mutation = document.createElement('mutation');
+    mutation.setAttribute('key', key);
+    return mutation;
+}
+
+function attachShadows(
+    block: BlockSvg,
+    newKey: GetSthMenuItems,
+    blockly: typeof Blockly,
+    VMBlocks?: VM.Blocks,
+) {
+    if (!(newKey in getSthMenuItems && 'args' in getSthMenuItems[newKey])) {
+        return;
+    }
+    const argConfig = getSthMenuItems[newKey].args as ArgumentConfig[];
+    argConfig.forEach((cfg) => {
+        const input = block.getInput(`ARG_${cfg.name}`);
+        const newBlock = addShadow(input, cfg.type, blockly);
+        if (!(VMBlocks && block.id in VMBlocks?._blocks)) {
+            return;
+        }
+        VMBlocks._blocks[newBlock.id] = newBlock;
+        const VMInput = VMBlocks._blocks[block.id].inputs[`ARG_${cfg.name}`];
+        VMInput.shadow = newBlock.id;
+        VMInput.block = newBlock.id;
+    });
+}
+
+function updateArgs(
+    block: BlockSvg,
+    newKey: GetSthMenuItems,
+    target: VM.RenderedTarget,
+    blockly: typeof Blockly,
+) {
+    debugger;
+    const connectionMap = removeAllInputs(block, target?.blocks);
+    addArgInputs(block, newKey, target?.blocks);
+    attachShadows(block, newKey, blockly, target?.blocks);
+    reconnect(block, connectionMap, target?.blocks);
+    if (!(target && block.id in target.blocks._blocks)) {
+        return;
+    }
+    const origMutation = block.mutationToDom().outerHTML;
+    blockly.Events.fire(
+        new blockly.Events.BlockChange(
+            block,
+            'mutation',
+            null,
+            origMutation,
+            block.mutationToDom(newKey).outerHTML,
+        ),
+    );
 }
 
 export function setupGetSth(ext: Ext, NS: string) {
     const Blockly = ext.runtime.scratchBlocks;
     customBlock(`${NS}_${ext.getSthOf.name}`, Blockly, function (orig) {
-        const config = {
+        return {
             mutationToDom(this: BlockSvg, key = this.getFieldValue('KEY')) {
-                const mutation = document.createElement('mutation');
-                mutation.setAttribute('key', key);
-                return mutation;
+                return mutationToDom(key);
             },
+            /**
+             * 从工作区xml恢复块时会用到
+             */
             domToMutation(dom: HTMLElement) {
-                const block = this as GetSthBlock;
-                block.updateArgs(dom.getAttribute('key'));
+                updateArgs(
+                    this,
+                    dom.getAttribute('key') as GetSthMenuItems,
+                    ext.runtime.getEditingTarget(),
+                    Blockly,
+                );
             },
             init(this: BlockSvg) {
                 orig.init.call(this);
@@ -207,16 +281,24 @@ export function setupGetSth(ext: Ext, NS: string) {
                     ]),
                     'KEY',
                 );
-                if (
-                    this.isInFlyout ||
-                    this.isInsertionMarker_ ||
-                    !this.dispose
-                ) {
+                if (this.isInsertionMarker_ || !this.getInput) {
                     return;
                 }
                 const dataInput = this.getInput('DATA');
                 const dropdownField = new Blockly.FieldDropdown(
                     () => {
+                        if (
+                            this.isInFlyout ||
+                            this.isInsertionMarker_ ||
+                            !this.dispose
+                        ) {
+                            return Object.keys(getSthMenuItems).map(
+                                (v: GetSthMenuItems) => [
+                                    translate(`getSthMenu.${v}`) || v,
+                                    v,
+                                ],
+                            );
+                        }
                         const otherBlock = dataInput.connection.targetBlock();
                         const filteredMenus = filterItemsWithBlock(
                             otherBlock,
@@ -228,66 +310,36 @@ export function setupGetSth(ext: Ext, NS: string) {
                             v,
                         ]);
                     },
-                    (v) => {
-                        (this as GetSthBlock).updateArgs(v);
-                        if (this.outputConnection.targetBlock()) {
-                            const targetBlock =
-                                this.outputConnection.targetBlock() as unknown as GetSthBlock;
-                            if (
-                                targetBlock.type !==
-                                `${NS}_${ext.getSthOf.name}`
-                            ) {
-                                return;
-                            }
-                            requestAnimationFrame(() =>
-                                targetBlock.updateMenu(),
-                            ); //连接以后再刷新
+                    (v: GetSthMenuItems) => {
+                        if (
+                            this.isInFlyout ||
+                            this.isInsertionMarker_ ||
+                            !this.dispose
+                        ) {
+                            return v;
                         }
+                        updateArgs(
+                            this,
+                            v,
+                            ext.runtime.getEditingTarget(),
+                            Blockly,
+                        );
+
                         return v;
                     },
                 );
                 registerConnectionCallback(
                     dataInput.connection,
                     (otherConn) => {
-                        (this as GetSthBlock).updateMenu(otherConn);
+                        const block = otherConn.getSourceBlock();
+                        if (block.type === `${NS}_${ext.getSthOf.name}`) {
+                            updateMenuText(this, block, ext, NS);
+                        }
                     },
                 );
                 keyInput.removeField('KEY');
                 keyInput.appendField(dropdownField, 'KEY');
-                (this as GetSthBlock).updateArgs(this.getFieldValue('KEY') as GetSthMenuItems);
             },
-            updateMenu(this: BlockSvg, connection?: Connection) {
-                const dataInput = this.getInput('DATA');
-                if (!dataInput) {
-                    return;
-                }
-                const targetBlock = connection // 内部连入
-                    ? connection.getSourceBlock()
-                    : dataInput.connection.targetBlock();
-                if (!targetBlock) {
-                    return;
-                }
-                updateMenuText(this, targetBlock, ext, NS);
-                const parent = // 同步修改外部类型
-                    this.outputConnection.targetBlock() as unknown as GetSthBlock;
-                if (parent?.type !== `${NS}_${ext.getSthOf.name}`) {
-                    return;
-                }
-                requestAnimationFrame(() => parent.updateMenu());
-            },
-
-            updateArgs(this: BlockSvg, key: string) {
-                const connectionMap = removeAllInputs(this);
-                addArgInputs(this, key);
-                reconnect(this, connectionMap);
-                const target = ext.runtime.getEditingTarget();
-                if(!target){
-                    return;
-                }
-                console.log(target.blocks._blocks[this.id]);
-            },
-        } as const;
-        type GetSthBlock = typeof config & BlockSvg;
-        return config;
+        };
     });
 }
