@@ -48,7 +48,7 @@ export function registerConnectionCallback(
     };
 }
 
-export function createVMShadow(block: BlockSvg, pos: { x: number; y: number }) {
+export function createVMShadow(block: BlockSvg) {
     // skeleton
     const blockDat = {
         id: block.id, // Block ID
@@ -64,8 +64,8 @@ export function createVMShadow(block: BlockSvg, pos: { x: number; y: number }) {
         locked: false,
         collapsed: false,
         // powered by xigua end
-        x: pos.x, // X position of script, if top-level.
-        y: pos.y, // Y position of script, if top-level.
+        x: 0, // X position of script, if top-level. 后续修改
+        y: 0, // Y position of script, if top-level. 后续修改
         mutation: null,
     };
     if (block.type == 'text') {
