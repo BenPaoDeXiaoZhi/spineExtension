@@ -64,8 +64,8 @@ export function createVMShadow(block: BlockSvg){
         locked: false,
         collapsed: false,
         // powered by xigua end
-        x: block.x, // X position of script, if top-level.
-        y: block.y // Y position of script, if top-level.
+        x: 0, // X position of script, if top-level.
+        y: 0 // Y position of script, if top-level.
     };
     if(block.type == "text"){
         blockDat.fields["TEXT"] = block.getFieldValue("TEXT");
