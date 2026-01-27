@@ -168,7 +168,7 @@ function addArgInputs(block: BlockSvg, key: string){
     }
     const args = getSthMenuItems[key].args as ArgumentConfig[];
     args.forEach((v) => {
-        const input = this.appendValueInput(`ARG_${v.name}`);
+        const input = block.appendValueInput(`ARG_${v.name}`);
         input.appendField(resolveMaybeFunc(v.prefix));
     });
 }
