@@ -44,6 +44,9 @@ export default {
     animation: '动画',
     'addAnimation.text':
         '向AnimationState[STATE]的track[TRACK][ACTION]名为[NAME]的动画并[LOOP]循环',
+
+    'addEmptyAnimation.text': '在AnimationState[STATE]的track[TRACK]上[ACTION]空动画,混合时间[MIX]秒',
+
     'addAnimation.invalidTrack': '无效的track',
     // Menu
     'spriteMenu.currentTarget': '当前角色',
