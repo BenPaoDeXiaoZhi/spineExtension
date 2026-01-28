@@ -315,7 +315,7 @@ class SpineExtension extends SimpleExt {
             },
             {
                 opcode: this.addEmptyAnimation.name,
-                text: '在AnimationState[STATE]的track[TRACK]上[ACTION]空动画,混合时间[MIX]',
+                text: translate('addEmptyAnimation.name'),
                 arguments: {
                     STATE: {
                         type: null,
