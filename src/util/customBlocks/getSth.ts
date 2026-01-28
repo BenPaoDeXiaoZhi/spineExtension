@@ -121,9 +121,6 @@ function addShadow(input: Input, type: ShadowId, blockly: typeof Blockly) {
         blockly.Events.enable();
     }
     const blockDat = createVMShadow(newBlock);
-    const xy = newBlock.getRelativeToSurfaceXY();
-    blockDat.x = xy.x;
-    blockDat.y = xy.y;
     return blockDat;
 }
 
@@ -238,7 +235,6 @@ function updateArgs(
     target: VM.RenderedTarget,
     blockly: typeof Blockly,
 ) {
-    debugger;
     const connectionMap = removeAllInputs(block, target?.blocks);
     addArgInputs(block, newKey, target?.blocks);
     attachShadows(block, newKey, blockly, target?.blocks);
