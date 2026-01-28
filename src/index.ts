@@ -315,7 +315,7 @@ class SpineExtension extends SimpleExt {
             },
             {
                 opcode: this.addEmptyAnimation.name,
-                text: translate('addEmptyAnimation.name'),
+                text: translate('addEmptyAnimation.text'),
                 arguments: {
                     STATE: {
                         type: null,
