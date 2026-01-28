@@ -44,6 +44,9 @@ export default {
     'addAnimation.text':
         'On AnimationState [STATE], track [TRACK], [ACTION] the animation named [NAME] and [LOOP] loop',
     'addAnimation.invalidTrack': 'Invalid Track!',
+
+    'addEmptyAnimation.text': 
+        'On AnimationState [STATE], track [TRACK], [ACTION] empty animation, mix duration: [MIX]s',
     // Menu
     'spriteMenu.currentTarget': 'Current target',
 
