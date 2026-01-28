@@ -34,9 +34,9 @@
  - [x] 应用动画
 
 #### 💬扩展信息
- - [x] 大图标 by [乌龙茶速递@ccw] [seia url]
+ - [x] 大图标 by [乌龙茶速递@ccw]()
  - [x] 小图标
- - [x] 配色方案 by [乌龙茶速递@ccw] [seia url]
+ - [x] 配色方案 by [乌龙茶速递@ccw]()
  - [x] 扩展介绍的i18n
 
 ### ♥️鸣谢
@@ -44,7 +44,7 @@
 
  - EsotericSoftware的[Spine WebGl runtime](https://zh.esotericsoftware.com/git/spine-runtimes/tree/spine-ts)
 
- - UI设计、测试、杂项、部分异常的修复：[乌龙茶速递@ccw ![乌龙茶速递] [seia avatar]][seia url]
+ - UI设计、测试、杂项、部分异常的修复：[乌龙茶速递@ccw ![乌龙茶速递] [seia avatar]]()
 
  - 项目灵感，renderer部分的原版支持：HCN
 
@@ -59,5 +59,5 @@
  - **关于特殊的块：**
    为了更加便于编辑的功能~~炫技~~，我通过设置getter setter的方式patch了blockly，并实现了很多有趣的功能，具体可见util中的customBlock。
 
-[seia url]: https://www.ccw.site/student/68dd004586bbc77f84e309ac
+[乌龙茶速递@ccw]: https://www.ccw.site/student/68dd004586bbc77f84e309ac
 [seia avatar]: https://m.ccw.site/user_projects_assets/dc5394d2-c5c5-4d69-b924-effaae5c4543.png
