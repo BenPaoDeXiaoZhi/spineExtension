@@ -54,7 +54,8 @@
    因此我通过套proxy等方法进行了patch。
    
  - **关于特殊的块：**
-   为了更加便于编辑的功能~~炫技~~，我通过设置getter setter的方式patch了blockly，并实现了很多有趣的功能，具体可见[util中的customBlock](src/util/customBlock)。
+   为了更加便于编辑的功能~~炫技~~，我通过设置getter setter的方式patch了blockly，并实现了很多有趣的功能，
+   具体可见[customBlocks](src/util/customBlocks)。
 
 [1]: https://www.ccw.site/student/68dd004586bbc77f84e309ac
 [2]: https://m.ccw.site/user_projects_assets/dc5394d2-c5c5-4d69-b924-effaae5c4543.png
