@@ -39,17 +39,14 @@
  - [x] 配色方案 by [乌龙茶速递@ccw][1]
  - [x] 扩展介绍的i18n
 
-### ♥️鸣谢
-***
-
+#### ♥️鸣谢
  - EsotericSoftware的[Spine WebGl runtime](https://zh.esotericsoftware.com/git/spine-runtimes/tree/spine-ts)
 
- - UI设计、测试、杂项、部分异常的修复：[乌龙茶速递@ccw ![乌龙茶速递][2]][1]
+ - UI设计、测试、配色方案、部分i18n、用户体验优化、部分异常的修复：[乌龙茶速递@ccw ![乌龙茶速递][2]][1]
 
  - 项目灵感，renderer部分的原版支持：HCN
 
 ### 😏杂谈（Q&A）
-***
  - **为什么要对高级数据结构专门patch?**
    **Arkos**大佬的高级数据结构中读取数据的功能有一些问题，  
    造成对象**原型**被修改，虽然有助于防止原型链污染，但会造成**数据处理错误**，有时甚至导致**编辑器崩溃**，  
@@ -57,7 +54,7 @@
    因此我通过套proxy等方法进行了patch。
    
  - **关于特殊的块：**
-   为了更加便于编辑的功能~~炫技~~，我通过设置getter setter的方式patch了blockly，并实现了很多有趣的功能，具体可见util中的customBlock。
+   为了更加便于编辑的功能~~炫技~~，我通过设置getter setter的方式patch了blockly，并实现了很多有趣的功能，具体可见[util中的customBlock](src/util/customBlock)。
 
 [1]: https://www.ccw.site/student/68dd004586bbc77f84e309ac
 [2]: https://m.ccw.site/user_projects_assets/dc5394d2-c5c5-4d69-b924-effaae5c4543.png
