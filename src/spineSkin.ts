@@ -93,7 +93,14 @@ export class SpineSkin extends Skin {
             this.renderer._xRight - this.renderer._xLeft,
             this.renderer._yTop - this.renderer._yBottom,
         ]);
-        this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA); //reset blendfunc
         requestAnimationFrame(() => this.emit(Skin.Events.WasAltered)); //request next frame
+    }
+
+    dispose(): void {
+        super.dispose();
+        this.render = () => {};
+        delete this.skeleton;
+        delete this.tk;
+        delete this.animationState;
     }
 }

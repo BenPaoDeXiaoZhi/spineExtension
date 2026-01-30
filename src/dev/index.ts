@@ -9,7 +9,7 @@ import type Spine from '../spine/4.2/spine-webgl';
 import spineVersions from '../spine/spineVersions';
 
 const DEFAULT_ROOT = 'https://l2d-cn.kivotos.qzz.io/';
-const NAME = prompt('skel','Airi_home');
+const NAME = prompt('skel', 'Airi_home');
 
 const rootDir =
     prompt('root:', localStorage.getItem('root') || DEFAULT_ROOT) ||
@@ -26,13 +26,12 @@ declare const window: {
 const spine = spineVersions['4.2webgl'];
 console.log(spine);
 window.spine = spine;
-alert('spine loaded');
 function render(
     skeleton: Skeleton,
     tk: TimeKeeper,
     animationState: AnimationState,
     spineRenderer: SceneRenderer,
-    mousePos: { x: number; y: number }
+    mousePos: { x: number; y: number },
 ) {
     skeleton.updateWorldTransform(spine.Physics.update);
     tk.update();
@@ -47,20 +46,20 @@ function render(
         skeleton.y,
         x + width,
         skeleton.y,
-        new Color(0, 0, 1, 1)
+        new Color(0, 0, 1, 1),
     );
     spineRenderer.line(
         skeleton.x,
         y,
         skeleton.x,
         y + height,
-        new Color(0, 0, 1, 1)
+        new Color(0, 0, 1, 1),
     );
     spineRenderer.end();
     skeleton.x = mousePos.x;
     skeleton.y = mousePos.y;
     requestAnimationFrame(() =>
-        render(skeleton, tk, animationState, spineRenderer, mousePos)
+        render(skeleton, tk, animationState, spineRenderer, mousePos),
     );
 }
 const root = document.createElement('div');
@@ -97,7 +96,7 @@ assetMgr.loadAll().then(() => {
         new spine.TimeKeeper(),
         animationState,
         renderer,
-        mousePos
+        mousePos,
     );
 });
 function updatePos({ x, y }: { x: number; y: number }) {

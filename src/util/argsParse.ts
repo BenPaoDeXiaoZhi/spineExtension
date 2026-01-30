@@ -8,7 +8,7 @@ export function getStateAndTrack(
     TRACK: number,
 ) {
     const translate = getTranslate();
-    const logger = getLogger();
+    const logger = getLogger('console');
     if (!STATE || !(STATE instanceof SpineAnimationStateReport)) {
         logger.error(translate('typeError'));
         throw new Error('state invalid');

@@ -34,6 +34,9 @@ export const getSthMenuItems = {
             },
         ],
     },
+    'skeleton.bounds': {
+        type: 'bounds',
+    },
     'bone.pos': { type: 'string' },
     'animationState.playing': {
         type: 'string',
@@ -188,7 +191,8 @@ function reconnect(
                 }
             }
             cfg.connection.connect(input.connection);
-        } else if (cfg.shadow) { // input不存在，且原先是shadow
+        } else if (cfg.shadow) {
+            // input不存在，且原先是shadow
             // 不存在的shadow应被删除, vm中listen的删除不会处理shadow
             const oldShadow = cfg.connection.getSourceBlock();
             if (!(VMBlocks && oldShadow.id in VMBlocks?._blocks)) {
@@ -265,7 +269,8 @@ export function setupGetSth(ext: Ext, NS: string) {
              * 从工作区xml恢复块时会用到
              */
             domToMutation(dom: HTMLElement) {
-                if (this.isInsertionMarker_) { // 否则会导致shadow飞出来
+                if (this.isInsertionMarker_) {
+                    // 否则会导致shadow飞出来
                     return;
                 }
                 updateArgs(

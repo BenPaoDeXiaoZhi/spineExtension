@@ -13,7 +13,7 @@ export default {
     'loadSkeleton.configError': 'Please input correct configs',
 
     'setSkinSkeleton.text':
-        'Set the skin of character [TARGET_NAME] to Skeleton:[SKELETON]',
+        'Set the skin of character [TARGET_NAME] to Skin:[SKELETON]',
     'setSkinSkeleton.skeletonIdError': 'Please input valid Skeleton data!',
     'setSkinSkeleton.characterNotFound': 'Cannot find character named {name}',
 
@@ -32,6 +32,7 @@ export default {
     'getSthMenu.skeleton.animations': 'all names of animations in Skeleton',
     'getSthMenu.skeleton.bone': 'Bone in Skeleton',
     'getSthMenu.skeleton.bone.ID_prefix': ', Named',
+    'getSthMenu.skeleton.bounds': 'AABB Bounds of Skeleton',
     'getSthMenu.bone.pos': 'Bone World Pos',
     'getSthMenu.animationState.playing': 'Name of Animation',
     'getSthMenu.animationState.loop': 'Animation is Loop?',
@@ -45,7 +46,7 @@ export default {
         'On AnimationState [STATE], track [TRACK], [ACTION] the animation named [NAME] and [LOOP] loop',
     'addAnimation.invalidTrack': 'Invalid Track!',
 
-    'addEmptyAnimation.text': 
+    'addEmptyAnimation.text':
         'On AnimationState [STATE], track [TRACK], [ACTION] empty animation, mix duration: [MIX]s',
     // Menu
     'spriteMenu.currentTarget': 'Current target',

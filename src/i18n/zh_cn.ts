@@ -13,7 +13,7 @@ export default {
     'loadSkeleton.text': '加载配置为[CONFIG]的spine骨骼并命名为[NAME]',
     'loadSkeleton.configError': '请输入有效配置',
 
-    'setSkinSkeleton.text': '将角色[TARGET_NAME]的skin设为骨架[SKELETON]',
+    'setSkinSkeleton.text': '将角色[TARGET_NAME]的skin设为Skin[SKELETON]',
     'setSkinSkeleton.skeletonIdError': '请输入数字或有效的skeleton数据',
     'setSkinSkeleton.characterNotFound': '找不到名为{name}的角色',
 
@@ -33,6 +33,7 @@ export default {
     'getSthMenu.skeleton.animations': '骨架的全部动画',
     'getSthMenu.skeleton.bone': '骨架的骨骼',
     'getSthMenu.skeleton.bone.ID_prefix': ',名为',
+    'getSthMenu.skeleton.bounds': '骨架的AABB边界盒',
     'getSthMenu.bone.pos': '骨骼世界坐标',
     'getSthMenu.animationState.playing': 'animationState中的动画名',
     'getSthMenu.animationState.loop': 'animationState中的动画是否循环',
@@ -45,7 +46,8 @@ export default {
     'addAnimation.text':
         '向AnimationState[STATE]的track[TRACK][ACTION]名为[NAME]的动画并[LOOP]循环',
 
-    'addEmptyAnimation.text': '在AnimationState[STATE]的track[TRACK]上[ACTION]空动画,混合时间[MIX]秒',
+    'addEmptyAnimation.text':
+        '在AnimationState[STATE]的track[TRACK]上[ACTION]空动画,混合时间[MIX]秒',
 
     'addAnimation.invalidTrack': '无效的track',
     // Menu

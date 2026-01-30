@@ -25,7 +25,7 @@ import { GandiRuntime } from '../types/gandi-type';
 import { getLogger } from './logSystem';
 import { SpineConfig } from './spineConfig';
 import { trimPos } from './util/pos';
-
+import { getStateAndTrack } from './util/argsParse';
 import insetIcon_ from '../assets/insetIcon.png'; // 防止发布后icon消失
 import { Vector2 } from '42webgl';
 
@@ -38,7 +38,6 @@ const { BlockType, ArgumentType } = Scratch;
 const MAX_PROXY_DEPTH = 5;
 const translate = getTranslate();
 let logger = getLogger('console', NS);
-import { getStateAndTrack } from './util/argsParse';
 type Util = VM.BlockUtility;
 
 function createADSProxy(target: object, depth: number = 0) {
@@ -85,6 +84,7 @@ class SpineExtension extends SimpleExt {
     };
     renderer: RenderWebGL;
     enableDebugRender: boolean;
+    skins: SpineSkin[];
 
     constructor(runtime: GandiRuntime) {
         super(NS, 'foo');
@@ -101,6 +101,7 @@ class SpineExtension extends SimpleExt {
             '3.8webgl': new SpineManager('3.8webgl', this.renderer),
         };
         this.enableDebugRender = false;
+        this.skins = [];
     }
 
     /**
@@ -120,6 +121,7 @@ class SpineExtension extends SimpleExt {
     setupCallback() {
         const callbacks = {
             EXTENSION_ADDED: [this.patchADS.bind(this)],
+            PROJECT_RUN_STOP: [() => setTimeout(this.gc.bind(this), 1000)],
         };
         for (const key in callbacks) {
             for (const callback of callbacks[key]) {
@@ -146,6 +148,17 @@ class SpineExtension extends SimpleExt {
                 this.runtime.off(key, callback);
             }
         }
+    }
+
+    /**
+     * 删除skin
+     */
+    gc() {
+        for (const skin of this.skins) {
+            skin.dispose();
+            delete this.renderer._allSkins[skin._id];
+        }
+        this.skins = [];
     }
 
     /**
@@ -182,9 +195,20 @@ class SpineExtension extends SimpleExt {
         const ext = this;
         this.info.name = translate('extensionName');
         this.info.blockIconURI = insetIcon;
-        this.info.color1 = '#272D39';
+        this.info.color1 = '#383f4c';
         this.info.color2 = '#20272F';
         this.info.blocks = [
+            {
+                func: this.switchDebug.name,
+                get text() {
+                    return translate('debugRender', {
+                        action: ext.enableDebugRender
+                            ? translate('disable')
+                            : translate('enable'),
+                    });
+                },
+                blockType: BlockType.BUTTON,
+            },
             {
                 text: translate('initialize'),
                 blockType: BlockType.LABEL,
@@ -348,17 +372,6 @@ class SpineExtension extends SimpleExt {
                     },
                 },
                 blockType: BlockType.BOOLEAN,
-            },
-            {
-                func: this.switchDebug.name,
-                get text() {
-                    return translate('debugRender', {
-                        action: ext.enableDebugRender
-                            ? translate('disable')
-                            : translate('enable'),
-                    });
-                },
-                blockType: BlockType.BUTTON,
             },
             /* {
                 func: this.initUI.name,
@@ -525,6 +538,7 @@ class SpineExtension extends SimpleExt {
             new spineVersions[version].TimeKeeper(),
             NAME,
         ));
+        this.skins.push(newSkin);
         return new SpineSkinReport(newSkin);
     }
 
@@ -567,7 +581,6 @@ class SpineExtension extends SimpleExt {
             | SpineBoneReport<Bone>
             | SpineAnimationStateReport<AnimationState>;
     }): string | HTMLReport {
-        logger.log(arg);
         const { KEY, DATA } = arg;
         if (DATA instanceof SpineSkeletonReport) {
             if (!KEY.startsWith('skeleton')) {
@@ -595,11 +608,30 @@ class SpineExtension extends SimpleExt {
                     if (!ARG_ID) {
                         logger.error(translate('typeError'));
                     }
-                    const bone = skeleton.findBone(ARG_ID);
-                    if (!bone) {
-                        logger.error(translate('typeError'), 'bone not found');
+                    try {
+                        const bone = skeleton.findBone(ARG_ID);
+                        if (!bone) {
+                            logger.error(
+                                translate('typeError'),
+                                'bone not found',
+                            );
+                        }
+                        return new SpineBoneReport(bone);
+                    } catch (e) {
+                        logger.error(translate('typeError'), e);
                     }
-                    return new SpineBoneReport(bone);
+                }
+                case 'skeleton.bounds': {
+                    const spine = spineVersions['4.2webgl'];
+                    const offset = new spine.Vector2();
+                    const size = new spine.Vector2();
+                    skeleton.getBounds(offset, size);
+                    return JSON.stringify({
+                        x: offset.x,
+                        y: offset.y,
+                        width: size.x,
+                        height: size.y,
+                    });
                 }
             }
         }
@@ -688,7 +720,6 @@ class SpineExtension extends SimpleExt {
         bone.x = dstVec.x;
         bone.y = dstVec.y;
         bone.updateWorldTransform();
-        logger.log(dstVec, bone);
     }
 
     switchDebug() {

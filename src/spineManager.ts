@@ -71,6 +71,7 @@ export class SpineManager<V extends VersionNames = VersionNames> {
     assetManager: AssetManager<V>;
     spine: Versions<V>;
     debugRender: boolean;
+    gl: WebGLRenderingContext;
 
     constructor(version: V, renderer: RenderWebGL) {
         this.version = version;
@@ -82,6 +83,7 @@ export class SpineManager<V extends VersionNames = VersionNames> {
             renderer.canvas,
             renderer.gl,
         ) as SceneRenderer<V>;
+        this.gl = renderer.gl;
     }
     async loadSkeleton(
         skeletonUrl: string,
@@ -114,6 +116,7 @@ export class SpineManager<V extends VersionNames = VersionNames> {
             this.sceneRenderer.drawSkeletonDebug(skeleton as any, true);
         }
         this.sceneRenderer.end();
+        this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA); //reset blendfunc
     }
 }
 
