@@ -13,8 +13,18 @@ export interface MenuInfo {
 
 export interface extInfo {
     id: string;
+    /**
+     * for block
+     */
     color1?: string;
+    /**
+     * for input
+     */
     color2?: string;
+    /**
+     * for menu
+     */
+    color3?: string;
     blockIconURI?: string;
     name: string;
     blocks: BlockInfo[];
