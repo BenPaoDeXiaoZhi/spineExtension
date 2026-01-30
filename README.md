@@ -59,6 +59,6 @@
    为了更加便于编辑的功能~~炫技~~，我通过设置getter setter的方式patch了blockly，并实现了很多有趣的功能，
    具体可见[customBlocks](src/util/customBlocks)。
 
-[rate]: https://img.shields.io/badge/dynamic/json?url=https://bfs-web.ccw.site/extensions/spineAnimation&query=$.body.stats.averageRating&label=%E6%89%A9%E5%B1%95%E8%AF%84%E5%88%86
+[rate]: https://img.shields.io/badge/dynamic/json?url=https://bfs-web.ccw.site/extensions/spineAnimation&query=$.body.stats.averageRating&label=%E2%AD%90%EF%B8%8F%E6%89%A9%E5%B1%95%E8%AF%84%E5%88%86
 [1]: https://www.ccw.site/student/68dd004586bbc77f84e309ac
 [2]: https://m.ccw.site/user_projects_assets/dc5394d2-c5c5-4d69-b924-effaae5c4543.png
