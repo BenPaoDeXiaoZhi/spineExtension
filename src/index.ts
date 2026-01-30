@@ -197,7 +197,7 @@ class SpineExtension extends SimpleExt {
         this.info.blockIconURI = insetIcon;
         this.info.color1 = '#383f4c';
         this.info.color2 = '#2f3540';
-        this.info.color3 = '#1c2026';
+        this.info.color3 = '#2f3540';
         this.info.blocks = [
             {
                 func: this.switchDebug.name,
