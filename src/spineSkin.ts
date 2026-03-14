@@ -12,15 +12,17 @@ export function patchSpineSkin(runtime: GandiRuntime) {
     const [id, skin] = runtime.renderer.createSpineSkin();
     runtime.renderer._allSkins[id] = undefined;
     runtime.renderer._nextSkinId--;
+    const originSkin = Object.getPrototypeOf(skin).constructor;
+    const originHas = originSkin[Symbol.hasInstance];
     Object.defineProperty(
-        Object.getPrototypeOf(skin).constructor,
+        originSkin,
         Symbol.hasInstance,
         {
             value: function (instance: any) {
                 if (instance instanceof SpineSkin || instance?.spine) {
                     return true;
                 }
-                return false;
+                return originHas(instance);
             },
             writable: true,
         },
