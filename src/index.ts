@@ -23,7 +23,7 @@ import { setupCustomBlocks } from './util/customBlock';
 import { GetSthMenuItems } from './util/customBlocks/getSth';
 import { GandiRuntime } from '../types/gandi-type';
 import { getLogger } from './logSystem';
-import { SpineConfig } from './spineConfig';
+import { SpineConfig, URLMaybeData } from './spineConfig';
 import { trimPos } from './util/pos';
 import { getStateAndTrack } from './util/argsParse';
 import insetIcon_ from '../assets/insetIcon.png'; // 防止发布后icon消失
@@ -85,10 +85,12 @@ class SpineExtension extends SimpleExt {
     renderer: RenderWebGL;
     enableDebugRender: boolean;
     skins: SpineSkin[];
+    storage: scratchStorageUI;
 
     constructor(runtime: GandiRuntime) {
         super(NS, 'foo');
         this.runtime = runtime;
+        this.storage = new scratchStorageUI(runtime.storage);
         this.renderer = runtime.renderer;
         patchSpineSkin(this.runtime);
         patch(this.runtime);
@@ -215,6 +217,11 @@ class SpineExtension extends SimpleExt {
                 blockType: BlockType.LABEL,
             },
             {
+                text: 'upload',
+                blockType: BlockType.BUTTON,
+                func: this.startUpload.name,
+            },
+            {
                 opcode: this.createSpineConfig.name,
                 text: translate('createSpineConfig.text'),
                 blockType: BlockType.REPORTER,
@@ -232,6 +239,22 @@ class SpineExtension extends SimpleExt {
                     VERSION: {
                         type: ArgumentType.STRING,
                         menu: 'VERSION',
+                    },
+                },
+            },
+            {
+                opcode: this.createURLWithData.name,
+                text: translate('createURLWithData.text'),
+                blockType: BlockType.REPORTER,
+                arguments: {
+                    URL: {
+                        type: ArgumentType.STRING,
+                        defaultValue:
+                            'https://m.ccw.site/user_projects_assets/spine/Hina_home.skel',
+                    },
+                    DATA: {
+                        type: ArgumentType.STRING,
+                        defaultValue: 'base64',
                     },
                 },
             },
@@ -446,13 +469,55 @@ class SpineExtension extends SimpleExt {
         VERSION: VersionNames;
     }) {
         const { SKEL_URL, ATLAS_URL, VERSION } = args;
+        let skelConfig: URLMaybeData = { url: String(SKEL_URL) };
+        let atlasConfig: URLMaybeData = { url: String(ATLAS_URL) };
+        try {
+            skelConfig = JSON.parse(SKEL_URL);
+        } catch (e) {}
+        try {
+            atlasConfig = JSON.parse(ATLAS_URL);
+        } catch (e) {}
         return JSON.stringify(
             new SpineConfig({
-                skel: String(SKEL_URL),
-                atlas: String(ATLAS_URL),
+                skel: skelConfig,
+                atlas: atlasConfig,
                 version: VERSION,
             }),
         );
+    }
+
+    async startUpload() {
+        const { userId } = await this.runtime.ccwAPI.getUserInfo();
+        const userAssetUrl = `https://m.ccw.site/user_projects_assets/spine/${userId}/`;
+        const spineFolder = prompt(`请输入spine文件夹:\n${userAssetUrl}`);
+        if (!spineFolder) {
+            alert('请输入文件夹名称！');
+            return;
+        }
+        const rootFolder = userAssetUrl + spineFolder;
+        const input = document.createElement('input');
+        let files: File[] = [];
+        input.type = 'file';
+        input.multiple = true;
+        input.accept = '.png,.atlas,.skel,.json';
+        input.click();
+        input.addEventListener('change', () => {
+            files = Array.from(input.files);
+            if (!files.length) {
+                return;
+            }
+            const tip = `⚠请确认文件名是否正确⚠\n${files.map((f) => f.name).join('\n')}\n以上文件将被上传到${rootFolder}中`;
+            if (!confirm(tip)) {
+                return;
+            }
+            // files.forEach((f)=>this.storage.storeFile('text/plain', f.name., ))
+        });
+    }
+
+    createURLWithData(args: { URL: string; DATA: string }) {
+        const { URL, DATA } = args;
+        const urlConfig: URLMaybeData = { url: URL, data: DATA };
+        return JSON.stringify(urlConfig);
     }
 
     skeletonMenu(): MenuItems {
@@ -461,8 +526,8 @@ class SpineExtension extends SimpleExt {
             text: 'azusa',
             value: JSON.stringify(
                 new SpineConfig({
-                    skel: 'spine/Azusa_home.skel',
-                    atlas: 'spine/Azusa_home.atlas',
+                    skel: { url: 'spine/Azusa_home.skel' },
+                    atlas: { url: 'spine/Azusa_home.atlas' },
                     version: '4.2webgl',
                 }),
             ),

@@ -10,6 +10,8 @@ export default {
     'createSpineConfig.text':
         '创建spine配置,骨骼文件url为[SKEL_URL],图集文件url为[ATLAS_URL],版本为[VERSION]',
 
+    'createURLWithData.text': '[URL],但是使用base64[DATA]替换',
+
     'loadSkeleton.text': '加载配置为[CONFIG]的spine骨骼并命名为[NAME]',
     'loadSkeleton.configError': '请输入有效配置',
 

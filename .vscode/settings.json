@@ -32,5 +32,12 @@
         "**/node_modules/**",
         "**/dist/**",
         "**/spine/**"
-    ]
+    ],
+    "editor.quickSuggestions": {
+        "other": "on",
+        "comments": true,
+        "strings": "off"
+    },
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true
 }

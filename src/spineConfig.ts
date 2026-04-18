@@ -1,35 +1,38 @@
 import { VersionNames } from './spine/spineVersions';
 
+export type URLMaybeData = {
+    url: string,
+    data?: string
+}
+
 export class SpineConfig {
-    private _skel: string;
-    private _atlas: string;
+    private _skel: URLMaybeData;
+    private _atlas: URLMaybeData;
     version: VersionNames;
     constructor(config: {
-        skel: string;
-        atlas: string;
+        skel: URLMaybeData;
+        atlas: URLMaybeData;
         version: VersionNames;
     }) {
         this.version = config.version;
         this.skel = config.skel;
         this.atlas = config.atlas;
     }
-    set skel(v: string) {
-        if (v.startsWith('http')) {
-            this._skel = v;
-        } else {
-            this._skel = `https://m.ccw.site/user_projects_assets/${v}`;
+    set skel(v: URLMaybeData) {
+        if (!v.url.startsWith('http')) {
+            v.url = `https://m.ccw.site/user_projects_assets/${v}`
         }
+            this._skel = v;
     }
     get skel() {
         return this._skel;
     }
 
-    set atlas(v: string) {
-        if (v.startsWith('http')) {
-            this._atlas = v;
-        } else {
-            this._atlas = `https://m.ccw.site/user_projects_assets/${v}`;
+    set atlas(v: URLMaybeData) {
+        if (!v.url.startsWith('http')) {
+            v.url = `https://m.ccw.site/user_projects_assets/${v}`
         }
+            this._atlas = v;
     }
     get atlas() {
         return this._atlas;

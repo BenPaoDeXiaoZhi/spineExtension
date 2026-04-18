@@ -8,6 +8,8 @@ export default {
     'createSpineConfig.text':
         'Create Spine Config,Skeleton url:[SKEL_URL],Atlas url:[ATLAS_URL],Version:[VERSION]',
 
+    'createURLWithData.text': '[URL], but replaced with base64 data:[DATA]',
+
     'loadSkeleton.text':
         'Load the spine skeleton with configuration [CONFIG] and name it [NAME]',
     'loadSkeleton.configError': 'Please input correct configs',

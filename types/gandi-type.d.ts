@@ -20,13 +20,30 @@ export declare interface LogSystem {
     error(...args: string[]): void;
 }
 
+declare interface CCW_API {
+    getUserInfo(): Promise<{
+        userId: string;
+        userName: string;
+        uuid: string;
+        oid: string;
+        avatar: string;
+        constellation: number;
+        following: number;
+        followers: number;
+        liked: number;
+        gender: number;
+        pendant: string;
+        reputationScore: any;
+    }>;
+}
+
 export declare interface GandiRuntime extends Runtime {
     getFormatMessage<ZH extends TranslateObj, EN extends TranslateObj>(config: {
         'zh-cn': ZH;
         en: EN;
     }): <ID extends keyof ZH & keyof EN>(
         key: { default: ID },
-        args: object
+        args: object,
     ) => ZH[ID] & EN[ID];
     requestUpdateMonitor(monitor: Map<'id' | 'value', any>);
 
@@ -35,6 +52,8 @@ export declare interface GandiRuntime extends Runtime {
     on: Runtime['on'] & ((name: string, callback: Function) => void); // TODO:gandi特殊事件的补充
     off: Runtime['off'] & ((name: string, callback: Function) => void);
     logSystem: LogSystem;
+
+    ccwAPI: CCW_API;
 }
 
 export interface GandiRenderer extends RenderWebGL {
