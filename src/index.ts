@@ -586,7 +586,6 @@ class SpineExtension extends SimpleExt {
                 value: JSON.stringify(new SpineConfig(config)),
             });
         }
-        debugger;
         return menuItems;
     }
 

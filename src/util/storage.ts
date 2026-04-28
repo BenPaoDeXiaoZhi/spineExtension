@@ -25,7 +25,6 @@ export class scratchStorageUI {
         extName: string = '',
         data: string | Uint8Array | Blob | ArrayBuffer,
     ) {
-        debugger;
         let fileData: ArrayBuffer;
         if (typeof data == 'string') {
             const enc = new TextEncoder();
