@@ -3,7 +3,7 @@ import { getTranslate, zh_cn, en } from './i18n/translate';
 import { SimpleExt } from './scratch/simpleExt';
 import type { extInfo, MenuItems } from './scratch/simpleExt';
 import type VM from 'scratch-vm';
-import { scratchStorageUI } from './util/storage';
+import { scratchStorageUI, StorageConfig } from './util/storage';
 import { SpineSkin, patchSpineSkin } from './spineSkin';
 import spineVersions, {
     AnimationState,
@@ -23,7 +23,7 @@ import { setupCustomBlocks } from './util/customBlock';
 import { GetSthMenuItems } from './util/customBlocks/getSth';
 import { GandiRuntime } from '../types/gandi-type';
 import { getLogger } from './logSystem';
-import { SpineConfig, URLMaybeData } from './spineConfig';
+import { SpineConfig } from './spineConfig';
 import { trimPos } from './util/pos';
 import { getStateAndTrack } from './util/argsParse';
 import insetIcon_ from '../assets/insetIcon.png'; // 防止发布后icon消失
@@ -86,6 +86,8 @@ class SpineExtension extends SimpleExt {
     enableDebugRender: boolean;
     skins: SpineSkin[];
     storage: scratchStorageUI;
+    cloudConfig: StorageConfig;
+    fetchingConfig: boolean;
 
     constructor(runtime: GandiRuntime) {
         super(NS, 'foo');
@@ -104,6 +106,9 @@ class SpineExtension extends SimpleExt {
         };
         this.enableDebugRender = false;
         this.skins = [];
+        this.cloudConfig = {};
+        this.fetchingConfig = false;
+        this.refreshMenu();
     }
 
     /**
@@ -217,9 +222,18 @@ class SpineExtension extends SimpleExt {
                 blockType: BlockType.LABEL,
             },
             {
-                text: 'upload',
+                text: '上传spine文件',
                 blockType: BlockType.BUTTON,
                 func: this.startUpload.name,
+            },
+            {
+                get text() {
+                    return `刷新spine菜单${
+                        ext.fetchingConfig ? '(加载中)' : ''
+                    }`;
+                },
+                blockType: BlockType.BUTTON,
+                func: this.refreshMenu.name,
             },
             {
                 opcode: this.createSpineConfig.name,
@@ -469,54 +483,109 @@ class SpineExtension extends SimpleExt {
         VERSION: VersionNames;
     }) {
         const { SKEL_URL, ATLAS_URL, VERSION } = args;
-        let skelConfig: URLMaybeData = { url: String(SKEL_URL) };
-        let atlasConfig: URLMaybeData = { url: String(ATLAS_URL) };
-        try {
-            skelConfig = JSON.parse(SKEL_URL);
-        } catch (e) {}
-        try {
-            atlasConfig = JSON.parse(ATLAS_URL);
-        } catch (e) {}
+        let skel = String(SKEL_URL);
+        let atlas = String(ATLAS_URL);
         return JSON.stringify(
             new SpineConfig({
-                skel: skelConfig,
-                atlas: atlasConfig,
+                skel,
+                atlas,
                 version: VERSION,
             }),
         );
     }
 
     async startUpload() {
+        const input = document.createElement('input');
         const { userId } = await this.runtime.ccwAPI.getUserInfo();
-        const userAssetUrl = `https://m.ccw.site/user_projects_assets/spine/${userId}/`;
+        const userAssetUrl = `spine/${userId}/`;
         const spineFolder = prompt(`请输入spine文件夹:\n${userAssetUrl}`);
         if (!spineFolder) {
             alert('请输入文件夹名称！');
             return;
         }
-        const rootFolder = userAssetUrl + spineFolder;
-        const input = document.createElement('input');
+        const rootFolder = userAssetUrl + spineFolder + '/';
         let files: File[] = [];
         input.type = 'file';
         input.multiple = true;
         input.accept = '.png,.atlas,.skel,.json';
         input.click();
         input.addEventListener('change', () => {
+            let skel: string, atlas: string;
             files = Array.from(input.files);
             if (!files.length) {
+                return;
+            }
+            if (
+                files.reduce((n, f) => {
+                    if (f.name.endsWith('.skel') || f.name.endsWith('.json')) {
+                        skel = rootFolder + f.name;
+                        n += 10;
+                    }
+                    if (f.name.endsWith('.atlas')) {
+                        atlas = rootFolder + f.name;
+                        n += 1;
+                    }
+                    return n;
+                }, 0) !== 11
+            ) {
+                alert(
+                    '请上传一个骨架(.skel / .json)文件和一个图集(.atlas)文件',
+                );
                 return;
             }
             const tip = `⚠请确认文件名是否正确⚠\n${files.map((f) => f.name).join('\n')}\n以上文件将被上传到${rootFolder}中`;
             if (!confirm(tip)) {
                 return;
             }
-            // files.forEach((f)=>this.storage.storeFile('text/plain', f.name., ))
+            const version = prompt(
+                '请输入使用的spine运行时版本\n',
+                Object.keys(spineVersions).join('\n'),
+            );
+            if (!(version in spineVersions)) {
+                alert('版本错误');
+                return;
+            }
+            Promise.all(
+                files.map(async (f) => {
+                    const arr = f.name.split('.');
+                    const ext = arr.pop();
+                    const fileName = arr.join('.');
+                    return this.storage.storeFile(
+                        'text/plain',
+                        rootFolder + fileName,
+                        ext,
+                        await f.arrayBuffer(),
+                    );
+                }),
+            )
+                .then(() => {
+                    return this.storage.saveConfig(userId, spineFolder, {
+                        skel,
+                        atlas,
+                        version: version as VersionNames,
+                    });
+                })
+                .then(() => {
+                    alert('上传完成');
+                });
         });
+    }
+
+    async refreshMenu() {
+        if (this.fetchingConfig) {
+            return;
+        }
+        this.fetchingConfig = true;
+        this.runtime.emit('TOOLBOX_EXTENSIONS_NEED_UPDATE');
+        const { userId } = await this.runtime.ccwAPI.getUserInfo();
+        this.cloudConfig = await this.storage.fetchConfig(userId);
+        this.fetchingConfig = false;
+        this.runtime.emit('TOOLBOX_EXTENSIONS_NEED_UPDATE');
     }
 
     createURLWithData(args: { URL: string; DATA: string }) {
         const { URL, DATA } = args;
-        const urlConfig: URLMaybeData = { url: URL, data: DATA };
+        const urlConfig = { url: URL, data: DATA };
         return JSON.stringify(urlConfig);
     }
 
@@ -526,12 +595,20 @@ class SpineExtension extends SimpleExt {
             text: 'azusa',
             value: JSON.stringify(
                 new SpineConfig({
-                    skel: { url: 'spine/Azusa_home.skel' },
-                    atlas: { url: 'spine/Azusa_home.atlas' },
+                    skel: 'spine/Azusa_home.skel',
+                    atlas: 'spine/Azusa_home.atlas',
                     version: '4.2webgl',
                 }),
             ),
         });
+        for (let name in this.cloudConfig) {
+            const config = this.cloudConfig[name];
+            menuItems.push({
+                text: name,
+                value: JSON.stringify(new SpineConfig(config)),
+            });
+        }
+        debugger;
         return menuItems;
     }
 
@@ -631,12 +708,6 @@ class SpineExtension extends SimpleExt {
             logger.error(translate('typeError'), e);
         }
         skin.skeletonRelativePos = [x, y];
-    }
-
-    initUI() {
-        const s = new scratchStorageUI(this.runtime.storage, 'spineAnimation');
-        s.createUI();
-        logger.log(s);
     }
 
     getSthOf(arg: {

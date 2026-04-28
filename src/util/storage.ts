@@ -2,6 +2,9 @@ import type ScratchStorage from 'scratch-storage';
 import dialog from './storage/dialog.asset.html';
 import closeSVG from './storage/close.svg';
 import uploadSVG from './storage/upload.svg';
+import { RawSpineConfig, SpineConfig } from '../spineConfig';
+
+export type StorageConfig = { [name: string]: RawSpineConfig };
 
 export class scratchStorageUI {
     storage: ScratchStorage;
@@ -22,8 +25,9 @@ export class scratchStorageUI {
         extName: string = '',
         data: string | Uint8Array | Blob | ArrayBuffer,
     ) {
+        debugger;
         let fileData: ArrayBuffer;
-        if (data instanceof String) {
+        if (typeof data == 'string') {
             const enc = new TextEncoder();
             fileData = enc.encode(data as string).buffer;
         } else if (data instanceof Blob) {
@@ -40,6 +44,34 @@ export class scratchStorageUI {
             extName as unknown as ScratchStorage.DataFormat,
             fileData,
             fileName,
+        );
+    }
+
+    async fetchConfig(userId: string): Promise<StorageConfig> {
+        const res = await this.loadFile(
+            `spine/${userId}/config.json?t=${Date.now()}`,
+        );
+        if (!res.ok) {
+            return {};
+        }
+        let config = {};
+        try {
+            const resDat = await res.json();
+            config = resDat;
+        } catch (e) {
+            console.error(e);
+        }
+        return config;
+    }
+
+    async saveConfig(userId: string, name: string, config: RawSpineConfig) {
+        const originConfig = await this.fetchConfig(userId);
+        originConfig[name] = config;
+        return this.storeFile(
+            'application/json',
+            `spine/${userId}/config`,
+            'json',
+            JSON.stringify(originConfig),
         );
     }
 

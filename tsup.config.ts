@@ -89,7 +89,7 @@ export default defineConfig((tsupOptions) => {
                         client.send(fileDat);
                     }
                 }
-                console.log('dev Server sent');
+                console.log('dev Server sent to');
             }
         },
         // esbuildPlugins: [minifySpinePlugin],
