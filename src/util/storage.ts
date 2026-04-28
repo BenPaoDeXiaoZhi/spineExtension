@@ -75,55 +75,55 @@ export class scratchStorageUI {
         );
     }
 
-    createUI() {
-        if (!customElements.get('scratch-storage-ui')) {
-            customElements.define('scratch-storage-ui', Container);
-        }
-        const dialog = document.createElement('scratch-storage-ui');
-        document.body.appendChild(dialog);
-    }
+    // createUI() {
+    //     if (!customElements.get('scratch-storage-ui')) {
+    //         customElements.define('scratch-storage-ui', Container);
+    //     }
+    //     const dialog = document.createElement('scratch-storage-ui');
+    //     document.body.appendChild(dialog);
+    // }
 }
 
-export class Container extends HTMLElement {
-    dialog: HTMLDialogElement;
-    constructor() {
-        super();
-    }
-    connectedCallback() {
-        const shadow = this.attachShadow({ mode: 'open' });
-        shadow.innerHTML = dialog;
+// export class Container extends HTMLElement {
+//     dialog: HTMLDialogElement;
+//     constructor() {
+//         super();
+//     }
+//     connectedCallback() {
+//         const shadow = this.attachShadow({ mode: 'open' });
+//         shadow.innerHTML = dialog;
 
-        this.dialog = shadow.getElementById('dialog') as HTMLDialogElement;
-        this.dialog.showModal();
+//         this.dialog = shadow.getElementById('dialog') as HTMLDialogElement;
+//         this.dialog.showModal();
 
-        const header = shadow.getElementById('header');
-        header.innerText = 'upload';
+//         const header = shadow.getElementById('header');
+//         header.innerText = 'upload';
 
-        const uploader = shadow.getElementById('uploader');
-        uploader.innerHTML = uploadSVG + uploader.innerHTML;
+//         const uploader = shadow.getElementById('uploader');
+//         uploader.innerHTML = uploadSVG + uploader.innerHTML;
 
-        const uploadTip = shadow.getElementById('uploadTip');
-        uploader.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadTip.innerText = '松手上传';
-        });
-        uploader.addEventListener('dragleave', (e) => {
-            if (e.target !== uploader) {
-                return;
-            }
-            console.log(e);
-            uploadTip.innerText = '选择或拖动文件上传';
-        });
-        uploader.addEventListener('drop', (e) => {
-            e.preventDefault();
-            console.log(e);
-        });
+//         const uploadTip = shadow.getElementById('uploadTip');
+//         uploader.addEventListener('dragover', (e) => {
+//             e.preventDefault();
+//             uploadTip.innerText = '松手上传';
+//         });
+//         uploader.addEventListener('dragleave', (e) => {
+//             if (e.target !== uploader) {
+//                 return;
+//             }
+//             console.log(e);
+//             uploadTip.innerText = '选择或拖动文件上传';
+//         });
+//         uploader.addEventListener('drop', (e) => {
+//             e.preventDefault();
+//             console.log(e);
+//         });
 
-        const close = shadow.getElementById('close') as HTMLDivElement;
-        close.innerHTML = closeSVG;
-        close.addEventListener('click', (e) => {
-            this.dialog.close();
-            this.remove();
-        });
-    }
-}
+//         const close = shadow.getElementById('close') as HTMLDivElement;
+//         close.innerHTML = closeSVG;
+//         close.addEventListener('click', (e) => {
+//             this.dialog.close();
+//             this.remove();
+//         });
+//     }
+// }

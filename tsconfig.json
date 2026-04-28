@@ -1,25 +1,13 @@
 {
     "compilerOptions": {
-        "typeRoots": [
-            "./types"
-        ],
+        "typeRoots": ["./types"],
         "paths": {
-            "scratch-vm": [
-                "./node_modules/@turbowarp/types/index.d.ts"
-            ],
-            "scratch-render": [
-                "./node_modules/@turbowarp/types/index.d.ts"
-            ]
+            "scratch-vm": ["./node_modules/@turbowarp/types/index.d.ts"],
+            "scratch-render": ["./node_modules/@turbowarp/types/index.d.ts"]
         },
         "esModuleInterop": true,
-        "lib": [
-            "ES6",
-            "DOM",
-            "es2021"
-        ]
+        "lib": ["ES6", "DOM", "es2021"]
     },
-    "include": [
-        "src",
-        "types"
-    ]
+    "include": ["src", "types"],
+    "exclude": [".*"]
 }
