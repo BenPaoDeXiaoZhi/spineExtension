@@ -5,10 +5,14 @@ export default {
     description: 'Use Spine animation in Scratch!',
     // Blocks
     initialize: 'Initialize',
+
+    'upload.text': 'Upload Spine Files',
+
+    'refreshMenu.text': 'Refresh Spine Files Menu',
+    refreshing: '(refreshing)',
+
     'createSpineConfig.text':
         'Create Spine Config,Skeleton url:[SKEL_URL],Atlas url:[ATLAS_URL],Version:[VERSION]',
-
-    'createURLWithData.text': '[URL], but replaced with base64 data:[DATA]',
 
     'loadSkeleton.text':
         'Load the spine skeleton with configuration [CONFIG] and name it [NAME]',

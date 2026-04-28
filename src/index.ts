@@ -222,14 +222,14 @@ class SpineExtension extends SimpleExt {
                 blockType: BlockType.LABEL,
             },
             {
-                text: '上传spine文件',
+                text: translate('upload.text'),
                 blockType: BlockType.BUTTON,
                 func: this.startUpload.name,
             },
             {
                 get text() {
-                    return `刷新spine菜单${
-                        ext.fetchingConfig ? '(加载中)' : ''
+                    return `${translate('refreshMenu.text')}${
+                        ext.fetchingConfig ? translate('refreshing') : ''
                     }`;
                 },
                 blockType: BlockType.BUTTON,
@@ -253,22 +253,6 @@ class SpineExtension extends SimpleExt {
                     VERSION: {
                         type: ArgumentType.STRING,
                         menu: 'VERSION',
-                    },
-                },
-            },
-            {
-                opcode: this.createURLWithData.name,
-                text: translate('createURLWithData.text'),
-                blockType: BlockType.REPORTER,
-                arguments: {
-                    URL: {
-                        type: ArgumentType.STRING,
-                        defaultValue:
-                            'https://m.ccw.site/user_projects_assets/spine/Hina_home.skel',
-                    },
-                    DATA: {
-                        type: ArgumentType.STRING,
-                        defaultValue: 'base64',
                     },
                 },
             },
@@ -581,12 +565,6 @@ class SpineExtension extends SimpleExt {
         this.cloudConfig = await this.storage.fetchConfig(userId);
         this.fetchingConfig = false;
         this.runtime.emit('TOOLBOX_EXTENSIONS_NEED_UPDATE');
-    }
-
-    createURLWithData(args: { URL: string; DATA: string }) {
-        const { URL, DATA } = args;
-        const urlConfig = { url: URL, data: DATA };
-        return JSON.stringify(urlConfig);
     }
 
     skeletonMenu(): MenuItems {
