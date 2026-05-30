@@ -21,10 +21,6 @@ src/
 ├── spineManager.ts      # Spine 资源加载与管理（AssetManager + SceneRenderer）
 ├── spineSkin.ts         # SpineSkin 类，继承 Scratch Renderer Skin
 ├── dev/                 # 开发/调试入口
-│   ├── index.ts
-│   ├── htmlReport.ts
-│   ├── dev.user.js      # TamperMonkey 热更新脚本
-│   └── .file.ts         # (临时)
 ├── i18n/                # 国际化
 │   ├── translate.ts     # 翻译函数工厂（getTranslate）
 │   ├── zh_cn.ts
@@ -64,7 +60,7 @@ src/
 
 ### AI 生成代码的 JSDoc 规范
 
-AI 工具辅助生成的函数，必须在 JSDoc 注释中标记来源信息。格式如下：
+AI 工具辅助生成的函数及方法，必须在 JSDoc 注释中标记来源信息。格式如下：
 
 ```typescript
 /**

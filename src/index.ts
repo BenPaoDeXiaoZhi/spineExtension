@@ -478,80 +478,202 @@ class SpineExtension extends SimpleExt {
         );
     }
 
-    async startUpload() {
-        const input = document.createElement('input');
-        const { userId } = await this.runtime.ccwAPI.getUserInfo();
-        const userAssetUrl = `spine/${userId}/`;
-        const spineFolder = prompt(`请输入spine文件夹:\n${userAssetUrl}`);
-        if (!spineFolder) {
-            alert('请输入文件夹名称！');
-            return;
+    /**
+     * by AI: Trae
+     *
+     * audit: BPDXZ
+     *
+     * 验证上传的 Spine 文件集合是否有效
+     * 检查是否包含必需的骨架文件(.skel/.json)和图集文件(.atlas)
+     * 确保只有一个骨架文件存在
+     * @param files - 待验证的文件数组
+     * @returns 验证结果对象，包含验证状态、文件引用和错误信息
+     */
+    private validateSpineFiles(files: File[]): {
+        valid: boolean;
+        skelFile?: File;
+        atlasFile?: File;
+        error?: string;
+    } {
+        const skelFile = files.find((f) => f.name.endsWith('.skel'));
+        const jsonFile = files.find((f) => f.name.endsWith('.json'));
+        const atlasFile = files.find((f) => f.name.endsWith('.atlas'));
+
+        const skeletonFile = skelFile || jsonFile;
+
+        if (!skeletonFile) {
+            return {
+                valid: false,
+                error: translate('upload.noSkeleton'),
+            };
         }
-        const rootFolder = userAssetUrl + spineFolder + '/';
-        let files: File[] = [];
-        input.type = 'file';
-        input.multiple = true;
-        input.accept = '.png,.atlas,.skel,.json';
-        input.click();
-        input.addEventListener('change', () => {
-            let skel: string, atlas: string;
-            files = Array.from(input.files);
-            if (!files.length) {
-                return;
-            }
-            if (
-                files.reduce((n, f) => {
-                    if (f.name.endsWith('.skel') || f.name.endsWith('.json')) {
-                        skel = rootFolder + f.name;
-                        n += 10;
-                    }
-                    if (f.name.endsWith('.atlas')) {
-                        atlas = rootFolder + f.name;
-                        n += 1;
-                    }
-                    return n;
-                }, 0) !== 11
-            ) {
-                alert(
-                    '请上传一个骨架(.skel / .json)文件和一个图集(.atlas)文件',
-                );
-                return;
-            }
-            const tip = `⚠请确认文件名是否正确⚠\n${files.map((f) => f.name).join('\n')}\n以上文件将被上传到${rootFolder}中`;
-            if (!confirm(tip)) {
-                return;
-            }
-            const version = prompt(
-                '请输入使用的spine运行时版本\n',
-                Object.keys(spineVersions).join('\n'),
+
+        if (!atlasFile) {
+            return {
+                valid: false,
+                error: translate('upload.noAtlas'),
+            };
+        }
+
+        if (skelFile && jsonFile) {
+            return {
+                valid: false,
+                error: translate('upload.multipleSkeleton'),
+            };
+        }
+
+        return {
+            valid: true,
+            skelFile: skeletonFile,
+            atlasFile,
+        };
+    }
+
+    /**
+     * by AI: Trae
+     *
+     * audit: BPDXZ
+     *
+     * 弹出对话框让用户选择 Spine 运行时版本
+     * 显示所有可用版本列表，验证用户输入
+     * @returns 有效的版本名称，如果用户取消或输入无效则返回 null
+     */
+    private selectVersion(): VersionNames | null {
+        const versions = Object.keys(spineVersions);
+        const version = prompt(
+            translate('upload.selectVersion') + '\n' + versions.join('\n'),
+        );
+
+        if (!version || !(version in spineVersions)) {
+            return null;
+        }
+
+        return version as VersionNames;
+    }
+
+    /**
+     * by AI: Trae
+     *
+     * audit: BPDXZ
+     *
+     * 批量上传文件到云端存储
+     * 将文件名拆分为名称和扩展名，调用存储接口上传每个文件
+     * @param files - 要上传的文件数组
+     * @param rootFolder - 目标存储路径前缀
+     * @returns Promise，所有文件上传完成后 resolve
+     */
+    private async uploadFiles(
+        files: File[],
+        rootFolder: string,
+    ): Promise<void> {
+        const uploadPromises = files.map(async (file) => {
+            const lastDotIndex = file.name.lastIndexOf('.');
+            const fileName = file.name.substring(0, lastDotIndex);
+            const ext = file.name.substring(lastDotIndex + 1).toLowerCase();
+
+            let mimeType = 'text/plain';
+            if (ext === 'png') mimeType = 'image/png';
+            else if (ext === 'skel') mimeType = 'application/octet-stream';
+            else if (ext === 'json') mimeType = 'application/json';
+
+            return this.storage.storeFile(
+                mimeType,
+                rootFolder + fileName,
+                ext,
+                await file.arrayBuffer(),
             );
-            if (!(version in spineVersions)) {
-                alert('版本错误');
+        });
+
+        await Promise.all(uploadPromises);
+    }
+
+    async startUpload() {
+        try {
+            const { userId } = await this.runtime.ccwAPI.getUserInfo();
+            const userAssetUrl = `spine/${userId}/`;
+
+            const spineFolder = prompt(
+                translate('upload.inputFolder') + '\n' + userAssetUrl,
+            );
+
+            if (!spineFolder || !spineFolder.trim()) {
+                alert(translate('upload.folderRequired'));
                 return;
             }
-            Promise.all(
-                files.map(async (f) => {
-                    const arr = f.name.split('.');
-                    const ext = arr.pop();
-                    const fileName = arr.join('.');
-                    return this.storage.storeFile(
-                        'text/plain',
-                        rootFolder + fileName,
-                        ext,
-                        await f.arrayBuffer(),
-                    );
-                }),
-            )
-                .then(() => {
-                    return this.storage.saveConfig(userId, spineFolder, {
-                        skel,
-                        atlas,
-                        version: version as VersionNames,
-                    });
-                })
-                .then(() => {
-                    alert('上传完成');
-                });
+
+            const rootFolder = userAssetUrl + spineFolder.trim() + '/';
+
+            const files = await this.selectFiles();
+            if (!files || files.length === 0) {
+                return;
+            }
+
+            const validation = this.validateSpineFiles(files);
+            if (!validation.valid) {
+                alert(validation.error);
+                return;
+            }
+
+            const fileList = files.map((f) => f.name).join('\n');
+            const confirmMsg = translate('upload.confirmUpload', {
+                files: fileList,
+                folder: rootFolder,
+            });
+
+            if (!confirm(confirmMsg)) {
+                return;
+            }
+
+            const version = this.selectVersion();
+            if (!version) {
+                alert(translate('upload.invalidVersion'));
+                return;
+            }
+
+            const skelPath = rootFolder + validation.skelFile!.name;
+            const atlasPath = rootFolder + validation.atlasFile!.name;
+
+            await this.uploadFiles(files, rootFolder);
+
+            await this.storage.saveConfig(userId, spineFolder.trim(), {
+                skel: skelPath,
+                atlas: atlasPath,
+                version,
+            });
+
+            alert(translate('upload.success'));
+            await this.refreshMenu();
+        } catch (error) {
+            logger.error('Upload failed:', error);
+            alert(translate('upload.failed') + ': ' + error.message);
+        }
+    }
+
+    /**
+     * by AI: Trae
+     *
+     * audit: BPDXZ
+     *
+     * 创建文件选择对话框并等待用户选择文件
+     * 使用 Promise 封装 input 元素的 change 事件，支持异步调用
+     * @returns Promise，用户选择文件后 resolve 文件数组，取消选择则 resolve null
+     */
+    private selectFiles(): Promise<File[] | null> {
+        return new Promise((resolve) => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.multiple = true;
+            input.accept = '.png,.atlas,.skel,.json';
+
+            input.addEventListener('change', () => {
+                if (input.files && input.files.length > 0) {
+                    resolve(Array.from(input.files));
+                } else {
+                    resolve(null);
+                }
+            });
+
+            input.click();
         });
     }
 

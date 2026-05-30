@@ -9,6 +9,16 @@ export default {
     initialize: '初始化',
 
     'upload.text': '上传Spine文件',
+    'upload.inputFolder': '请输入spine文件夹:',
+    'upload.folderRequired': '请输入文件夹名称！',
+    'upload.noSkeleton': '请上传一个骨架文件(.skel 或 .json)',
+    'upload.noAtlas': '请上传一个图集文件(.atlas)',
+    'upload.multipleSkeleton': '只能上传一个骨架文件(.skel 或 .json)',
+    'upload.selectVersion': '请选择使用的spine运行时版本:',
+    'upload.invalidVersion': '版本选择无效',
+    'upload.confirmUpload': '⚠请确认文件名是否正确⚠\n{files}\n以上文件将被上传到{folder}中',
+    'upload.success': '上传完成！',
+    'upload.failed': '上传失败',
 
     'createSpineConfig.text':
         '创建spine配置,骨骼文件url为[SKEL_URL],图集文件url为[ATLAS_URL],版本为[VERSION]',
