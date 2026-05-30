@@ -6,8 +6,10 @@
             "scratch-render": ["./node_modules/@turbowarp/types/index.d.ts"]
         },
         "esModuleInterop": true,
-        "lib": ["ES6", "DOM", "es2021"]
+        "skipLibCheck": true,
+        "lib": ["ES6", "DOM", "es2021", "ESNext"],
+        "strict": false // 这样类型推断更好
     },
     "include": ["src", "types"],
-    "exclude": [".*"]
+    "exclude": [".*", "node_modules"]
 }

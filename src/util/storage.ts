@@ -6,6 +6,51 @@ import { RawSpineConfig, SpineConfig } from '../spineConfig';
 
 export type StorageConfig = { [name: string]: RawSpineConfig };
 
+/**
+ * by AI: TRAE
+ *
+ * audit: BPDXZ
+ *
+ * 安全的 fetch 封装函数，处理跨域和 CSRF 问题
+ * @param url 请求的 URL
+ * @param options fetch 选项
+ */
+export async function safeFetch(
+    url: string,
+    options: RequestInit = {},
+): Promise<Response> {
+    // 配置安全的请求头
+    const safeHeaders = new Headers(options.headers);
+
+    // 添加防止 CSRF 的头部
+    safeHeaders.set('X-Requested-With', 'XMLHttpRequest');
+
+    // 安全的请求选项
+    const safeOptions: RequestInit = {
+        ...options,
+        headers: safeHeaders,
+        mode: 'cors',
+        // 不发送cookie
+        credentials: 'omit',
+        // 防止缓存问题
+        cache: 'no-cache',
+    };
+
+    try {
+        const response = await fetch(url, safeOptions);
+
+        // 检查响应状态
+        if (!response.ok) {
+            console.error(`HTTP error! status: ${response.status}`);
+        }
+
+        return response;
+    } catch (error) {
+        console.error('Safe fetch error:', error);
+        throw error;
+    }
+}
+
 export class scratchStorageUI {
     storage: ScratchStorage;
     extId: string;
@@ -16,7 +61,7 @@ export class scratchStorageUI {
     }
 
     loadFile(assetId: string) {
-        return fetch(`https://m.ccw.site/user_projects_assets/${assetId}`);
+        return safeFetch(`https://m.ccw.site/user_projects_assets/${assetId}`);
     }
 
     async storeFile(

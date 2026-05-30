@@ -24,7 +24,10 @@
         "dataurl",
         "Gandi",
         "blendFunc",
-        "blockly"
+        "blockly",
+        "TRAE",
+        "BPDXZ",
+        "turbowarp"
     ],
     "VSCodeCounter.exclude": [
         "**/.gitignore",
@@ -39,5 +42,6 @@
         "strings": "off"
     },
     "editor.formatOnPaste": true,
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "js/ts.tsdk.path": "node_modules\\typescript\\lib"
 }

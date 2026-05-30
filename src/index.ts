@@ -53,12 +53,12 @@ function createADSProxy(target: object, depth: number = 0) {
             getPrototypeOf(target) {
                 return null;
             },
-            get(target, key) {
-                if (target[key] instanceof Function) {
-                    return null;
-                }
+            get(target: object, key: string) {
                 if (!(key in target)) {
                     return undefined;
+                }
+                if (target[key] instanceof Function) {
+                    return null;
                 }
                 if (target[key] instanceof Object) {
                     let value = target[key];
