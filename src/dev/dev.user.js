@@ -21,7 +21,7 @@
                 try {
                     window.vm.updateGandiAssetData(
                         'extension.js',
-                        window.extData
+                        window.extData,
                     );
                 } catch (e) {
                     console.error(e);

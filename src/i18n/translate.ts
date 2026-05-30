@@ -4,7 +4,7 @@ import en from './en';
 export type Id = keyof typeof en & keyof typeof zh_cn;
 export type TranslateFn = <T extends Id>(
     id: T,
-    args?: object
+    args?: object,
 ) => (typeof zh_cn)[T] | (typeof en)[T];
 
 let translateFn: TranslateFn;
@@ -22,7 +22,7 @@ export function getTranslate(): TranslateFn {
             {
                 default: id,
             },
-            args
+            args,
         );
     };
     return getTranslate();

@@ -64,7 +64,7 @@ export function checkExt(ext: SimpleExt) {
                     console.error(`menu${menu}的items函数未设置`);
                     ext[menuInfo.items] = () => ({
                         text: '未设置！！！',
-                        value: 'not setted',
+                        value: 'UNDEFINED',
                     });
                 }
             }
@@ -84,12 +84,12 @@ export function registerExtDetail(
     ext: {
         new (runtime: VM.Runtime): SimpleExt;
     },
-    info: ITempExt
+    info: ITempExt,
 ) {
     (window as windowWithTemp).tempExt = Object.assign(
         {
             Extension: ext,
         },
-        info
+        info,
     );
 }

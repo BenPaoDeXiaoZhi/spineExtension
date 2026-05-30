@@ -13,7 +13,7 @@ const kvr = new ObjectKVReport(
         return { [Date.now()]: 'a' };
     },
     'hello',
-    'monitor'
+    'monitor',
 );
 console.log(kvr);
 
