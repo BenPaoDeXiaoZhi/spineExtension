@@ -14,9 +14,10 @@ export default {
     'upload.noSkeleton': '请上传一个骨架文件(.skel 或 .json)',
     'upload.noAtlas': '请上传一个图集文件(.atlas)',
     'upload.multipleSkeleton': '只能上传一个骨架文件(.skel 或 .json)',
-    'upload.selectVersion': '请选择使用的spine运行时版本:',
+    'upload.selectVersion': '请选择使用的spine运行时版本',
     'upload.invalidVersion': '版本选择无效',
-    'upload.confirmUpload': '⚠请确认文件名是否正确⚠\n{files}\n以上文件将被上传到{folder}中',
+    'upload.confirmUpload':
+        '⚠请确认文件名是否正确⚠\n{files}\n以上文件将被上传到{folder}中',
     'upload.success': '上传完成！',
     'upload.failed': '上传失败',
 

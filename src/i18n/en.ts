@@ -11,8 +11,9 @@ export default {
     'upload.folderRequired': 'Please input folder name!',
     'upload.noSkeleton': 'Please upload a skeleton file (.skel or .json)',
     'upload.noAtlas': 'Please upload an atlas file (.atlas)',
-    'upload.multipleSkeleton': 'Only one skeleton file (.skel or .json) allowed',
-    'upload.selectVersion': 'Please select Spine runtime version:',
+    'upload.multipleSkeleton':
+        'Only one skeleton file (.skel or .json) allowed',
+    'upload.selectVersion': 'Please select Spine runtime version',
     'upload.invalidVersion': 'Invalid version selection',
     'upload.confirmUpload':
         '⚠Please confirm file names are correct⚠\n{files}\nThese files will be uploaded to {folder}',
