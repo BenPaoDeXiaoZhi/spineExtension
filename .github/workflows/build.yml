@@ -1,10 +1,11 @@
+
 name: NodeJS with tsup
 permissions:
     contents: write
     pages: write
     id-token: write
 
-on:
+on_: #暂时禁用
     push:
         branches: ['main']
         paths:
