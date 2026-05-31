@@ -136,6 +136,11 @@ if (!(SKIN && SKIN instanceof SpineSkinReport)) {
 - 所有用户可见的字符串通过 `translate()` 函数获取
 - 翻译键定义在 `src/i18n/zh_cn.ts` 和 `src/i18n/en.ts` 中
 - 扩展的国际化通过 `registerExtDetail()` 的 `l10n` 字段传递
+- 专有名词翻译
+  0. 与spine相关的专有名词，除特殊标注以外，参考http://zh.esotericsoftware.com/的官方翻译
+  1. bone: 骨骼
+  2. skeleton: 骨架
+  3. ADS: Advanced Data Structure的缩写，指高级数据结构扩展
 
 #### 类型声明
 
