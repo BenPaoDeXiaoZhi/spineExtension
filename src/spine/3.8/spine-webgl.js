@@ -2146,7 +2146,7 @@ var spine;
 			this.defaultMix = 0;
 			if (skeletonData == null)
 				throw new Error("skeletonData cannot be null.");
-			this.skeletonData = SkeletonData;
+			this.skeletonData = skeletonData;
 		}
 		AnimationStateData.prototype.setMix = function (fromName, toName, duration) {
 			var from = this.skeletonData.findAnimation(fromName);
@@ -4135,7 +4135,7 @@ var spine;
 		}
 		SkeletonBinary.prototype.readSkeletonData = function (binary) {
 			var scale = this.scale;
-			var SkeletonData = new SkeletonData();
+			var skeletonData = new spine.SkeletonData();
 			skeletonData.name = "";
 			var input = new BinaryInput(binary);
 			skeletonData.hash = input.readString();
@@ -4159,7 +4159,7 @@ var spine;
 			n = input.readInt(true);
 			for (var i = 0; i < n; i++) {
 				var name_2 = input.readString();
-				var parent_2 = i == 0 ? null : SkeletonData.bones[input.readInt(true)];
+				var parent_2 = i == 0 ? null : skeletonData.bones[input.readInt(true)];
 				var data = new spine.BoneData(i, name_2, parent_2);
 				data.rotation = input.readFloat();
 				data.x = input.readFloat() * scale;
@@ -4178,7 +4178,7 @@ var spine;
 			n = input.readInt(true);
 			for (var i = 0; i < n; i++) {
 				var slotName = input.readString();
-				var boneData = SkeletonData.bones[input.readInt(true)];
+				var boneData = skeletonData.bones[input.readInt(true)];
 				var data = new spine.SlotData(i, slotName, boneData);
 				spine.Color.rgba8888ToColor(data.color, input.readInt32());
 				var darkColor = input.readInt32();
@@ -4196,7 +4196,7 @@ var spine;
 				nn = input.readInt(true);
 				for (var ii = 0; ii < nn; ii++)
 					data.bones.push(skeletonData.bones[input.readInt(true)]);
-				data.target = SkeletonData.bones[input.readInt(true)];
+				data.target = skeletonData.bones[input.readInt(true)];
 				data.mix = input.readFloat();
 				data.softness = input.readFloat() * scale;
 				data.bendDirection = input.readByte();
@@ -4213,7 +4213,7 @@ var spine;
 				nn = input.readInt(true);
 				for (var ii = 0; ii < nn; ii++)
 					data.bones.push(skeletonData.bones[input.readInt(true)]);
-				data.target = SkeletonData.bones[input.readInt(true)];
+				data.target = skeletonData.bones[input.readInt(true)];
 				data.local = input.readBoolean();
 				data.relative = input.readBoolean();
 				data.offsetRotation = input.readFloat();
@@ -4236,7 +4236,7 @@ var spine;
 				nn = input.readInt(true);
 				for (var ii = 0; ii < nn; ii++)
 					data.bones.push(skeletonData.bones[input.readInt(true)]);
-				data.target = SkeletonData.slots[input.readInt(true)];
+				data.target = skeletonData.slots[input.readInt(true)];
 				data.positionMode = SkeletonBinary.PositionModeValues[input.readInt(true)];
 				data.spacingMode = SkeletonBinary.SpacingModeValues[input.readInt(true)];
 				data.rotateMode = SkeletonBinary.RotateModeValues[input.readInt(true)];
@@ -4251,21 +4251,21 @@ var spine;
 				data.translateMix = input.readFloat();
 				skeletonData.pathConstraints.push(data);
 			}
-			var defaultSkin = this.readSkin(input, SkeletonData, true, nonessential);
+			var defaultSkin = this.readSkin(input, skeletonData, true, nonessential);
 			if (defaultSkin != null) {
 				skeletonData.defaultSkin = defaultSkin;
 				skeletonData.skins.push(defaultSkin);
 			}
 			{
-				var i = SkeletonData.skins.length;
+				var i = skeletonData.skins.length;
 				spine.Utils.setArraySize(skeletonData.skins, n = i + input.readInt(true));
 				for (; i < n; i++)
-					skeletonData.skins[i] = this.readSkin(input, SkeletonData, false, nonessential);
+					skeletonData.skins[i] = this.readSkin(input, skeletonData, false, nonessential);
 			}
 			n = this.linkedMeshes.length;
 			for (var i = 0; i < n; i++) {
 				var linkedMesh = this.linkedMeshes[i];
-				var skin = linkedMesh.skin == null ? SkeletonData.defaultSkin : SkeletonData.findSkin(linkedMesh.skin);
+				var skin = linkedMesh.skin == null ? skeletonData.defaultSkin : skeletonData.findSkin(linkedMesh.skin);
 				if (skin == null)
 					throw new Error("Skin not found: " + linkedMesh.skin);
 				var parent_3 = skin.getAttachment(linkedMesh.slotIndex, linkedMesh.parent);
@@ -4291,8 +4291,8 @@ var spine;
 			}
 			n = input.readInt(true);
 			for (var i = 0; i < n; i++)
-				skeletonData.animations.push(this.readAnimation(input, input.readString(), SkeletonData));
-			return SkeletonData;
+				skeletonData.animations.push(this.readAnimation(input, input.readString(), skeletonData));
+			return skeletonData;
 		};
 		SkeletonBinary.prototype.readSkin = function (input, SkeletonData, defaultSkin, nonessential) {
 			var skin = null;
@@ -4309,11 +4309,11 @@ var spine;
 				for (var i = 0, n = skin.bones.length; i < n; i++)
 					skin.bones[i] = SkeletonData.bones[input.readInt(true)];
 				for (var i = 0, n = input.readInt(true); i < n; i++)
-					skin.constraints.push(skeletonData.ikConstraints[input.readInt(true)]);
+					skin.constraints.push(SkeletonData.ikConstraints[input.readInt(true)]);
 				for (var i = 0, n = input.readInt(true); i < n; i++)
-					skin.constraints.push(skeletonData.transformConstraints[input.readInt(true)]);
+					skin.constraints.push(SkeletonData.transformConstraints[input.readInt(true)]);
 				for (var i = 0, n = input.readInt(true); i < n; i++)
-					skin.constraints.push(skeletonData.pathConstraints[input.readInt(true)]);
+					skin.constraints.push(SkeletonData.pathConstraints[input.readInt(true)]);
 				slotCount = input.readInt(true);
 			}
 			for (var i = 0; i < slotCount; i++) {
@@ -5615,13 +5615,13 @@ var spine;
 					data.skinRequired = this.getValue(constraintMap, "skin", false);
 					for (var j = 0; j < constraintMap.bones.length; j++) {
 						var boneName = constraintMap.bones[j];
-						var bone = SkeletonData.findBone(boneName);
+						var bone = skeletonData.findBone(boneName);
 						if (bone == null)
 							throw new Error("IK bone not found: " + boneName);
 						data.bones.push(bone);
 					}
 					var targetName = constraintMap.target;
-					data.target = SkeletonData.findBone(targetName);
+					data.target = skeletonData.findBone(targetName);
 					if (data.target == null)
 						throw new Error("IK target bone not found: " + targetName);
 					data.mix = this.getValue(constraintMap, "mix", 1);
@@ -5641,13 +5641,13 @@ var spine;
 					data.skinRequired = this.getValue(constraintMap, "skin", false);
 					for (var j = 0; j < constraintMap.bones.length; j++) {
 						var boneName = constraintMap.bones[j];
-						var bone = SkeletonData.findBone(boneName);
+						var bone = skeletonData.findBone(boneName);
 						if (bone == null)
 							throw new Error("Transform constraint bone not found: " + boneName);
 						data.bones.push(bone);
 					}
 					var targetName = constraintMap.target;
-					data.target = SkeletonData.findBone(targetName);
+					data.target = skeletonData.findBone(targetName);
 					if (data.target == null)
 						throw new Error("Transform constraint target bone not found: " + targetName);
 					data.local = this.getValue(constraintMap, "local", false);
@@ -5673,13 +5673,13 @@ var spine;
 					data.skinRequired = this.getValue(constraintMap, "skin", false);
 					for (var j = 0; j < constraintMap.bones.length; j++) {
 						var boneName = constraintMap.bones[j];
-						var bone = SkeletonData.findBone(boneName);
+						var bone = skeletonData.findBone(boneName);
 						if (bone == null)
 							throw new Error("Transform constraint bone not found: " + boneName);
 						data.bones.push(bone);
 					}
 					var targetName = constraintMap.target;
-					data.target = SkeletonData.findSlot(targetName);
+					data.target = skeletonData.findSlot(targetName);
 					if (data.target == null)
 						throw new Error("Path target slot not found: " + targetName);
 					data.positionMode = SkeletonJson.positionModeFromString(this.getValue(constraintMap, "positionMode", "percent"));
@@ -5703,7 +5703,7 @@ var spine;
 					var skin = new spine.Skin(skinMap.name);
 					if (skinMap.bones) {
 						for (var ii = 0; ii < skinMap.bones.length; ii++) {
-							var bone = SkeletonData.findBone(skinMap.bones[ii]);
+							var bone = skeletonData.findBone(skinMap.bones[ii]);
 							if (bone == null)
 								throw new Error("Skin bone not found: " + skinMap.bones[i]);
 							skin.bones.push(bone);
@@ -5711,7 +5711,7 @@ var spine;
 					}
 					if (skinMap.ik) {
 						for (var ii = 0; ii < skinMap.ik.length; ii++) {
-							var constraint = SkeletonData.findIkConstraint(skinMap.ik[ii]);
+							var constraint = skeletonData.findIkConstraint(skinMap.ik[ii]);
 							if (constraint == null)
 								throw new Error("Skin IK constraint not found: " + skinMap.ik[i]);
 							skin.constraints.push(constraint);
@@ -5719,7 +5719,7 @@ var spine;
 					}
 					if (skinMap.transform) {
 						for (var ii = 0; ii < skinMap.transform.length; ii++) {
-							var constraint = SkeletonData.findTransformConstraint(skinMap.transform[ii]);
+							var constraint = skeletonData.findTransformConstraint(skinMap.transform[ii]);
 							if (constraint == null)
 								throw new Error("Skin transform constraint not found: " + skinMap.transform[i]);
 							skin.constraints.push(constraint);
@@ -5727,19 +5727,19 @@ var spine;
 					}
 					if (skinMap.path) {
 						for (var ii = 0; ii < skinMap.path.length; ii++) {
-							var constraint = SkeletonData.findPathConstraint(skinMap.path[ii]);
+							var constraint = skeletonData.findPathConstraint(skinMap.path[ii]);
 							if (constraint == null)
 								throw new Error("Skin path constraint not found: " + skinMap.path[i]);
 							skin.constraints.push(constraint);
 						}
 					}
 					for (var slotName in skinMap.attachments) {
-						var slot = SkeletonData.findSlot(slotName);
+						var slot = skeletonData.findSlot(slotName);
 						if (slot == null)
 							throw new Error("Slot not found: " + slotName);
 						var slotMap = skinMap.attachments[slotName];
 						for (var entryName in slotMap) {
-							var attachment = this.readAttachment(slotMap[entryName], skin, slot.index, entryName, SkeletonData);
+							var attachment = this.readAttachment(slotMap[entryName], skin, slot.index, entryName, skeletonData);
 							if (attachment != null)
 								skin.setAttachment(slot.index, entryName, attachment);
 						}
@@ -5751,7 +5751,7 @@ var spine;
 			}
 			for (var i = 0, n = this.linkedMeshes.length; i < n; i++) {
 				var linkedMesh = this.linkedMeshes[i];
-				var skin = linkedMesh.skin == null ? SkeletonData.defaultSkin : SkeletonData.findSkin(linkedMesh.skin);
+				var skin = linkedMesh.skin == null ? skeletonData.defaultSkin : skeletonData.findSkin(linkedMesh.skin);
 				if (skin == null)
 					throw new Error("Skin not found: " + linkedMesh.skin);
 				var parent_6 = skin.getAttachment(linkedMesh.slotIndex, linkedMesh.parent);
@@ -5780,10 +5780,9 @@ var spine;
 			if (root.animations) {
 				for (var animationName in root.animations) {
 					var animationMap = root.animations[animationName];
-					this.readAnimation(animationMap, animationName, SkeletonData);
-				}
+					this.readAnimation(animationMap, animationName, skeletonData);
 			}
-			return SkeletonData;
+			return skeletonData;
 		};
 		SkeletonJson.prototype.readAttachment = function (map, skin, slotIndex, name, SkeletonData) {
 			var scale = this.scale;
@@ -6228,7 +6227,7 @@ var spine;
 			if (isNaN(duration)) {
 				throw new Error("Error while parsing animation, duration is NaN");
 			}
-			skeletonData.animations.push(new spine.Animation(name, timelines, duration));
+			SkeletonData.animations.push(new spine.Animation(name, timelines, duration));
 		};
 		SkeletonJson.prototype.readCurve = function (map, timeline, frameIndex) {
 			if (!map.hasOwnProperty("curve"))
