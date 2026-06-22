@@ -5,15 +5,15 @@ permissions:
     id-token: write
 
 on:
-    - push:
-          branches: ['main']
-          paths:
-              - 'src/**'
-              - 'public/**'
-              - 'assets/**'
-              - '.github/workflows/build.yml'
-              - 'deploy.js'
-    - workflow_dispatch
+    push:
+        branches: ['main']
+        paths:
+            - 'src/**'
+            - 'public/**'
+            - 'assets/**'
+            - '.github/workflows/build.yml'
+            - 'deploy.js'
+    workflow_dispatch:
 
 jobs:
     build:
