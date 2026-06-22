@@ -9,8 +9,6 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "tsc --noEmit&&tsup",
-        "pwi": "npx playwright install --with-deps chromium",
-        "deploy": "node deploy.js",
         "dev": "tsup --watch"
     },
     "dependencies": {
