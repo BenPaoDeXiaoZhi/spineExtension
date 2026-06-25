@@ -1,7 +1,6 @@
 import { defineConfig, Options } from 'tsup';
 import { WebSocketServer, WebSocket } from 'ws';
 import { readFileSync } from 'fs';
-import { minifySpinePlugin } from './minify';
 
 function getBanner(env = 'dev', extra = '') {
     const date = new Date();

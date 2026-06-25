@@ -10845,4 +10845,3 @@ var spine;
 }
 
 export default spine;
-console.log(spine);
