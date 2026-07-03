@@ -51,5 +51,5 @@ jobs:
               uses: BenPaoDeXiaoZhi/ccw-extension-deploy@v0.2.1
               with:
                   file: dist/extension.global.js
-                  project-oid: 67b045712de3ec4dde564747
+                  project-oid: 6a47cf82cae73c0d0d18cef3
                   token: ${{secrets.CCW_TOKEN}}
