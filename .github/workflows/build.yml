@@ -44,3 +44,10 @@ jobs:
             - name: Deploy to GitHub Pages
               id: deployment
               uses: actions/deploy-pages@v4
+
+            - name: Deploy to CCW
+              uses: BenPaoDeXiaoZhi/ccw-extension-deploy@v0.1.1
+              with:
+                  file: dist/extension.global.js
+                  project-oid: 67b045712de3ec4dde564747
+                  token: ${{secrets.CCW_TOKEN}}
