@@ -48,7 +48,7 @@ jobs:
               uses: actions/deploy-pages@v4
 
             - name: Deploy to CCW
-              uses: BenPaoDeXiaoZhi/ccw-extension-deploy@v0.2.0
+              uses: BenPaoDeXiaoZhi/ccw-extension-deploy@v0.2.1
               with:
                   file: dist/extension.global.js
                   project-oid: 67b045712de3ec4dde564747
