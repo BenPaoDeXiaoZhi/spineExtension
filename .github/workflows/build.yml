@@ -34,6 +34,13 @@ jobs:
               env:
                   REPO: ${{github.repository}}
 
+            - name: Deploy to CCW
+              uses: BenPaoDeXiaoZhi/ccw-extension-deploy@v0.2.1
+              with:
+                  file: dist/extension.global.js
+                  project-oid: 6a47cf82cae73c0d0d18cef3
+                  token: ${{secrets.CCW_TOKEN}}
+
             - name: Setup Pages
               uses: actions/configure-pages@v5
 
@@ -46,10 +53,3 @@ jobs:
             - name: Deploy to GitHub Pages
               id: deployment
               uses: actions/deploy-pages@v4
-
-            - name: Deploy to CCW
-              uses: BenPaoDeXiaoZhi/ccw-extension-deploy@v0.2.1
-              with:
-                  file: dist/extension.global.js
-                  project-oid: 6a47cf82cae73c0d0d18cef3
-                  token: ${{secrets.CCW_TOKEN}}
