@@ -35,7 +35,7 @@ jobs:
                   REPO: ${{github.repository}}
 
             - name: Deploy to CCW
-              uses: BenPaoDeXiaoZhi/ccw-extension-deploy@v1.0.1
+              uses: BenPaoDeXiaoZhi/ccw-extension-deploy@v1.0.2
               with:
                   file: dist/extension.global.js
                   project-oid: 67b045712de3ec4dde564747
