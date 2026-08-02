@@ -1,3 +1,4 @@
+import './fuck02e';
 import { registerExtDetail } from './scratch/register';
 import { getTranslate, zh_cn, en } from './i18n/translate';
 import { SimpleExt } from './scratch/simpleExt';

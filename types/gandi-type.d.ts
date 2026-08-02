@@ -1,4 +1,4 @@
-import type { Runtime } from 'scratch-vm';
+import type { ExtensionManager, Runtime } from 'scratch-vm';
 import RenderWebGL from 'scratch-render';
 import type Blockly from 'blockly';
 
@@ -54,6 +54,16 @@ export declare interface GandiRuntime extends Runtime {
     logSystem: LogSystem;
 
     ccwAPI: CCW_API;
+
+    extensionManager: GandiExtMgr;
+    platform: {
+        name: string;
+        url: string;
+    };
+}
+
+export interface GandiExtMgr extends ExtensionManager {
+    vm: VM;
 }
 
 export interface GandiRenderer extends RenderWebGL {
