@@ -684,7 +684,11 @@ class SpineExtension extends SimpleExt {
         }
         this.fetchingConfig = true;
         this.runtime.emit('TOOLBOX_EXTENSIONS_NEED_UPDATE');
-        const { userId } = await this.runtime.ccwAPI.getUserInfo();
+        const userInfo = await this.runtime.ccwAPI.getUserInfo();
+        if (!userInfo) {
+            return;
+        }
+        const { userId } = userInfo;
         this.cloudConfig = await this.storage.fetchConfig(userId);
         this.fetchingConfig = false;
         this.runtime.emit('TOOLBOX_EXTENSIONS_NEED_UPDATE');

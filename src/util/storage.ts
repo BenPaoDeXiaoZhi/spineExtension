@@ -1,8 +1,5 @@
 import type ScratchStorage from 'scratch-storage';
-import dialog from './storage/dialog.asset.html';
-import closeSVG from './storage/close.svg';
-import uploadSVG from './storage/upload.svg';
-import { RawSpineConfig, SpineConfig } from '../spineConfig';
+import { RawSpineConfig } from '../spineConfig';
 
 export type StorageConfig = { [name: string]: RawSpineConfig };
 
@@ -92,9 +89,14 @@ export class scratchStorageUI {
     }
 
     async fetchConfig(userId: string): Promise<StorageConfig> {
-        const res = await this.loadFile(
-            `spine/${userId}/config.json?t=${Date.now()}`,
-        );
+        let res: any;
+        try {
+            res = await this.loadFile(
+                `spine/${userId}/config.json?t=${Date.now()}`,
+            );
+        } catch (e) {
+            return {};
+        }
         if (!res.ok) {
             return {};
         }
