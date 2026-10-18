@@ -24,7 +24,7 @@
         "@turbowarp/types": "^0.0.13",
         "@types/node": "^25.0.2",
         "@types/ws": "^8.18.1",
-        "blockly": "^12.3.1",
+        "blockly": "^13.4.0",
         "ws": "^8.18.3"
     }
 }
